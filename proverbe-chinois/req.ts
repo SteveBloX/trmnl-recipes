@@ -1,11 +1,17 @@
 import proverbs from "./proverbs.json" assert { type: "json" };
 type dataType = {
-  favoriteWords: string[];
-  excludedWords: string[];
+  favoriteWords: any;
+  excludedWords: any;
   explanation: string;
 };
 export function proverbRequest(data: dataType) {
-  const { favoriteWords, excludedWords } = data;
+  let { favoriteWords, excludedWords } = data;
+  favoriteWords = favoriteWords
+    ? favoriteWords.split(";").map((w) => w.trim())
+    : [];
+  excludedWords = excludedWords
+    ? excludedWords.split(";").map((w) => w.trim())
+    : [];
   const explanation = data.explanation ? data.explanation === "1" : false;
   const filteredProverbs = proverbs.filter((proverb) => {
     const { french } = proverb;
@@ -27,5 +33,15 @@ export function proverbRequest(data: dataType) {
     };
   }
   const randomIndex = Math.floor(Math.random() * filteredProverbs.length);
-  return filteredProverbs[randomIndex];
+  // if explanation isn't requested, remove all strings between parentheses in french
+  let proverb = filteredProverbs[randomIndex];
+
+  if (!explanation) {
+    console.log("Removing explanations from the proverb.", explanation);
+    proverb = {
+      ...proverb,
+      french: proverb.french.replace(/\(.*?\)/g, "").trim(),
+    };
+  }
+  return proverb;
 }
