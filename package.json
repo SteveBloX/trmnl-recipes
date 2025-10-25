@@ -1,0 +1,24 @@
+{
+  "name": "trmnl",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "iconv-lite": "^0.7.0",
+    "jsdom": "^27.0.1",
+    "tsx": "^4.20.6"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.6",
+    "@types/express": "^5.0.4",
+    "@types/jsdom": "^27.0.0"
+  }
+}
