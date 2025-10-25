@@ -1,6 +1,6 @@
 import { JSDOM } from "jsdom";
 import { writeFileSync } from "fs";
-import iconv from "iconv-lite"; // <--- installer ce module
+import iconv from "iconv-lite";
 
 const pages = 22;
 const firstPage = 0;
@@ -8,7 +8,7 @@ const getPage = (page: number) =>
   `https://chine.in/mandarin/proverbes/index.php?start=${page}`;
 
 async function getProverbs() {
-  const proverbs: { chinese: string; french: string }[] = [];
+  const proverbs: { id: string; chinese: string; french: string }[] = [];
 
   for (let page = firstPage; page < pages; page++) {
     const res = await fetch(getPage(page));
@@ -21,10 +21,14 @@ async function getProverbs() {
 
     const items = doc.querySelectorAll(".proverbe");
     items.forEach((item) => {
+      const id =
+        item.querySelector(".p_id")?.textContent?.trim().replace("N°", "") ||
+        "";
       const chinese = item.querySelector(".p_zh")?.textContent?.trim();
       const french = item.querySelector(".p_fr")?.textContent?.trim();
       if (chinese && french) {
         proverbs.push({
+          id,
           chinese,
           french,
         });
