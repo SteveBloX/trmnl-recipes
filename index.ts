@@ -1,11 +1,11 @@
-import { proverbRequest } from "./proverbe-chinois/req";
+import { proverbRequest } from "./chinese-proverbs/req";
 
 const apps = [
   {
-    name: "Proverbes Chinois",
+    name: "Chinese Proverbs",
     description:
-      "Une collection de proverbes chinois avec leurs traductions françaises.",
-    route: "proverbes-chinois",
+      "A collection of Chinese proverbs with their French translations.",
+    route: "chinese-proverbs",
     request: proverbRequest,
   },
 ];
