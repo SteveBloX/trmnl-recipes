@@ -14,7 +14,7 @@ const apps = [
 import express from "express";
 import bodyParser from "body-parser";
 const app = express();
-const port = 3000;
+const port = 4200;
 app.use(bodyParser.json());
 
 app.post("/api/:appName", (req, res) => {
