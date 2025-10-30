@@ -9,10 +9,10 @@ export function proverbRequest(data: dataType) {
   let { lang, favoriteWords, excludedWords } = data;
   const proverbs = lang === "french" ? proverbsFr : proverbsFr;
   favoriteWords = favoriteWords
-    ? favoriteWords.split(";").map((w) => w.trim())
+    ? favoriteWords.split(",").map((w) => w.trim())
     : [];
   excludedWords = excludedWords
-    ? excludedWords.split(";").map((w) => w.trim())
+    ? excludedWords.split(",").map((w) => w.trim())
     : [];
   const explanation = data.explanation ? data.explanation === "1" : false;
   const filteredProverbs = proverbs.filter((proverb) => {
