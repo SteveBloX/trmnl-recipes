@@ -1,14 +1,17 @@
 import { JSDOM } from "jsdom";
 import { writeFileSync } from "fs";
 import iconv from "iconv-lite";
+import { proverbType } from "./req";
 
 const pages = 22;
 const firstPage = 0;
 const getPage = (page: number) =>
   `https://chine.in/mandarin/proverbes/index.php?start=${page}`;
+// exclude misogynistic proverbs
+const excluded = ["femme"];
 
 async function getProverbs() {
-  const proverbs: { id: string; chinese: string; french: string }[] = [];
+  const proverbs: proverbType[] = [];
 
   for (let page = firstPage; page < pages; page++) {
     const res = await fetch(getPage(page));
@@ -26,7 +29,11 @@ async function getProverbs() {
         "";
       const chinese = item.querySelector(".p_zh")?.textContent?.trim();
       const french = item.querySelector(".p_fr")?.textContent?.trim();
-      if (chinese && french) {
+      if (
+        chinese &&
+        french &&
+        !excluded.some((word) => french.toLowerCase().includes(word))
+      ) {
         proverbs.push({
           id,
           chinese,
@@ -42,5 +49,5 @@ async function getProverbs() {
 
 getProverbs().then((proverbs) => {
   console.log(`Total proverbs collected: ${proverbs.length}`);
-  writeFileSync("proverbs.json", JSON.stringify(proverbs, null, 2), "utf8");
+  writeFileSync("proverbs-fr.json", JSON.stringify(proverbs, null, 2), "utf8");
 });

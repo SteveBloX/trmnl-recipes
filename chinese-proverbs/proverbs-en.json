@@ -1,0 +1,637 @@
+[
+  {
+    "id": "1",
+    "chinese": "事实胜于雄辩。",
+    "translation": "Facts beat eloquence."
+  },
+  {
+    "id": "2",
+    "chinese": "一言既出，驷马难追。",
+    "translation": "A team of horses will struggle to chase down a spoken word."
+  },
+  {
+    "id": "3",
+    "chinese": "路遥知马力，日久见人心。",
+    "translation": "As distance tests a horse's strength, time reveals a person's character."
+  },
+  {
+    "id": "4",
+    "chinese": "无规矩不成方圆。",
+    "translation": "Without standards, no boundaries are set."
+  },
+  {
+    "id": "5",
+    "chinese": "惩前毖后。",
+    "translation": "Punishing those who come before stops those who come after from doing something."
+  },
+  {
+    "id": "6",
+    "chinese": "三思而后行。",
+    "translation": "Think thrice before you act."
+  },
+  {
+    "id": "7",
+    "chinese": "良药苦口。",
+    "translation": "Good medicine tastes bitter."
+  },
+  {
+    "id": "8",
+    "chinese": "有理走遍天下，无理寸步难行。",
+    "translation": "With truth on your side, you can go anywhere; without truth, you can't take a tiny step."
+  },
+  {
+    "id": "9",
+    "chinese": "当局者迷，旁观者清。",
+    "translation": "The player is lost; the watcher is lucid."
+  },
+  {
+    "id": "10",
+    "chinese": "十年树木，百年树人。",
+    "translation": "Ten years to cultivate wood, a hundred years to cultivate a man."
+  },
+  {
+    "id": "11",
+    "chinese": "民以食为天。",
+    "translation": "Food is the first priority of the people."
+  },
+  {
+    "id": "12",
+    "chinese": "善有善报。",
+    "translation": "Repay good with good."
+  },
+  {
+    "id": "13",
+    "chinese": "顾左右而言他。",
+    "translation": "Deliberately vague and deflective."
+  },
+  {
+    "id": "14",
+    "chinese": "几家欢喜几家愁。",
+    "translation": "While some are happy, some are anxious."
+  },
+  {
+    "id": "15",
+    "chinese": "人过留名，雁过留声。",
+    "translation": "A person leaves a reputation, as a swallow leaves its call."
+  },
+  {
+    "id": "16",
+    "chinese": "万事俱备，只欠东风。",
+    "translation": "Everything's ready except the east wind."
+  },
+  {
+    "id": "17",
+    "chinese": "麻雀虽小，五脏俱全。",
+    "translation": "Small as it is, the sparrow has all the vital organs."
+  },
+  {
+    "id": "18",
+    "chinese": "桂林山水甲天下。",
+    "translation": "Guilin's scenery's best on earth."
+  },
+  {
+    "id": "19",
+    "chinese": "哑巴吃饺子，心里有数。",
+    "translation": "When a mute eats dumplings, he knows how many he has eaten."
+  },
+  {
+    "id": "20",
+    "chinese": "人逢喜事精神爽。",
+    "translation": "A happy occasion gladdens the spirit."
+  },
+  {
+    "id": "21",
+    "chinese": "一举两得。",
+    "translation": "Two benefits from one action."
+  },
+  {
+    "id": "22",
+    "chinese": "如坐针毡。",
+    "translation": "Like sitting on a carpet of needles."
+  },
+  {
+    "id": "23",
+    "chinese": "逆来顺受。",
+    "translation": "When adversity comes, receive it favorably."
+  },
+  {
+    "id": "24",
+    "chinese": "化干戈为玉帛。",
+    "translation": "Replace weapons with jade and silk."
+  },
+  {
+    "id": "25",
+    "chinese": "此地无银三百两。",
+    "translation": "This ground doesn't have 300 taels of silver."
+  },
+  {
+    "id": "26",
+    "chinese": "兵不厌诈。",
+    "translation": "Soldiers don't hate deceit."
+  },
+  {
+    "id": "27",
+    "chinese": "木已成舟，生米煮成熟饭。",
+    "translation": "The timber's already a boat; the rice is cooked."
+  },
+  {
+    "id": "28",
+    "chinese": "身体力行。",
+    "translation": "A body acts according to physical strength."
+  },
+  {
+    "id": "29",
+    "chinese": "大智若愚。",
+    "translation": "Great wisdom can seem foolish."
+  },
+  {
+    "id": "30",
+    "chinese": "捷足先登。",
+    "translation": "The quick-footed climb first."
+  },
+  {
+    "id": "31",
+    "chinese": "一见钟情。",
+    "translation": "Love at first sight."
+  },
+  {
+    "id": "32",
+    "chinese": "愿得一人心，白首不相离。",
+    "translation": "Long for a heart, never be apart."
+  },
+  {
+    "id": "33",
+    "chinese": "执子之手，与子偕老。",
+    "translation": "Hold hands with you, grow old with you."
+  },
+  {
+    "id": "34",
+    "chinese": "爱不是占有，而是欣赏。",
+    "translation": "Love isn't about having, it's about enjoying (what you have)."
+  },
+  {
+    "id": "35",
+    "chinese": "爱屋及乌。",
+    "translation": "Love the house and its crow."
+  },
+  {
+    "id": "36",
+    "chinese": "萝卜青菜，各有所爱。",
+    "translation": "Radishes and greens, each has those who love them."
+  },
+  {
+    "id": "37",
+    "chinese": "在天愿作比翼鸟，在地愿为连理枝。",
+    "translation": "Birds flying in the sky as one; branches growing on the earth as one."
+  },
+  {
+    "id": "38",
+    "chinese": "有情人终成眷属。",
+    "translation": "People in love become spouses in the end."
+  },
+  {
+    "id": "39",
+    "chinese": "情人眼里出西施。",
+    "translation": "In a lover's eye is the foremost Beauty."
+  },
+  {
+    "id": "40",
+    "chinese": "有情饮水饱，无情食饭饥。",
+    "translation": "With love water is enough; without love, food doesn't satisfy."
+  },
+  {
+    "id": "41",
+    "chinese": "冰冻三尺，非一日之寒。",
+    "translation": "It takes more than one cold day for a river to freeze a meter deep."
+  },
+  {
+    "id": "42",
+    "chinese": "机不可失，时不再来。",
+    "translation": "Don't miss opportunities: time doesn't come round again."
+  },
+  {
+    "id": "43",
+    "chinese": "人心齐，泰山移。",
+    "translation": "When people work with one heart, they can even move Mount. Tai."
+  },
+  {
+    "id": "44",
+    "chinese": "万事开头难。",
+    "translation": "All things are difficult at the start."
+  },
+  {
+    "id": "45",
+    "chinese": "失败是成功之母。",
+    "translation": "Failure is the mother of success."
+  },
+  {
+    "id": "46",
+    "chinese": "只要功夫深，铁杵磨成针。",
+    "translation": "It just needs hard work to grind an iron rod into a needle."
+  },
+  {
+    "id": "47",
+    "chinese": "水滴石穿，绳锯木断。",
+    "translation": "Water drops pierce stone; rope saws cut wood."
+  },
+  {
+    "id": "48",
+    "chinese": "一日之计在于晨。",
+    "translation": "A day's planning is done at dawn."
+  },
+  {
+    "id": "49",
+    "chinese": "千里之行，始于足下。",
+    "translation": "A thousand-li journey starts with a footfall."
+  },
+  {
+    "id": "50",
+    "chinese": "否极泰来。",
+    "translation": "Peace replaces extreme evil."
+  },
+  {
+    "id": "51",
+    "chinese": "青出于蓝而胜于蓝。",
+    "translation": "Green is from blue, and better than blue."
+  },
+  {
+    "id": "52",
+    "chinese": "老骥伏枥，志在千里。",
+    "translation": "An old warhorse in the stable still longs to gallop a thousand li."
+  },
+  {
+    "id": "53",
+    "chinese": "吃得苦中苦，方为人上人。",
+    "translation": "Enduring deepening pain is how man ascends."
+  },
+  {
+    "id": "54",
+    "chinese": "先到先得。",
+    "translation": "The first to arrive is the first to succeed."
+  },
+  {
+    "id": "55",
+    "chinese": "守得云开见月明。",
+    "translation": "Watch till clouds part to see the moonlight."
+  },
+  {
+    "id": "56",
+    "chinese": "逆境出人才。",
+    "translation": "Adversity yields flair."
+  },
+  {
+    "id": "57",
+    "chinese": "吃一堑，长一智。",
+    "translation": "Suffer a moat, grow in wisdom."
+  },
+  {
+    "id": "58",
+    "chinese": "不能一口吃成胖子。",
+    "translation": "You can't get fat with one mouthful."
+  },
+  {
+    "id": "59",
+    "chinese": "风无常顺，兵无常胜。",
+    "translation": "Wind isn't always favorable; soldiers aren't always victorious."
+  },
+  {
+    "id": "60",
+    "chinese": "星星之火，可以燎原。",
+    "translation": "Starlight shines far."
+  },
+  {
+    "id": "61",
+    "chinese": "哀兵必胜。",
+    "translation": "An aggrieved army is sure to win."
+  },
+  {
+    "id": "62",
+    "chinese": "不作不死。",
+    "translation": "If you don't do stupid things you won't end up in tragedy."
+  },
+  {
+    "id": "63",
+    "chinese": "塞翁失马，焉知非福。",
+    "translation": "Blessings come in disguise."
+  },
+  {
+    "id": "64",
+    "chinese": "小洞不补，大洞吃苦。",
+    "translation": "If small holes aren't fixed, then big holes will bring hardship."
+  },
+  {
+    "id": "65",
+    "chinese": "水满则溢。",
+    "translation": "Water flows in only to flow out."
+  },
+  {
+    "id": "66",
+    "chinese": "读万卷书不如行万里路。",
+    "translation": "It's better to walk thousands of miles than to read thousands of books."
+  },
+  {
+    "id": "67",
+    "chinese": "三个和尚没水喝。",
+    "translation": "Too many cooks spoil the broth."
+  },
+  {
+    "id": "68",
+    "chinese": "一笑解千愁。",
+    "translation": "A smile dispels many worries."
+  },
+  {
+    "id": "69",
+    "chinese": "笑一笑,十年少。",
+    "translation": "Happiness is the best cosmetic."
+  },
+  {
+    "id": "70",
+    "chinese": "美名胜过美貌。",
+    "translation": "A good name is better than a good face."
+  },
+  {
+    "id": "71",
+    "chinese": "不善始者不善终。",
+    "translation": "A bad beginning makes a bad ending."
+  },
+  {
+    "id": "72",
+    "chinese": "大处着眼，小处着手。",
+    "translation": "Keep the general goal in sight while tackling daily tasks."
+  },
+  {
+    "id": "73",
+    "chinese": "一步一个脚印。",
+    "translation": "Every step makes a footprint."
+  },
+  {
+    "id": "74",
+    "chinese": "一个萝卜一个坑儿。",
+    "translation": "Each has his own task, and nobody is dispensable."
+  },
+  {
+    "id": "75",
+    "chinese": "留得青山在，不怕没柴烧。",
+    "translation": "While there are green hills, there'll be wood to burn."
+  },
+  {
+    "id": "76",
+    "chinese": "一鸟在手胜过双鸟在林。",
+    "translation": "A bird in the hand is worth two in the bush."
+  },
+  {
+    "id": "77",
+    "chinese": "人无完人，金无足赤。",
+    "translation": "No man is a perfect man; no gold is sufficiently bare."
+  },
+  {
+    "id": "78",
+    "chinese": "千军易得, 一将难求。",
+    "translation": "It is easy to find a thousand soldiers, but hard to find a good general."
+  },
+  {
+    "id": "79",
+    "chinese": "宰相肚里好撑船。",
+    "translation": "A prime minister's mind should be broad enough for polling a boat."
+  },
+  {
+    "id": "80",
+    "chinese": "难得糊涂。",
+    "translation": "Ignorance is bliss."
+  },
+  {
+    "id": "81",
+    "chinese": "祸从口出。",
+    "translation": "Disaster comes from the careless talk."
+  },
+  {
+    "id": "82",
+    "chinese": "三人一条心，黄土变成金。",
+    "translation": "If people are of one heart, even loess can become gold."
+  },
+  {
+    "id": "83",
+    "chinese": "身正不怕影子斜。",
+    "translation": "One who stands straight doesn't fear a crooked shadow."
+  },
+  {
+    "id": "84",
+    "chinese": "有借有还，再借不难。",
+    "translation": "Timely return of a loan makes it easier to borrow a second time."
+  },
+  {
+    "id": "85",
+    "chinese": "蜡烛照亮别人，却毁灭了自己。",
+    "translation": "A candle lights others and consumes itself."
+  },
+  {
+    "id": "86",
+    "chinese": "种瓜得瓜, 种豆得豆。",
+    "translation": "You reap what you sow."
+  },
+  {
+    "id": "87",
+    "chinese": "欲速则不达。",
+    "translation": "Those who just want speed don't succeed."
+  },
+  {
+    "id": "88",
+    "chinese": "近水知鱼性, 近山识鸟音。",
+    "translation": "To know a fish go to the water; to know a bird's song go to the mountains."
+  },
+  {
+    "id": "89",
+    "chinese": "听君一席话，胜读十年书。",
+    "translation": "Listening to a lord's remarks is better than reading books for ten years."
+  },
+  {
+    "id": "90",
+    "chinese": "凡人不可貌相, 海水不可斗量。 (Fánrén bù kě màoxiàng, hǎishuǐ bù kě dòuliàng / 'mortals can't judge by appearance, sea water can't cup measure') — Man cannot be judged by looks; seas cannot be measured by the cup.",
+    "translation": "In short: \"don't judge by appearances\"."
+  },
+  {
+    "id": "91",
+    "chinese": "有缘千里来相会。",
+    "translation": "Fate brings people together from far apart."
+  },
+  {
+    "id": "92",
+    "chinese": "君子之交淡如水。",
+    "translation": "A gentleman's friendship is insipid as water."
+  },
+  {
+    "id": "93",
+    "chinese": "入乡随俗。",
+    "translation": "When entering a locality follow the local customs."
+  },
+  {
+    "id": "94",
+    "chinese": "患难见真情。",
+    "translation": "In hardship, we see true friendship."
+  },
+  {
+    "id": "95",
+    "chinese": "知音难觅。",
+    "translation": "An intimate friend is hard to find."
+  },
+  {
+    "id": "96",
+    "chinese": "广交友，无深交。",
+    "translation": "Numerous friends means no deep friendship."
+  },
+  {
+    "id": "97",
+    "chinese": "道不同，不相为谋。",
+    "translation": "Men of different principles don't work well together."
+  },
+  {
+    "id": "98",
+    "chinese": "月到中秋分外明，每逢佳节倍思亲。",
+    "translation": "The harvest moon is brightest; every festival's homesickness multiplies."
+  },
+  {
+    "id": "99",
+    "chinese": "儿行千里母担忧。",
+    "translation": "When children travel far, mothers worry."
+  },
+  {
+    "id": "100",
+    "chinese": "但愿人长久，千里共婵娟。",
+    "translation": "Wishing us long life, though sharing moonlight from afar."
+  },
+  {
+    "id": "101",
+    "chinese": "家和万事兴。",
+    "translation": "If a family is harmonious everything will go well."
+  },
+  {
+    "id": "102",
+    "chinese": "家家有本难念的经。",
+    "translation": "Every family has its problems."
+  },
+  {
+    "id": "103",
+    "chinese": "清官难断家务事。",
+    "translation": "Even an upright official finds it hard to settle a family quarrel."
+  },
+  {
+    "id": "104",
+    "chinese": "有其父，必有其子。",
+    "translation": "Where there's a father, there's his son."
+  },
+  {
+    "id": "105",
+    "chinese": "家丑不可外扬。",
+    "translation": "Family shames must not be spread abroad."
+  },
+  {
+    "id": "106",
+    "chinese": "不当家，不知柴米贵。",
+    "translation": "If you don't run the family, you don't know the value of fuel and rice."
+  },
+  {
+    "id": "107",
+    "chinese": "金窝，银窝，不如自家的狗窝。",
+    "translation": "Gold and silver nests can't beat one's family kennel."
+  },
+  {
+    "id": "108",
+    "chinese": "书是随时携带的花园。",
+    "translation": "A book is a pocket garden."
+  },
+  {
+    "id": "109",
+    "chinese": "活到老，学到老。",
+    "translation": "Live till you're old, and study till you're old."
+  },
+  {
+    "id": "110",
+    "chinese": "好书如挚友。",
+    "translation": "A good book is like a good friend."
+  },
+  {
+    "id": "111",
+    "chinese": "一寸光阴一寸金，寸金难买寸光阴。",
+    "translation": "An inch of time is worth an inch of gold, but an inch of gold may not buy an inch of time."
+  },
+  {
+    "id": "112",
+    "chinese": "好记性不如烂笔头。",
+    "translation": "A good memory can't beat a bad pen."
+  },
+  {
+    "id": "113",
+    "chinese": "花有重开日，人无再少年。",
+    "translation": "Flowers may bloom again; you're never young again."
+  },
+  {
+    "id": "114",
+    "chinese": "学而不思则罔，思而不学则殆。",
+    "translation": "Learning without thought is deceptive; thought without learning is perilous."
+  },
+  {
+    "id": "115",
+    "chinese": "书到用时方恨少。",
+    "translation": "When using books, you'll regret reading few."
+  },
+  {
+    "id": "116",
+    "chinese": "读书须用意，一字值千金。",
+    "translation": "Reading requires concentration; a word may be worth a fortune."
+  },
+  {
+    "id": "117",
+    "chinese": "严师出高徒。",
+    "translation": "Strict teachers produce fine students."
+  },
+  {
+    "id": "118",
+    "chinese": "龙飞凤舞。",
+    "translation": "The dragonflies and the phoenix dances."
+  },
+  {
+    "id": "119",
+    "chinese": "龙马精神。",
+    "translation": "A dragon's and a horse's spirit."
+  },
+  {
+    "id": "120",
+    "chinese": "鱼龙混杂。",
+    "translation": "A muddled mix of fish and dragons."
+  },
+  {
+    "id": "121",
+    "chinese": "龙腾虎跃。",
+    "translation": "Dragons soaring and tigers leaping."
+  },
+  {
+    "id": "122",
+    "chinese": "车水马龙。",
+    "translation": "Carriages like a stream and horses like a dragon."
+  },
+  {
+    "id": "123",
+    "chinese": "龙潭虎穴。",
+    "translation": "A dragon's pool and a tiger's den."
+  },
+  {
+    "id": "124",
+    "chinese": "画龙点睛。",
+    "translation": "Paint a dragon and dot the eye."
+  },
+  {
+    "id": "125",
+    "chinese": "叶公好龙。",
+    "translation": "Lord Ye loves dragons."
+  },
+  {
+    "id": "126",
+    "chinese": "鲤鱼跳龙门。",
+    "translation": "A carp has jumped the dragon's gate."
+  },
+  {
+    "id": "127",
+    "chinese": "强龙难压地头蛇。",
+    "translation": "Even a dragon struggles to control a snake in its native haunt."
+  }
+]

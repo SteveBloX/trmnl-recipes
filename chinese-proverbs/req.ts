@@ -1,13 +1,19 @@
 import proverbsFr from "./proverbs-fr.json" assert { type: "json" };
+import proverbsEn from "./proverbs-en.json" assert { type: "json" };
 type dataType = {
   lang: string;
   favoriteWords: any;
   excludedWords: any;
   explanation: string;
 };
+export type proverbType = {
+  id: string;
+  chinese: string;
+  translation: string;
+};
 export function proverbRequest(data: dataType) {
   let { lang, favoriteWords, excludedWords } = data;
-  const proverbs = lang === "french" ? proverbsFr : proverbsFr;
+  const proverbs = lang === "french" ? proverbsFr : proverbsEn;
   favoriteWords = favoriteWords
     ? favoriteWords.split(",").map((w) => w.trim())
     : [];
@@ -34,6 +40,11 @@ export function proverbRequest(data: dataType) {
         lang: "french",
         chinese: "无",
         translation: "Aucun proverbe ne correspond aux critères donnés.",
+      },
+      {
+        lang: "english",
+        chinese: "无",
+        translation: "No proverbs match the given criteria.",
       },
     ];
     return notFoundMessages.find((p) => p.lang === lang) || notFoundMessages[0];
