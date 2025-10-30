@@ -30,7 +30,7 @@ async function getProverbs() {
         proverbs.push({
           id,
           chinese,
-          french,
+          translation: french,
         });
       }
     });

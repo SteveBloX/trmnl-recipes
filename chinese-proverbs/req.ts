@@ -16,33 +16,36 @@ export function proverbRequest(data: dataType) {
     : [];
   const explanation = data.explanation ? data.explanation === "1" : false;
   const filteredProverbs = proverbs.filter((proverb) => {
-    const { french } = proverb;
+    const { translation } = proverb;
     // must contain at least one favorite word
     const containsFavorite =
       favoriteWords.length === 0 ||
-      favoriteWords.some((word) => french.includes(word));
+      favoriteWords.some((word) => translation.includes(word));
     // must not contain any excluded word
     const containsExcluded = excludedWords.some((word) =>
-      french.includes(word)
+      translation.includes(word)
     );
     return containsFavorite && !containsExcluded;
   });
   // choose a random proverb from the filtered list
   if (filteredProverbs.length === 0) {
-    return {
-      chinese: "无",
-      french: "Aucun proverbe ne correspond aux critères donnés.",
-    };
+    const notFoundMessages = [
+      {
+        lang: "french",
+        chinese: "无",
+        translation: "Aucun proverbe ne correspond aux critères donnés.",
+      },
+    ];
+    return notFoundMessages.find((p) => p.lang === lang) || notFoundMessages[0];
   }
   const randomIndex = Math.floor(Math.random() * filteredProverbs.length);
-  // if explanation isn't requested, remove all strings between parentheses in french
   let proverb = filteredProverbs[randomIndex];
 
   if (!explanation) {
     console.log("Removing explanations from the proverb.", explanation);
     proverb = {
       ...proverb,
-      french: proverb.french.replace(/\(.*?\)/g, "").trim(),
+      translation: proverb.translation.replace(/\(.*?\)/g, "").trim(),
     };
   }
   return proverb;
