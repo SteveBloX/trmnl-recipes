@@ -24,7 +24,6 @@ app.get("/api/:appName", (req, res) => {
     return res.status(404).json({ error: "App not found" });
   }
   const { request } = appConfig;
-  console.log("Received request:", req.query);
   const result = request(req.query);
   return res.json(result);
 });

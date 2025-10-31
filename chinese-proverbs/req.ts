@@ -1,5 +1,6 @@
 import proverbsFr from "./proverbs-fr.json" assert { type: "json" };
 import proverbsEn from "./proverbs-en.json" assert { type: "json" };
+import fs from "fs";
 type dataType = {
   lang: string;
   favoriteWords: any;
@@ -13,6 +14,7 @@ export type proverbType = {
 };
 export function proverbRequest(data: dataType) {
   let { lang, favoriteWords, excludedWords } = data;
+
   const proverbs = lang === "french" ? proverbsFr : proverbsEn;
   favoriteWords = favoriteWords
     ? favoriteWords.split(",").map((w) => w.trim())
@@ -53,11 +55,21 @@ export function proverbRequest(data: dataType) {
   let proverb = filteredProverbs[randomIndex];
 
   if (!explanation) {
-    console.log("Removing explanations from the proverb.", explanation);
     proverb = {
       ...proverb,
       translation: proverb.translation.replace(/\(.*?\)/g, "").trim(),
     };
   }
+  fs.readFileSync("./chinese-proverbs/stats.json", "utf-8");
+  const statsPath = "./chinese-proverbs/stats.json";
+  const statsData = fs.readFileSync(statsPath, "utf-8");
+  const stats = JSON.parse(statsData);
+  stats[lang] = (stats[lang] || 0) + 1;
+  fs.writeFileSync(statsPath, JSON.stringify(stats, null, 2), "utf-8");
+  console.log(
+    `[${new Date().toISOString()}] ${lang} proverb requested. (Total: ${
+      stats[lang]
+    })`
+  );
   return proverb;
 }
