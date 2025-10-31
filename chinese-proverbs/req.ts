@@ -60,6 +60,15 @@ export function proverbRequest(data: dataType) {
       translation: proverb.translation.replace(/\(.*?\)/g, "").trim(),
     };
   }
+  try {
+    fs.accessSync("./chinese-proverbs/stats.json", fs.constants.F_OK);
+  } catch (err) {
+    fs.writeFileSync(
+      "./chinese-proverbs/stats.json",
+      JSON.stringify({ french: 0, english: 0 }, null, 2),
+      "utf-8"
+    );
+  }
   fs.readFileSync("./chinese-proverbs/stats.json", "utf-8");
   const statsPath = "./chinese-proverbs/stats.json";
   const statsData = fs.readFileSync(statsPath, "utf-8");
