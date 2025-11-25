@@ -25,14 +25,14 @@ const app = express();
 const port = 4200;
 app.use(bodyParser.json());
 
-app.get("/api/:appName", (req, res) => {
+app.get("/api/:appName", async (req, res) => {
   const appName = req.params.appName;
   const appConfig = apps.find((a) => a.route === appName);
   if (!appConfig) {
     return res.status(404).json({ error: "App not found" });
   }
   const { request } = appConfig;
-  const result = request(req.query, req.body);
+  const result = await request(req.query, req.body);
   return res.json(result);
 });
 

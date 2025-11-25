@@ -1,7 +1,6 @@
 import "dotenv/config";
 
 const FORTNITE_API_KEY = process.env.FORTNITE_API_KEY || "";
-console.log(FORTNITE_API_KEY);
 /* EXAMPLE RESPONSE:
 {
 	"status": 200,
