@@ -8,11 +8,19 @@ const apps = [
     route: "chinese-proverbs",
     request: proverbRequest,
   },
+  {
+    name: "Fortnite Stats",
+    description:
+      "Fetch Fortnite Battle Royale statistics for a given username.",
+    route: "fortnite-stats",
+    request: statsRequest,
+  },
 ];
 
 // create a simple express server to handle requests
 import express from "express";
 import bodyParser from "body-parser";
+import { statsRequest } from "./fortnite-stats/req";
 const app = express();
 const port = 4200;
 app.use(bodyParser.json());
@@ -24,7 +32,7 @@ app.get("/api/:appName", (req, res) => {
     return res.status(404).json({ error: "App not found" });
   }
   const { request } = appConfig;
-  const result = request(req.query);
+  const result = request(req.query, req.body);
   return res.json(result);
 });
 

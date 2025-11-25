@@ -12,7 +12,7 @@ export type proverbType = {
   chinese: string;
   translation: string;
 };
-export function proverbRequest(data: dataType) {
+export function proverbRequest(data: dataType, body: any = null) {
   let { lang, favoriteWords, excludedWords } = data;
 
   const proverbs = lang === "french" ? proverbsFr : proverbsEn;
