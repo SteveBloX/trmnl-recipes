@@ -1,4 +1,7 @@
+import "dotenv/config";
+
 const FORTNITE_API_KEY = process.env.FORTNITE_API_KEY || "";
+console.log(FORTNITE_API_KEY);
 /* EXAMPLE RESPONSE:
 {
 	"status": 200,
@@ -40,26 +43,22 @@ const FORTNITE_API_KEY = process.env.FORTNITE_API_KEY || "";
 
 const endpoint = "https://fortnite-api.com/v2/stats/br/v2";
 
-type bodyType = {
+type queryType = {
   username: string;
 };
 
-export async function statsRequest(fnData: any, body: bodyType) {
-  let username = "";
-  try {
-    username = body.username;
-  } catch {
-    console.log("No body provided");
-    return { error: "Username is required in the request body." };
-  }
+export async function statsRequest(query: queryType, body: any = null) {
+  const { username } = query;
   let ret = {};
   const url = `${endpoint}?name=${encodeURIComponent(username)}`;
   const response = await fetch(url, {
     headers: {
-      Authorization: FORTNITE_API_KEY,
+      Authorization: `${FORTNITE_API_KEY}`,
     },
   });
   if (!response.ok) {
+    console.log("Error response:", response);
+    console.log(response.body);
     const statusCode = response.status;
     if (statusCode === 404) {
       ret = { error: `Player "${username}" not found.` };

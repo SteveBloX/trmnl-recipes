@@ -12,6 +12,7 @@
   "dependencies": {
     "@yaelouuu/fortnite-api": "^4.0.0",
     "body-parser": "^2.2.0",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "iconv-lite": "^0.7.0",
     "jsdom": "^27.0.1",
