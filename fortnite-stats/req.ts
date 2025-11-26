@@ -58,6 +58,7 @@ export async function statsRequest(query: queryType, body: any = null) {
       Authorization: `${FORTNITE_API_KEY}`,
     },
   });
+  const prettyTimeWindow = timeWindow === "lifetime" ? "Lifetime" : "Season";
   if (!response.ok) {
     console.log("Error response:", response);
     const statusCode = response.status;
@@ -77,7 +78,11 @@ export async function statsRequest(query: queryType, body: any = null) {
         ret = { error: `Error getting stats for "${username}".` };
       }
     }
-    return ret;
+    return {
+      username,
+      timeWindow: prettyTimeWindow,
+      ...ret,
+    };
   }
   const data = await response.json();
   const stats = data.data.stats.all.overall;
@@ -91,7 +96,7 @@ export async function statsRequest(query: queryType, body: any = null) {
     matches: stats.matches,
     winRate: stats.winRate,
     timePlayed: stats.minutesPlayed,
-    timeWindow: timeWindow === "lifetime" ? "Lifetime" : "Season",
+    timeWindow: prettyTimeWindow,
   };
   // convert timePlayed to hours
   d.timePlayed = (d.timePlayed / 60).toFixed(1);
