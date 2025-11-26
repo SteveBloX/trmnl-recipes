@@ -48,7 +48,6 @@ type queryType = {
 };
 
 export async function statsRequest(query: queryType, body: any = null) {
-  console.log(query);
   const { username, timeWindow } = query;
   let ret = {};
   const url = `${endpoint}?name=${encodeURIComponent(
@@ -61,15 +60,21 @@ export async function statsRequest(query: queryType, body: any = null) {
   });
   if (!response.ok) {
     console.log("Error response:", response);
-    console.log(response.body);
     const statusCode = response.status;
-    if (statusCode === 404) {
-      ret = { error: `Player "${username}" not found.` };
-    } else if (statusCode === 403) {
-      // stats are private
-      ret = { error: `Stats for "${username}" are private.` };
-    } else {
-      ret = { error: `Error getting stats for "${username}".` };
+    try {
+      const errorData = await response.json();
+      ret = {
+        error: errorData.error || `Error getting stats for "${username}".`,
+      };
+    } catch (e) {
+      // If parsing fails, use default messages
+      if (statusCode === 404) {
+        ret = { error: `Player "${username}" not found.` };
+      } else if (statusCode === 403) {
+        ret = { error: `Stats for "${username}" are private.` };
+      } else {
+        ret = { error: `Error getting stats for "${username}".` };
+      }
     }
     return ret;
   }
