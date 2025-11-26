@@ -64,6 +64,7 @@ export async function statsRequest(query: queryType, body: any = null) {
     try {
       const errorData = await response.json();
       ret = {
+        status: statusCode,
         error: errorData.error || `Error getting stats for "${username}".`,
       };
     } catch (e) {
