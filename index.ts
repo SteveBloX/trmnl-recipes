@@ -1,4 +1,5 @@
 import { proverbRequest } from "./chinese-proverbs/req";
+import { urls } from "./links.json";
 
 const apps = [
   {
@@ -34,6 +35,16 @@ app.get("/api/:appName", async (req, res) => {
   const { request } = appConfig;
   const result = await request(req.query, req.body);
   return res.json(result);
+});
+
+app.get("/links/:name", (req, res) => {
+  const name = req.params.name;
+  const link = urls.find((u) => u.name === name);
+  if (!link) {
+    return res.status(404).json({ error: "Link not found" });
+  }
+  // redirect to the url
+  return res.redirect(link.url);
 });
 
 app.listen(port, () => {
