@@ -87,6 +87,7 @@ export async function statsRequest(query: queryType, body: any = null) {
     matches: stats.matches,
     winRate: stats.winRate,
     timePlayed: stats.minutesPlayed,
+    timeWindow: timeWindow === "lifetime" ? "Lifetime" : "Season",
   };
   // convert timePlayed to hours
   d.timePlayed = (d.timePlayed / 60).toFixed(1);
