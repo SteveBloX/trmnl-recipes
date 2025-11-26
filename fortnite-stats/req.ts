@@ -1,44 +1,24 @@
 import "dotenv/config";
 
 const FORTNITE_API_KEY = process.env.FORTNITE_API_KEY || "";
-/* EXAMPLE RESPONSE:
-{
-	"status": 200,
-	"data": {
-		"account": {
-			"id": "6b8c1546582c4b4785ac30eedabd374a",
-			"name": "Rᴀɴᴀ ʟᴏᴠᴇ ᴜ ღ"
-		},
-		"battlePass": {
-			"level": 40,
-			"progress": 3
-		},
-		"stats": {
-			"all": {
-				"overall": {
-					"score": 1296053,
-					"scorePerMin": 22.274,
-					"scorePerMatch": 225.44,
-					"wins": 318,
-					"top3": 87,
-					"top5": 627,
-					"top6": 131,
-					"top10": 147,
-					"top12": 1189,
-					"top25": 245,
-					"kills": 10544,
-					"killsPerMin": 0.181,
-					"killsPerMatch": 1.834,
-					"deaths": 5431,
-					"kd": 1.941,
-					"matches": 5749,
-					"winRate": 5.531,
-					"minutesPlayed": 58187,
-					"playersOutlived": 283676,
-					"lastModified": "2025-11-24T19:01:24Z"
-				},
-        ...
-*/
+const testUserData = {
+  username: "playerzz",
+  level: 83,
+  wins: 242,
+  kd: 2.13,
+  kills: 8034,
+  matches: 4375,
+  winRate: 8.46,
+  timePlayed: 737.2,
+  timeWindow: "Lifetime",
+  playersOutlived: 215907,
+  top3: 105,
+  top5: 398,
+  top6: 121,
+  top10: 245,
+  top12: 912,
+  top25: 129,
+};
 
 const endpoint = "https://fortnite-api.com/v2/stats/br/v2";
 
@@ -49,6 +29,9 @@ type queryType = {
 
 export async function statsRequest(query: queryType, body: any = null) {
   const { username, timeWindow } = query;
+  if (username === "testplayer123456789") {
+    return testUserData;
+  }
   let ret = {};
   const url = `${endpoint}?name=${encodeURIComponent(
     username
