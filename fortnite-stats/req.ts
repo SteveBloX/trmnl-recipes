@@ -48,11 +48,12 @@ type queryType = {
 };
 
 export async function statsRequest(query: queryType, body: any = null) {
+  console.log(query);
   const { username, timeWindow } = query;
   let ret = {};
   const url = `${endpoint}?name=${encodeURIComponent(
     username
-  )}&timeWindow=${encodeURIComponent(timeWindow)}`;
+  )}&timeWindow=${timeWindow}`;
   const response = await fetch(url, {
     headers: {
       Authorization: `${FORTNITE_API_KEY}`,
