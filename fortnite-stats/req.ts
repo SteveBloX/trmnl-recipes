@@ -44,14 +44,11 @@ const endpoint = "https://fortnite-api.com/v2/stats/br/v2";
 
 type queryType = {
   username: string;
+  timeWindow: string;
 };
 
 export async function statsRequest(query: queryType, body: any = null) {
-  const { username } = query;
-  let timeWindow = "lifetime";
-  if (body && body.timeWindow) {
-    timeWindow = body.timeWindow;
-  }
+  const { username, timeWindow } = query;
   let ret = {};
   const url = `${endpoint}?name=${encodeURIComponent(
     username
