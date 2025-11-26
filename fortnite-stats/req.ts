@@ -97,6 +97,13 @@ export async function statsRequest(query: queryType, body: any = null) {
     winRate: stats.winRate,
     timePlayed: stats.minutesPlayed,
     timeWindow: prettyTimeWindow,
+    playersOutlived: stats.playersOutlived,
+    top3: stats.top3,
+    top5: stats.top5,
+    top6: stats.top6,
+    top10: stats.top10,
+    top12: stats.top12,
+    top25: stats.top25,
   };
   // convert timePlayed to hours
   d.timePlayed = (d.timePlayed / 60).toFixed(1);
