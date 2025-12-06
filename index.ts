@@ -1,5 +1,9 @@
-import { proverbRequest } from "./chinese-proverbs/req";
 import { urls } from "./links.json";
+import express from "express";
+import bodyParser from "body-parser";
+import { proverbRequest } from "./chinese-proverbs/req";
+import { statsRequest } from "./fortnite-stats/req";
+import { monumentRequest } from "./daily-monument/req";
 
 const apps = [
   {
@@ -16,12 +20,15 @@ const apps = [
     route: "fortnite-stats",
     request: statsRequest,
   },
+  {
+    name: "Monument of the Day",
+    description:
+      "Get information about a random UNESCO World Heritage monument.",
+    route: "daily-monument",
+    request: monumentRequest,
+  },
 ];
 
-// create a simple express server to handle requests
-import express from "express";
-import bodyParser from "body-parser";
-import { statsRequest } from "./fortnite-stats/req";
 const app = express();
 const port = 4200;
 app.use(bodyParser.json());
