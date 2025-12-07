@@ -7,7 +7,8 @@ type queryType = {
 };
 
 export async function monumentRequest(query: queryType, body: any = null) {
-  console.log("New monument query");
-  const monument = await fetchRandomMonument();
+  // read file
+  const data = fs.readFileSync("monument.json", "utf-8");
+  const monument = JSON.parse(data);
   return monument;
 }

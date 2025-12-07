@@ -4,6 +4,8 @@ import bodyParser from "body-parser";
 import { proverbRequest } from "./chinese-proverbs/req";
 import { statsRequest } from "./fortnite-stats/req";
 import { monumentRequest } from "./daily-monument/req";
+import cron from "node-cron";
+import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 
 const apps = [
   {
@@ -32,6 +34,10 @@ const apps = [
 const app = express();
 const port = 4200;
 app.use(bodyParser.json());
+
+cron.schedule("*/10 * * * *", async () => {
+  await writeMonumentJSON();
+});
 
 app.get("/api/:appName", async (req, res) => {
   const appName = req.params.appName;

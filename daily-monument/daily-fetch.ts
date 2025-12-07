@@ -3,7 +3,7 @@ import fs from "fs/promises";
 
 const fileName = "monument.json";
 
-async function writeJson() {
+export async function writeMonumentJSON() {
   let data = null;
   while (data === null) data = await fetchRandomMonument();
 
@@ -11,5 +11,3 @@ async function writeJson() {
   await fs.writeFile(fileName, JSON.stringify(data, null, 2));
   console.log(`Monument data written to ${fileName}`);
 }
-
-writeJson().catch(console.error);
