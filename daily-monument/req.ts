@@ -1,4 +1,5 @@
 import fs from "fs";
+import { fetchRandomMonument } from "./fetch-monument";
 
 type queryType = {
   username: string;
@@ -6,8 +7,6 @@ type queryType = {
 };
 
 export async function monumentRequest(query: queryType, body: any = null) {
-  const monumentData = fs.readFileSync("monument.json", "utf-8");
-  console.log("Monument data read from monument.json");
-  const monument = JSON.parse(monumentData);
+  const monument = await fetchRandomMonument();
   return monument;
 }
