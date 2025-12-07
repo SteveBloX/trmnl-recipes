@@ -7,6 +7,7 @@ type queryType = {
 };
 
 export async function monumentRequest(query: queryType, body: any = null) {
+  console.log("New monument query");
   const monument = await fetchRandomMonument();
   return monument;
 }
