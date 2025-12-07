@@ -35,7 +35,7 @@ export async function fetchRandomMonument() {
     const params = {
       ...baseParams,
       select:
-        "name_en, main_image_url, id_no, coordinates, iso_codes, short_description_en",
+        "name_en, name_fr, name_es, name_ru, name_ar, name_zh, main_image_url, id_no, coordinates, iso_codes, short_description_en, short_description_fr, short_description_es, short_description_ru, short_description_ar, short_description_zh",
       limit: 1,
       offset: randomOffset,
     };
@@ -52,7 +52,12 @@ export async function fetchRandomMonument() {
       // 3. Extracting Data
       const monumentData = {
         // Accessing the English name field
-        name: record.name_en,
+        name_en: record.name_en,
+        name_fr: record.name_fr,
+        name_es: record.name_es,
+        name_ru: record.name_ru,
+        name_ar: record.name_ar,
+        name_zh: record.name_zh,
         imageURL: record.main_image_url?.url,
         officialURL: `https://whc.unesco.org/en/list/${record.id_no}`,
         coordinates: {
@@ -60,7 +65,12 @@ export async function fetchRandomMonument() {
           lon: record.coordinates?.lon,
         },
         country_code: record.iso_codes,
-        description: record.short_description_en,
+        description_en: record.short_description_en,
+        description_fr: record.short_description_fr,
+        description_es: record.short_description_es,
+        description_ru: record.short_description_ru,
+        description_ar: record.short_description_ar,
+        description_zh: record.short_description_zh,
       };
 
       return monumentData;
