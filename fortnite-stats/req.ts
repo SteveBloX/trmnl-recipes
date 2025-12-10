@@ -92,6 +92,6 @@ export async function statsRequest(query: queryType, body: any = null) {
   };
   // convert timePlayed to hours
   d.timePlayed = (d.timePlayed / 60).toFixed(1);
-  console.log(d);
+  console.log("Fetched fortnite stats for", username);
   return d;
 }
