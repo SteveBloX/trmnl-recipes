@@ -1,0 +1,11 @@
+{
+  "name": "Saltaire",
+  "imageURL": "https://data.unesco.org/api/explore/v2.1/catalog/datasets/whc001/files/a24c584de4068fb194c773084723a829",
+  "officialURL": "https://whc.unesco.org/en/list/1028",
+  "coordinates": {
+    "lat": 53.83916667,
+    "lon": -1.788333333
+  },
+  "country_code": "GB",
+  "description": "Saltaire, West Yorkshire, is a complete and well-preserved industrial village of the second half of the 19th century. Its textile mills, public buildings and workers' housing are built in a harmonious style of high architectural standards and the urban plan survives intact, giving a vivid impression of Victorian philanthropic paternalism."
+}

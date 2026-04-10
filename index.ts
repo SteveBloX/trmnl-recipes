@@ -4,8 +4,10 @@ import bodyParser from "body-parser";
 import { proverbRequest } from "./chinese-proverbs/req";
 import { statsRequest } from "./fortnite-stats/req";
 import { monumentRequest } from "./daily-monument/req";
+import { astrobinRequest } from "./astrobin/req";
 import cron from "node-cron";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
+import { writeAstrobinJSON } from "./astrobin/daily-fetch";
 
 const apps = [
   {
@@ -29,6 +31,13 @@ const apps = [
     route: "daily-monument",
     request: monumentRequest,
   },
+  {
+    name: "AstroBin",
+    description:
+      "Get AstroBin Image of the Day feed and one random image from Top Picks.",
+    route: "astrobin",
+    request: astrobinRequest,
+  },
 ];
 
 const app = express();
@@ -37,6 +46,10 @@ app.use(bodyParser.json());
 
 cron.schedule("*/10 * * * *", async () => {
   await writeMonumentJSON();
+});
+
+cron.schedule("0 0 * * *", async () => {
+  await writeAstrobinJSON();
 });
 
 app.get("/api/:appName", async (req, res) => {
