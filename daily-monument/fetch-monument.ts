@@ -50,6 +50,11 @@ export async function fetchRandomMonument() {
       const record = results[0];
 
       // 3. Extracting Data
+      const imageURL =
+        typeof record.main_image_url === "string"
+          ? record.main_image_url
+          : record.main_image_url?.url;
+
       const monumentData = {
         // Accessing the English name field
         name: {
@@ -60,7 +65,7 @@ export async function fetchRandomMonument() {
           ar: record.name_ar,
           zh: record.name_zh,
         },
-        imageURL: record.main_image_url?.url,
+        imageURL,
         officialURL: `https://whc.unesco.org/en/list/${record.id_no}`,
         coordinates: {
           lat: record.coordinates?.lat,

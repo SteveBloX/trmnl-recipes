@@ -11,3 +11,5 @@ export async function writeMonumentJSON() {
   await fs.writeFile(fileName, JSON.stringify(data, null, 2));
   console.log(`Monument data written to ${fileName}`);
 }
+
+writeMonumentJSON();
