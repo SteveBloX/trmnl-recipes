@@ -5,6 +5,7 @@ import { proverbRequest } from "./chinese-proverbs/req";
 import { statsRequest } from "./fortnite-stats/req";
 import { monumentRequest } from "./daily-monument/req";
 import { astrobinRequest } from "./astrobin/req";
+import { worldCupRequest } from "./world-cup/req";
 import cron from "node-cron";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
@@ -37,6 +38,12 @@ const apps = [
       "Get AstroBin Image of the Day feed and one random image from Top Picks.",
     route: "astrobin",
     request: astrobinRequest,
+  },
+  {
+    name: "World Cup 2026",
+    description: "FIFA World Cup 2026 knockout bracket with live scores.",
+    route: "world-cup",
+    request: worldCupRequest,
   },
 ];
 
