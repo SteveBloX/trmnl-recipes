@@ -16,7 +16,7 @@ const TLA_TO_FLAG: Record<string, string> = {
   TUR: "tr", QAT: "qa", WAL: "gb-wls", NIR: "gb-nir", IRL: "ie",
 };
 
-interface Team { tla: string; flag: string }
+interface Team { tla: string; name: string; flag: string }
 interface Match {
   home: Team | null;
   away: Team | null;
@@ -27,7 +27,11 @@ interface Match {
 
 function toTeam(t: any): Team | null {
   if (!t?.tla || t.tla === "Unknown Team" || t.tla === "TBD") return null;
-  return { tla: t.tla, flag: TLA_TO_FLAG[t.tla] ?? t.tla.slice(0, 2).toLowerCase() };
+  return {
+    tla: t.tla,
+    name: t.name ?? t.shortName ?? t.tla,
+    flag: TLA_TO_FLAG[t.tla] ?? t.tla.slice(0, 2).toLowerCase(),
+  };
 }
 
 function toMatch(m: any): Match {
