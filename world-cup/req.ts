@@ -22,6 +22,8 @@ interface Match {
   away: Team | null;
   scoreHome: number | null;
   scoreAway: number | null;
+  penaltiesHome: number | null;
+  penaltiesAway: number | null;
   homeLost: boolean;
   awayLost: boolean;
   status: string;
@@ -72,11 +74,14 @@ function sideLost(m: any, side: "home" | "away"): boolean {
 }
 
 function toMatch(m: any): Match {
+  const hadShootout = m.score?.duration === "PENALTY_SHOOTOUT";
   return {
     home: toTeam(m.homeTeam),
     away: toTeam(m.awayTeam),
     scoreHome: displayScore(m, "home"),
     scoreAway: displayScore(m, "away"),
+    penaltiesHome: hadShootout ? scoreValue(m.score?.penalties, "home") : null,
+    penaltiesAway: hadShootout ? scoreValue(m.score?.penalties, "away") : null,
     homeLost: sideLost(m, "home"),
     awayLost: sideLost(m, "away"),
     status: m.status ?? "SCHEDULED",
@@ -123,7 +128,7 @@ function sortRound(matches: Match[], prevRound: (Match | null)[]): (Match | null
   return result;
 }
 
-const EMPTY: Match = { home: null, away: null, scoreHome: null, scoreAway: null, homeLost: false, awayLost: false, status: "SCHEDULED" };
+const EMPTY: Match = { home: null, away: null, scoreHome: null, scoreAway: null, penaltiesHome: null, penaltiesAway: null, homeLost: false, awayLost: false, status: "SCHEDULED" };
 const fill = (arr: (Match | null)[]): Match[] => arr.map(m => m ?? EMPTY);
 
 function buildData(r32: Match[], r16: Match[], qf: Match[], sf: Match[], finalArr: Match[]) {
