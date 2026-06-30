@@ -40,33 +40,36 @@ function scoreValue(score: any, side: "home" | "away"): number | null {
   return typeof score?.[side] === "number" ? score[side] : null;
 }
 
-function displayScore(m: any, side: "home" | "away"): number | null {
-  const score = m.score;
-  const fullTime = scoreValue(score?.fullTime, side);
-  const penalties = scoreValue(score?.penalties, side);
+// football-data.org reports penalty shootouts as a flat array of individual
+// kicks on the match (`m.penalties`), not as an aggregate under `score`.
+// `score.fullTime` for these matches also includes the shootout goals, so we
+// have to subtract the counted shootout score back out to get the clean
+// match score.
+function penaltyShootoutScore(m: any, side: "home" | "away"): number | null {
+  const team = side === "home" ? m.homeTeam : m.awayTeam;
+  if (!Array.isArray(m.penalties) || !team?.id) return null;
+  return m.penalties.filter((p: any) => p.team?.id === team.id && p.scored).length;
+}
 
-  if (score?.duration === "PENALTY_SHOOTOUT" && fullTime !== null && penalties !== null) {
-    return fullTime - penalties;
+function displayScore(m: any, side: "home" | "away"): number | null {
+  const fullTime = scoreValue(m.score?.fullTime, side);
+
+  if (m.score?.duration === "PENALTY_SHOOTOUT") {
+    const penalties = penaltyShootoutScore(m, side);
+    if (fullTime !== null && penalties !== null) return fullTime - penalties;
   }
 
   return fullTime;
 }
 
 function sideLost(m: any, side: "home" | "away"): boolean {
-  if (m.status !== "FINISHED") return false;
+  if (m.status !== "FINISHED" || !m.score?.winner) return false;
 
-  const otherSide = side === "home" ? "away" : "home";
-  const score = m.score;
-  const ownScore = displayScore(m, side);
-  const otherScore = displayScore(m, otherSide);
+  const winningSide = side === "home" ? "HOME_TEAM" : "AWAY_TEAM";
+  const losingSide = side === "home" ? "AWAY_TEAM" : "HOME_TEAM";
 
-  if (score?.duration === "PENALTY_SHOOTOUT") {
-    const ownPenalties = scoreValue(score?.penalties, side);
-    const otherPenalties = scoreValue(score?.penalties, otherSide);
-    if (ownPenalties !== null && otherPenalties !== null) return ownPenalties < otherPenalties;
-  }
-
-  return ownScore !== null && otherScore !== null && ownScore < otherScore;
+  if (m.score.winner === winningSide) return false;
+  return m.score.winner === losingSide;
 }
 
 function toMatch(m: any): Match {
