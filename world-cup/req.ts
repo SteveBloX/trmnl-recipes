@@ -22,6 +22,8 @@ interface Match {
   away: Team | null;
   scoreHome: number | null;
   scoreAway: number | null;
+  homeLost: boolean;
+  awayLost: boolean;
   status: string;
 }
 
@@ -34,12 +36,47 @@ function toTeam(t: any): Team | null {
   };
 }
 
+function scoreValue(score: any, side: "home" | "away"): number | null {
+  return typeof score?.[side] === "number" ? score[side] : null;
+}
+
+function displayScore(m: any, side: "home" | "away"): number | null {
+  const score = m.score;
+  const fullTime = scoreValue(score?.fullTime, side);
+  const penalties = scoreValue(score?.penalties, side);
+
+  if (score?.duration === "PENALTY_SHOOTOUT" && fullTime !== null && penalties !== null) {
+    return fullTime - penalties;
+  }
+
+  return fullTime;
+}
+
+function sideLost(m: any, side: "home" | "away"): boolean {
+  if (m.status !== "FINISHED") return false;
+
+  const otherSide = side === "home" ? "away" : "home";
+  const score = m.score;
+  const ownScore = displayScore(m, side);
+  const otherScore = displayScore(m, otherSide);
+
+  if (score?.duration === "PENALTY_SHOOTOUT") {
+    const ownPenalties = scoreValue(score?.penalties, side);
+    const otherPenalties = scoreValue(score?.penalties, otherSide);
+    if (ownPenalties !== null && otherPenalties !== null) return ownPenalties < otherPenalties;
+  }
+
+  return ownScore !== null && otherScore !== null && ownScore < otherScore;
+}
+
 function toMatch(m: any): Match {
   return {
     home: toTeam(m.homeTeam),
     away: toTeam(m.awayTeam),
-    scoreHome: m.score?.fullTime?.home ?? null,
-    scoreAway: m.score?.fullTime?.away ?? null,
+    scoreHome: displayScore(m, "home"),
+    scoreAway: displayScore(m, "away"),
+    homeLost: sideLost(m, "home"),
+    awayLost: sideLost(m, "away"),
     status: m.status ?? "SCHEDULED",
   };
 }
@@ -84,7 +121,7 @@ function sortRound(matches: Match[], prevRound: (Match | null)[]): (Match | null
   return result;
 }
 
-const EMPTY: Match = { home: null, away: null, scoreHome: null, scoreAway: null, status: "SCHEDULED" };
+const EMPTY: Match = { home: null, away: null, scoreHome: null, scoreAway: null, homeLost: false, awayLost: false, status: "SCHEDULED" };
 const fill = (arr: (Match | null)[]): Match[] => arr.map(m => m ?? EMPTY);
 
 function buildData(r32: Match[], r16: Match[], qf: Match[], sf: Match[], finalArr: Match[]) {
