@@ -40,22 +40,21 @@ function scoreValue(score: any, side: "home" | "away"): number | null {
   return typeof score?.[side] === "number" ? score[side] : null;
 }
 
-// football-data.org reports penalty shootouts as a flat array of individual
-// kicks on the match (`m.penalties`), not as an aggregate under `score`.
-// `score.fullTime` for these matches also includes the shootout goals, so we
-// have to subtract the counted shootout score back out to get the clean
-// match score.
-function penaltyShootoutScore(m: any, side: "home" | "away"): number | null {
-  const team = side === "home" ? m.homeTeam : m.awayTeam;
-  if (!Array.isArray(m.penalties) || !team?.id) return null;
-  return m.penalties.filter((p: any) => p.team?.id === team.id && p.scored).length;
-}
-
+// For penalty shootouts, football-data.org's score.fullTime includes the
+// shootout goals (e.g. regularTime 1-1, penalties 3-4 -> fullTime 4-5).
+// score.regularTime + score.extraTime gives the actual match score before
+// the shootout; fall back to fullTime - score.penalties if regularTime is
+// ever missing.
 function displayScore(m: any, side: "home" | "away"): number | null {
-  const fullTime = scoreValue(m.score?.fullTime, side);
+  const score = m.score;
+  const fullTime = scoreValue(score?.fullTime, side);
 
-  if (m.score?.duration === "PENALTY_SHOOTOUT") {
-    const penalties = penaltyShootoutScore(m, side);
+  if (score?.duration === "PENALTY_SHOOTOUT") {
+    const regularTime = scoreValue(score?.regularTime, side);
+    const extraTime = scoreValue(score?.extraTime, side) ?? 0;
+    if (regularTime !== null) return regularTime + extraTime;
+
+    const penalties = scoreValue(score?.penalties, side);
     if (fullTime !== null && penalties !== null) return fullTime - penalties;
   }
 
