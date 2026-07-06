@@ -16,16 +16,6 @@
     ]
   },
   {
-    "quote": "To die, - To sleep, - To sleep!",
-    "book": "Hamlet",
-    "tags": [
-      "afterlife",
-      "death-and-dying",
-      "hamlet",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "With mirth and laughter let old wrinkles come.",
     "book": "The Merchant of Venice",
     "tags": [
@@ -57,16 +47,6 @@
     "quote": "Conscience doth make cowards of us all.",
     "book": "Hamlet",
     "tags": [
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Et tu, Brute?",
-    "book": "Julius Caesar",
-    "tags": [
-      "betrayal",
-      "brutus",
-      "julius-caesar",
       "shakespeare"
     ]
   },
@@ -114,21 +94,6 @@
     ]
   },
   {
-    "quote": "Are you sure That we are awake? It seems to me That yet we sleep, we dream",
-    "book": "A Midsummer Night’s Dream",
-    "tags": [
-      "a-midsummer-night-s-dream",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "All's well that ends well.",
-    "book": "All's Well That Ends Well",
-    "tags": [
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "I love you with so much of my heart that none is left to protest.",
     "book": "Much Ado About Nothing",
     "tags": [
@@ -156,34 +121,6 @@
       "shakespeare",
       "soliloquy",
       "william-shakespeare"
-    ]
-  },
-  {
-    "quote": "All causes shall give way: I am in blood",
-    "book": "Macbeth",
-    "tags": [
-      "blood",
-      "halfway",
-      "macbeth",
-      "shakespeare",
-      "wade"
-    ]
-  },
-  {
-    "quote": "Good name in man and woman, dear my lord,",
-    "book": "Othello",
-    "tags": [
-      "dishonesty",
-      "good-name",
-      "libel",
-      "reputation",
-      "shakespeare",
-      "slander",
-      "society",
-      "standing",
-      "theft",
-      "value",
-      "values"
     ]
   },
   {
@@ -247,15 +184,6 @@
     ]
   },
   {
-    "quote": "I have no spur",
-    "book": "Macbeth",
-    "tags": [
-      "ambition",
-      "macbeth",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "The sweetest honey is loathsome in its own deliciousness. And in the taste destroys the appetite. Therefore, love moderately.",
     "book": "Romeo and Juliet",
     "tags": [
@@ -285,13 +213,6 @@
     "tags": [
       "love",
       "othello",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "And since you know you cannot see yourself,",
-    "book": "Julius Caesar",
-    "tags": [
       "shakespeare"
     ]
   },
@@ -421,26 +342,6 @@
       "story",
       "vintage",
       "young-adult"
-    ]
-  },
-  {
-    "quote": "He kills her in her own humor.",
-    "book": "",
-    "tags": [
-      "humor",
-      "shakespeare",
-      "taming-of-the-shrew"
-    ]
-  },
-  {
-    "quote": "Love is holy.",
-    "book": "All's Well That Ends Well",
-    "tags": [
-      "holy",
-      "love",
-      "quotes",
-      "quotes-to-live-by",
-      "shakespeare"
     ]
   },
   {
@@ -581,16 +482,6 @@
     ]
   },
   {
-    "quote": "Beshrew your eyes,",
-    "book": "The Merchant of Venice",
-    "tags": [
-      "eyes",
-      "merchant-of-venice",
-      "portia",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "My dull brain was wrought with things forgotten.",
     "book": "",
     "tags": [
@@ -622,14 +513,6 @@
     ]
   },
   {
-    "quote": "But Kate, dost thou understand thus much English? Canst thou love me?",
-    "book": "Henry V",
-    "tags": [
-      "henry-v",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "They are the books, the arts, the academes,",
     "book": "",
     "tags": [
@@ -644,33 +527,6 @@
       "poem",
       "shadow",
       "shakespeare"
-    ]
-  },
-  {
-    "quote": "La vida es mi tortura y la muerte será mi descanso.",
-    "book": "Romeo and Juliet",
-    "tags": [
-      "death",
-      "juliet",
-      "life",
-      "romeo",
-      "shakespeare",
-      "william"
-    ]
-  },
-  {
-    "quote": "What's a drunken man like, fool?",
-    "book": "Twelfth Night",
-    "tags": [
-      "drunken",
-      "feste",
-      "fool",
-      "like",
-      "man",
-      "olivia",
-      "shakespeare",
-      "twelfth-night",
-      "what-s"
     ]
   },
   {
@@ -860,18 +716,6 @@
     ]
   },
   {
-    "quote": "Hvis det var lige saa let at gøre, hvad der er godt, som at vide, hvad der er godt at gøre, saa blev Kapeller til Kirker, og Fattigfolks Rønner til fyrstelige Paladser.",
-    "book": "The Merchant of Venice",
-    "tags": [
-      "god",
-      "godhed",
-      "købmanden-i-venedig",
-      "portia",
-      "shakespeare",
-      "visdom"
-    ]
-  },
-  {
     "quote": "To die, is to be banish'd from myself;",
     "book": "The Two Gentlemen of Verona",
     "tags": [
@@ -881,42 +725,11 @@
     ]
   },
   {
-    "quote": "Well said, old mole!",
-    "book": "",
-    "tags": [
-      "hamlet",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "For this new-married man approaching here,",
     "book": "",
     "tags": [
       "justice",
       "measure-for-measure",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "New honors come upon him,",
-    "book": "Macbeth",
-    "tags": [
-      "action",
-      "assignment",
-      "fate",
-      "honor",
-      "macbeth",
-      "movement",
-      "shakespeare",
-      "work"
-    ]
-  },
-  {
-    "quote": "Para mim, o mundo é apenas o mundo, Graciano: um palco em que todos nós representamos um papel, sendo o meu triste.",
-    "book": "The Merchant of Venice",
-    "tags": [
-      "roles",
-      "sadness",
       "shakespeare"
     ]
   },
@@ -959,15 +772,6 @@
       "love",
       "romeo-and-juliet",
       "shakespeare"
-    ]
-  },
-  {
-    "quote": "Gidelim artık. Bu ayrılmamız",
-    "book": "Antonius ve Kleopatra",
-    "tags": [
-      "shakespeare",
-      "translation",
-      "turkish-quotes"
     ]
   },
   {
@@ -1021,30 +825,12 @@
     ]
   },
   {
-    "quote": "Out, damned spot: out, I say. One; two. Why",
-    "book": "Macbeth: Moment by Moment",
-    "tags": [
-      "macbeth",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "The day is hot, the Capulets abroad. And if we meet we shall not escape a brawl. For now, these hot days, is the mad blood stirring.",
     "book": "Romeo and Juliet",
     "tags": [
       "romeo-and-juliet",
       "shakespeare",
       "summer"
-    ]
-  },
-  {
-    "quote": "What you, egg?",
-    "book": "Hamlet",
-    "tags": [
-      "funny",
-      "random",
-      "shakespeare",
-      "shakespearean-insult"
     ]
   },
   {
@@ -1089,27 +875,10 @@
     ]
   },
   {
-    "quote": "Aşk gözleriyle değil, hayaliyle görür",
-    "book": "A Midsummer's Night Dream",
-    "tags": [
-      "ask",
-      "bir-yaz-gecesi-ruyasi",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "when the splitting wind",
     "book": "Troilus and Cressida",
     "tags": [
       "poetry",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "THERSITES",
-    "book": "Troilus and Cressida",
-    "tags": [
-      "humor",
       "shakespeare"
     ]
   },
@@ -1175,15 +944,6 @@
     ]
   },
   {
-    "quote": "La clémence n'est rien qu'un meurtre, si elle absout ceux qui tuent.",
-    "book": "Romeo and Juliet",
-    "tags": [
-      "clémence",
-      "meurtre",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Kent, on thy life, no more.",
     "book": "King Lear",
     "tags": [
@@ -1238,44 +998,12 @@
     ]
   },
   {
-    "quote": "Ιάγος: Στην τιμή μου, νόμισα ότι είχες πληγωθεί στο κορμί, που πονάει περισσότερο απ’ την υπόληψη: η υπόληψη είναι πρόληψη, κούφια και μάταιη, που την αποκτάς χωρίς να τ’ αξίζεις και τη χάνεις χωρίς να φταις. Καμιά υπόληψη δεν έχεις χάσει, εκτός αν έχασες την υπόληψη που είχες ο ίδιος στον εαυτό σου.",
-    "book": "",
-    "tags": [
-      "reputation",
-      "shakespeare",
-      "υπόληψη"
-    ]
-  },
-  {
     "quote": "How heavy do I journey on the way,",
     "book": "",
     "tags": [
       "depression",
       "loneliness",
       "separation",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Good wombs have borne bad sons.",
-    "book": "",
-    "tags": [
-      "ominous",
-      "shakespeare",
-      "son",
-      "sons",
-      "tempest"
-    ]
-  },
-  {
-    "quote": "Sickness is catching: O, were favour so,",
-    "book": "A Mid Summer Night's Dream",
-    "tags": [
-      "a-midsummer-night-s-dream",
-      "jealousy",
-      "love",
-      "poetry",
-      "romance",
       "shakespeare"
     ]
   },
@@ -1376,14 +1104,6 @@
     ]
   },
   {
-    "quote": "Eski bir inanışa göre; \"Her iç çekişte kalp bir damla kan kaybedermiş",
-    "book": "Hamlet",
-    "tags": [
-      "hamlet",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "She'd come again, and with a greedy ear",
     "book": "Othello",
     "tags": [
@@ -1393,14 +1113,6 @@
   },
   {
     "quote": "I should make very forges of my cheeks",
-    "book": "",
-    "tags": [
-      "othello",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Nay, guiltiness",
     "book": "",
     "tags": [
       "othello",
@@ -1441,14 +1153,6 @@
     ]
   },
   {
-    "quote": "When vice makes mercy, mercy's so extended",
-    "book": "Macbeth",
-    "tags": [
-      "measure-for-measure",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Those wits that think they have thee very oft prove fools.",
     "book": "Twelfth Night, or What you Will",
     "tags": [
@@ -1464,13 +1168,6 @@
   },
   {
     "quote": "To have my love to bed and to arise",
-    "book": "A Midsummer Night's Dream",
-    "tags": [
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "So sorrow's heaviness doth heavier grow",
     "book": "A Midsummer Night's Dream",
     "tags": [
       "shakespeare"
@@ -1526,13 +1223,6 @@
     ]
   },
   {
-    "quote": "After him I love",
-    "book": "Twelfth Night, or What you Will",
-    "tags": [
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Time's the king of men,",
     "book": "",
     "tags": [
@@ -1564,14 +1254,6 @@
     ]
   },
   {
-    "quote": "Fast bind, fast find -",
-    "book": "",
-    "tags": [
-      "merchant-of-venice",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "There is no vice so simple but assumes",
     "book": "",
     "tags": [
@@ -1588,13 +1270,6 @@
   },
   {
     "quote": "Who has that breast so pure",
-    "book": "",
-    "tags": [
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Dangerous conceits are in their natures poisons",
     "book": "",
     "tags": [
       "shakespeare"
@@ -1620,28 +1295,6 @@
     "book": "Julius Caesar",
     "tags": [
       "shakespeare"
-    ]
-  },
-  {
-    "quote": "Let's away,",
-    "book": "As You Like It",
-    "tags": [
-      "as-you-like-it",
-      "celia",
-      "shakespeare",
-      "shakespeare-verse",
-      "william-shakespeare"
-    ]
-  },
-  {
-    "quote": "Taffeta phrases, silken terms precise,",
-    "book": "Love's Labour's Lost",
-    "tags": [
-      "pomp",
-      "pretension",
-      "pride",
-      "shakespeare",
-      "vanity"
     ]
   },
   {
@@ -1705,15 +1358,6 @@
     ]
   },
   {
-    "quote": "Estamos tejidos de idéntica tela que los sueños, y nuestra corta vida no es más que un sueño.",
-    "book": "The Tempest",
-    "tags": [
-      "la-tempestad",
-      "próspero",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Is she kind as she is fair?",
     "book": "The Two Gentleman of Verona",
     "tags": [
@@ -1722,117 +1366,10 @@
     ]
   },
   {
-    "quote": "y viví en mi nación como un extranjero.",
-    "book": "The Tempest",
-    "tags": [
-      "la-tempestad",
-      "próspero",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "¡El infierno está vacío y todos los demonios se hallan aquí!\".",
-    "book": "The Tempest",
-    "tags": [
-      "ariel",
-      "la-tempestad",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "CALIBÁN. - Me habéis enseñado a hablar, y el provecho que me ha reportado es saber cómo maldecir. ¡Que caiga sobre vos la roja peste, por haberme inculcado vuestro lenguaje!",
-    "book": "The Tempest",
-    "tags": [
-      "calibán",
-      "la-tempestad",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Bien; soy agua estancada.",
-    "book": "The Tempest",
-    "tags": [
-      "la-tempestad",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Jamás han mentido los viajeros, aunque los acusen los tontos que se quedan en casa.",
-    "book": "The Tempest",
-    "tags": [
-      "la-tempestad",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Dame la mano. Comienzo a acariciar pensamientos de sangre.",
-    "book": "The Tempest",
-    "tags": [
-      "la-tempestad",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "CALIBÁN. - No quiero nada. Perdemos un tiempo precioso, y muy pronto vamos a vernos transformados todos en cirrópodos o monos de villana frente deprimida.",
-    "book": "The Tempest",
-    "tags": [
-      "calibán",
-      "la-tempestad",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Más elevado mérito se alberga en la virtud que en la venganza.",
-    "book": "The Tempest",
-    "tags": [
-      "la-tempestad",
-      "próspero",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Así, vuestros pecados obtendrán el perdón, y con vuestra indulgencia vendrá mi absolución.",
-    "book": "The Tempest",
-    "tags": [
-      "la-tempestad",
-      "próspero",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Capulet:What noise is this? Give me my long sword, ho!",
     "book": "Romeo and Juliet",
     "tags": [
       "quote",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Bütün bunlar görünüş gerçekten.",
-    "book": "Hamlet",
-    "tags": [
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "La mort, ce sombre fantôme, est assise sur son bras vigoureux : ce bras se lève, retombe, et alors les hommes meurent.",
-    "book": "Coriolanus",
-    "tags": [
-      "citation",
-      "coriolan",
-      "coriolanus",
-      "français",
-      "mort",
-      "quote",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "We know what we are. but know not what we may be.",
-    "book": "Hamlet",
-    "tags": [
-      "hamlet",
-      "inspirational-quotes",
       "shakespeare"
     ]
   },
@@ -1859,32 +1396,6 @@
       "feminism",
       "poetry",
       "shakespeare"
-    ]
-  },
-  {
-    "quote": "Je vous ai ouï dire que l’honneur et la politique, comme deux amis inséparables, marchaient de compagnie à la guerre. Eh bien ! dites-moi quel tort l’un fait à l’autre dans la paix, pour qu’ils ne s’y trouvent pas également unis ?",
-    "book": "Coriolanus",
-    "tags": [
-      "citation",
-      "coriolan",
-      "coriolanus",
-      "honneur",
-      "politique",
-      "quotes",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "souvenez-vous des blessures dont son corps est couvert, comme un cimetière hérissé de tombeaux.",
-    "book": "Coriolanus",
-    "tags": [
-      "blessures",
-      "cimetière",
-      "citations-françaises",
-      "coriolanus",
-      "quote",
-      "shakespeare",
-      "william-shakespeare"
     ]
   },
   {
@@ -1933,16 +1444,6 @@
     ]
   },
   {
-    "quote": "we know what we are, but know not",
-    "book": "Hamlet",
-    "tags": [
-      "hamlet",
-      "ophelia",
-      "ophelia-in-hamlet",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "What, is the jay more precious than the lark",
     "book": "The Taming of the Shrew",
     "tags": [
@@ -1975,16 +1476,6 @@
     ]
   },
   {
-    "quote": "Like a man to double business bound",
-    "book": "Hamlet",
-    "tags": [
-      "fear",
-      "hamlet",
-      "neglect",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "What, will these hands ne'er be clean?",
     "book": "Macbeth",
     "tags": [
@@ -2009,17 +1500,6 @@
     ]
   },
   {
-    "quote": "But doth must suffer a sea-change",
-    "book": "The Tempest",
-    "tags": [
-      "rich",
-      "sea-change",
-      "shakespeare",
-      "strange",
-      "tempest"
-    ]
-  },
-  {
     "quote": "He says he loves my daughter. I think so too, for never gazed the moon upon the water as he'll stand and read as 'twere my daughter's eyes; and, to be plain, I think there is not half a kiss to choose who loves another best.",
     "book": "The Winter's Tale",
     "tags": [
@@ -2036,26 +1516,6 @@
       "feeling",
       "quality",
       "sensitivity",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "she did lie",
-    "book": "Antony and Cleopatra",
-    "tags": [
-      "antony",
-      "cleopatra",
-      "cydnus",
-      "enobarbus",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Melt Egypt into Nile!",
-    "book": "Antony and Cleopatra",
-    "tags": [
-      "antony",
-      "cleopatra",
       "shakespeare"
     ]
   },
@@ -2110,31 +1570,12 @@
     ]
   },
   {
-    "quote": "Ci sono più cose in cielo e in terra, Orazio, di quante non ne immagini la tua filosofia.",
-    "book": "Hamlet",
-    "tags": [
-      "immagination",
-      "life-philosophy",
-      "life-quotes",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Marry, if you would put me to verses or to dance for",
     "book": "Henry V",
     "tags": [
       "henry-v",
       "love",
       "romance",
-      "shakespeare",
-      "william-shakespeare"
-    ]
-  },
-  {
-    "quote": "Ladies, you deserve",
-    "book": "Coriolanus",
-    "tags": [
-      "coriolanus",
       "shakespeare",
       "william-shakespeare"
     ]
@@ -2173,48 +1614,6 @@
       "humourous",
       "monologue",
       "shakespeare"
-    ]
-  },
-  {
-    "quote": "Que ella que con su muerte le dice a nuestro César:",
-    "book": "Antony and Cleopatra",
-    "tags": [
-      "antonio-y-cleopatra",
-      "cleopatra",
-      "feminismo",
-      "shakespeare",
-      "tragedia",
-      "william-shakespeare"
-    ]
-  },
-  {
-    "quote": "E' l'oriente, e Giulietta è il sole! Oh, sorgi bel sole e uccidi la luna invidiosa che è già malata e pallida di rabbia, perché tu, sua ancella, di lei sei tanto più bella.",
-    "book": "Romeo and Juliet",
-    "tags": [
-      "romeo-e-giulietta",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Gardener:",
-    "book": "Richard II",
-    "tags": [
-      "gardener",
-      "richard-ii",
-      "servant",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Sweet sister, let me live.",
-    "book": "",
-    "tags": [
-      "claudio",
-      "coemdy",
-      "play",
-      "problem-play",
-      "shakespeare",
-      "william-shakespeare"
     ]
   },
   {
@@ -2289,42 +1688,6 @@
     ]
   },
   {
-    "quote": "what care I for words? Yet words do well",
-    "book": "As You Like It",
-    "tags": [
-      "love-quotes",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Must I observe you? Must I stand",
-    "book": "Julius Caesar",
-    "tags": [
-      "julius-caesar",
-      "shakespeare",
-      "spleen"
-    ]
-  },
-  {
-    "quote": "През дрипите прозира всеки грях,",
-    "book": "King Lear",
-    "tags": [
-      "quotes",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Созданий божьих гнусный истребитель",
-    "book": "Richard III",
-    "tags": [
-      "poetry",
-      "shakespeare",
-      "tyran",
-      "поэзия",
-      "шекспир"
-    ]
-  },
-  {
     "quote": "I’ll beat thee, but I should infect my hands.",
     "book": "Timon of Athens",
     "tags": [
@@ -2394,16 +1757,6 @@
     ]
   },
   {
-    "quote": "How true a twain",
-    "book": "The Phoenix and the Turtle",
-    "tags": [
-      "love",
-      "phoenix",
-      "shakespeare",
-      "turtle"
-    ]
-  },
-  {
     "quote": "Tis like she comes to speak of Cassio’s death,",
     "book": "Othello",
     "tags": [
@@ -2444,30 +1797,6 @@
     "book": "",
     "tags": [
       "shakespeare"
-    ]
-  },
-  {
-    "quote": "Pour on, I will endure.",
-    "book": "",
-    "tags": [
-      "endure",
-      "harsh",
-      "king-lear",
-      "motivation",
-      "pour",
-      "rain",
-      "shakespeare",
-      "tempest",
-      "william-shakespeare"
-    ]
-  },
-  {
-    "quote": "For I am born to tame you, Kate,",
-    "book": "The Taming of the Shrew",
-    "tags": [
-      "petruchio",
-      "shakespeare",
-      "taming-of-the-shrew"
     ]
   },
   {
@@ -2554,25 +1883,6 @@
     ]
   },
   {
-    "quote": "To give yourself away keep yourself still,",
-    "book": "Shakespeare's Sonnets",
-    "tags": [
-      "love",
-      "shakespeare",
-      "sonnet-16",
-      "sonnets"
-    ]
-  },
-  {
-    "quote": "Then, were not summer's distillation left",
-    "book": "Shakespeare's Sonnets",
-    "tags": [
-      "shakespeare",
-      "sonnet-5",
-      "sonnets"
-    ]
-  },
-  {
     "quote": "For all that beauty that doth cover thee",
     "book": "Shakespeare's Sonnets",
     "tags": [
@@ -2599,65 +1909,8 @@
     ]
   },
   {
-    "quote": "¿Qué virtudes habitan mi amor",
-    "book": "Sueño de una Noche de Verano / Las Alegres Comadres de Windsor",
-    "tags": [
-      "hernia",
-      "shakespeare",
-      "sueño-de-una-noche-de-verano"
-    ]
-  },
-  {
-    "quote": "Has robado el corazón de mi hija con argucias, y convertido en rebeldía la obediencia que solo a mí me debe",
-    "book": "",
-    "tags": [
-      "amor",
-      "egeo",
-      "el-sueño-de-una-noche-de-verano",
-      "love",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Así pues viviré, creceré y moriré,",
-    "book": "Sueño de una noche de verano / Píramo y Tisbe",
-    "tags": [
-      "amor",
-      "hermia",
-      "love",
-      "shakespeare",
-      "sueño-de-una-noche-de-verano"
-    ]
-  },
-  {
-    "quote": "É melhor ser rei do teu silêncio do que escravo das tuas palavras.",
-    "book": "",
-    "tags": [
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "I wonder that you will still be talking, Signior Benedick: nobody marks you.",
     "book": "Much Ado About Nothing",
-    "tags": [
-      "humor",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "I have more care to stay",
-    "book": "Romeo and Juliet",
-    "tags": [
-      "love",
-      "parting",
-      "romeo",
-      "romeo-and-juliet",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "What time o' day?",
-    "book": "Love's Labour's Lost",
     "tags": [
       "humor",
       "shakespeare"
@@ -2704,14 +1957,6 @@
     ]
   },
   {
-    "quote": "Mejor que con palabras, la sinceridad se muestra con acciones.",
-    "book": "",
-    "tags": [
-      "shakespeare",
-      "sinceridad"
-    ]
-  },
-  {
     "quote": "From thee, even from thy virtue!",
     "book": "Measure for Measure",
     "tags": [
@@ -2741,31 +1986,12 @@
     ]
   },
   {
-    "quote": "porque a noite é noite, o dia é dia, e o tempo é tempo, seria perder sem proveito a noite, o dia e o tempo; por isso, visto que a concisão é a alma do espirito, emquanto que a prolixidade é só o corpo ou o involucro exterior, serei breve",
-    "book": "Hamlet",
-    "tags": [
-      "encher-lingüiça",
-      "hamlet",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Mother, I will look to like. If looking liking moves.",
     "book": "",
     "tags": [
       "romance",
       "romeo-and-juliet",
       "shakespeare"
-    ]
-  },
-  {
-    "quote": "CARDINAL WOLSEY",
-    "book": "",
-    "tags": [
-      "drama",
-      "humility",
-      "shakespeare",
-      "vanity-of-human-affairs"
     ]
   },
   {
@@ -2778,31 +2004,12 @@
     ]
   },
   {
-    "quote": "Your honour's players, hearing your amendment,",
-    "book": "",
-    "tags": [
-      "laughter-is-he-best-medicine",
-      "play",
-      "shakespeare",
-      "the-taming-of-the-shrew"
-    ]
-  },
-  {
     "quote": "Give me my Romeo. And when I shall die,",
     "book": "",
     "tags": [
       "romeo-and-juliet",
       "shakespeare",
       "william-shakespeare"
-    ]
-  },
-  {
-    "quote": "Less art, more matter",
-    "book": "Hamlet",
-    "tags": [
-      "classics",
-      "irony",
-      "shakespeare"
     ]
   },
   {
@@ -2824,23 +2031,6 @@
     ]
   },
   {
-    "quote": "Pues cúrala. ¿No puedes tratar un alma enferma, arrancar de la memoria un dolor arraigado, borrar una angustia grabada en la mente y, con un dulce antídoto que haga olvidar, extraer lo que ahoga su pecho y le oprime el corazón?",
-    "book": "Macbeth",
-    "tags": [
-      "macbeth",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "¿Adónde huir? Yo no he hecho ningún daño. Aunque bien recuerdo que estoy en el mundo, donde suele alabarse el hacer daño y hacer bien se juzga locura temeraria",
-    "book": "Macbeth",
-    "tags": [
-      "lady-macduff",
-      "macbeth",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "So are you to my thoughts as food to life,",
     "book": "Shakespeare's Sonnets",
     "tags": [
@@ -2848,32 +2038,6 @@
       "poetry",
       "shakespeare",
       "sonnet"
-    ]
-  },
-  {
-    "quote": "Si el azar me quiere rey, que me corone sin mi acción",
-    "book": "Macbeth",
-    "tags": [
-      "macbeth",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Busquemos una sombra solitaria donde vaciar de nuestro pecho la tristeza",
-    "book": "Macbeth",
-    "tags": [
-      "macbeth",
-      "malcolm",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Aunque me falte zalamería",
-    "book": "",
-    "tags": [
-      "honestidad",
-      "shakespeare",
-      "teatro"
     ]
   },
   {
@@ -2896,30 +2060,11 @@
     ]
   },
   {
-    "quote": "Aşk bir çocuktur derler ya, nedeni budur işte,",
-    "book": "A Midsummer Night’s Dream",
-    "tags": [
-      "a-midsummer-night-s-dream",
-      "aşk",
-      "bir-yaz-gecesi-rüyası",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Reply not to me with a fool-born jest.",
     "book": "Henry IV, Part Two",
     "tags": [
       "henry-iv",
       "shakespeare"
-    ]
-  },
-  {
-    "quote": "O, pur se nella scelta c'è armonia,",
-    "book": "",
-    "tags": [
-      "love",
-      "shakespeare",
-      "trouble"
     ]
   },
   {
@@ -2998,54 +2143,12 @@
     ]
   },
   {
-    "quote": "Get you gone, you dwarf,",
-    "book": "A Midsummer Night’s Dream",
-    "tags": [
-      "insult",
-      "shakespeare",
-      "shakespearean-insult"
-    ]
-  },
-  {
     "quote": "We defy augury. There is special providence in",
     "book": "",
     "tags": [
       "death-and-dying",
       "hamlet",
       "philosophy",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "To sue to live, I find I seek to die;",
-    "book": "Measure for Measure",
-    "tags": [
-      "claudio",
-      "death",
-      "life",
-      "measure-for-measure",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Farewell, sweet playfellow.",
-    "book": "A Midsummer Night’s Dream",
-    "tags": [
-      "friendship",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "From too much liberty, my Lucio, liberty",
-    "book": "Measure for Measure",
-    "tags": [
-      "anarchy",
-      "claudio",
-      "freedom",
-      "lucio",
-      "measure-for-measure",
-      "moderation",
-      "responsibility",
       "shakespeare"
     ]
   },
@@ -3100,19 +2203,6 @@
     ]
   },
   {
-    "quote": "Men from children nothing differ.",
-    "book": "Much Ado About Nothing",
-    "tags": [
-      "humour",
-      "humourous",
-      "irl",
-      "shakespeare",
-      "shakespearean-criticism",
-      "shakespearean-insult",
-      "truth"
-    ]
-  },
-  {
     "quote": "Be as thou wast wont to be.",
     "book": "A Midsummer Night’s Dream",
     "tags": [
@@ -3127,15 +2217,6 @@
     "book": "Twelfth Night",
     "tags": [
       "humor",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "In my mind's eye",
-    "book": "Hamlet",
-    "tags": [
-      "english-literature",
-      "famous-authors",
       "shakespeare"
     ]
   },
@@ -3160,58 +2241,12 @@
     ]
   },
   {
-    "quote": "It were for me",
-    "book": "",
-    "tags": [
-      "antony-and-cleopatra",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Se è pronta la tua anima lo sono anche le cose",
-    "book": "",
-    "tags": [
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "No temáis a la grandeza; algunos nacen grandes, algunos logran grandeza, a algunos la grandeza les es impuesta y a otros la grandeza les queda grande.",
-    "book": "",
-    "tags": [
-      "grandeza",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Rosalind is your love's name?",
-    "book": "As You Like It",
-    "tags": [
-      "as-you-like-it",
-      "humor",
-      "jaques",
-      "names",
-      "orlando",
-      "rosalind",
-      "shakespeare"
-    ]
-  },
-  {
     "quote": "Hang there like a fruit, my soul, Till the tree die!",
     "book": "Cymbeline",
     "tags": [
       "cymbeline",
       "love",
       "reunion",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Diseases desperate grown,",
-    "book": "Hamlet",
-    "tags": [
-      "cancer",
-      "desperation",
-      "diseases",
       "shakespeare"
     ]
   },
@@ -3262,30 +2297,6 @@
   },
   {
     "quote": "You gotta be cruel to be kind.",
-    "book": "",
-    "tags": [
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Dame los puñales; los que duermen y los muertos no son sino sombras; únicamente los ojos de los niños tiemblan ante una estampa del diablo.",
-    "book": "",
-    "tags": [
-      "lady-macbeth",
-      "macbeth",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Kneel not, gentle Portia.",
-    "book": "",
-    "tags": [
-      "julius-caesar",
-      "shakespeare"
-    ]
-  },
-  {
-    "quote": "Todo el mundo es un escenario.",
     "book": "",
     "tags": [
       "shakespeare"

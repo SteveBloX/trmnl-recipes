@@ -1,5 +1,7 @@
 import { JSDOM } from "jsdom";
 import { writeFileSync } from "fs";
+// @ts-ignore
+import { franc } from "franc-min";
 
 type Quote = {
   quote: string;
@@ -51,18 +53,26 @@ async function scrapePage(page: number): Promise<Quote[]> {
         quoteText += node.textContent ?? "";
       }
     }
-    quoteText = quoteText.trim().replace(/^[""“]|["""”]$/g, "").trim();
+
+    // Strip surrounding typographic quotes (“ " ” " „ „)
+    quoteText = quoteText.trim().replace(/^[“”„]|[“”„]$/g, "").trim();
     if (!quoteText) continue;
+
+    // Skip non-English quotes
+    if (franc(quoteText) !== "eng") continue;
 
     // Book title: second .authorOrTitle (first is author)
     const allAuthorOrTitle = block.querySelectorAll(".authorOrTitle");
-    const book = allAuthorOrTitle.length >= 2
-      ? allAuthorOrTitle[1].textContent?.trim() ?? ""
-      : "";
+    const book =
+      allAuthorOrTitle.length >= 2
+        ? allAuthorOrTitle[1].textContent?.trim() ?? ""
+        : "";
 
     // Tags
     const tagLinks = block.querySelectorAll(".greyText a");
-    const tags = Array.from(tagLinks).map((a) => a.textContent?.trim() ?? "").filter(Boolean);
+    const tags = Array.from(tagLinks)
+      .map((a) => a.textContent?.trim() ?? "")
+      .filter(Boolean);
 
     quotes.push({ quote: quoteText, book, tags });
   }
