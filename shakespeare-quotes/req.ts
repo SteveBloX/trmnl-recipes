@@ -44,5 +44,9 @@ export function shakespeareRequest(data: dataType, _body: any = null): quoteType
     };
   }
 
-  return filtered[Math.floor(Math.random() * filtered.length)];
+  const result = filtered[Math.floor(Math.random() * filtered.length)];
+  return {
+    ...result,
+    tags: result.tags.filter((t) => t.toLowerCase() !== "shakespeare"),
+  };
 }
