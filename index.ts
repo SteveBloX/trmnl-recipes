@@ -6,6 +6,7 @@ import { statsRequest } from "./fortnite-stats/req";
 import { monumentRequest } from "./daily-monument/req";
 import { astrobinRequest } from "./astrobin/req";
 import { worldCupRequest } from "./world-cup/req";
+import { shakespeareRequest } from "./shakespeare-quotes/req";
 import cron from "node-cron";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
@@ -44,6 +45,12 @@ const apps = [
     description: "FIFA World Cup 2026 knockout bracket with live scores.",
     route: "world-cup",
     request: worldCupRequest,
+  },
+  {
+    name: "Shakespeare Quotes",
+    description: "A random quote from the works of William Shakespeare.",
+    route: "shakespeare-quotes",
+    request: shakespeareRequest,
   },
 ];
 
