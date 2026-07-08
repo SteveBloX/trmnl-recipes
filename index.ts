@@ -7,6 +7,11 @@ import { monumentRequest } from "./daily-monument/req";
 import { astrobinRequest } from "./astrobin/req";
 import { worldCupRequest } from "./world-cup/req";
 import { shakespeareRequest } from "./shakespeare-quotes/req";
+import {
+  driverStandingsRequest,
+  teamStandingsRequest,
+  planningRequest,
+} from "./motogp/req";
 import cron from "node-cron";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
@@ -74,6 +79,21 @@ app.get("/api/:appName", async (req, res) => {
   }
   const { request } = appConfig;
   const result = await request(req.query, req.body);
+  return res.json(result);
+});
+
+app.get("/api/motogp/standings/drivers", async (req, res) => {
+  const result = await driverStandingsRequest(req.query, req.body);
+  return res.json(result);
+});
+
+app.get("/api/motogp/standings/teams", async (req, res) => {
+  const result = await teamStandingsRequest(req.query, req.body);
+  return res.json(result);
+});
+
+app.get("/api/motogp/planning", async (req, res) => {
+  const result = await planningRequest(req.query, req.body);
   return res.json(result);
 });
 

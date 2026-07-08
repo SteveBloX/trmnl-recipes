@@ -19,6 +19,7 @@
     "iconv-lite": "^0.7.0",
     "jsdom": "^27.0.1",
     "node-cron": "^4.2.1",
+    "playwright": "^1.61.1",
     "tsx": "^4.20.6"
   },
   "devDependencies": {
