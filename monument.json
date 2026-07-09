@@ -1,25 +1,25 @@
 {
   "name": {
-    "en": "Vilnius Historic Centre",
-    "fr": "Centre historique de Vilnius",
-    "es": "Centro histórico de Vilna",
-    "ru": "Исторический центр Вильнюса",
-    "ar": "الوسط التاريخي في فيلنيوس",
-    "zh": "维尔纽斯历史中心"
+    "en": "Haeinsa Temple Janggyeong Panjeon, the Depositories for the <I>Tripitaka Koreana</I> Woodblocks",
+    "fr": "Temple d'Haeinsa Janggyeong Panjeon, les dépôts des tablettes du <I>Tripitaka Koreana</I>",
+    "es": "Templo de Haeinsa y Janggyeong Panjeon, depósitos de tabletas de la Tripitaka Coreana",
+    "ru": "Монастырь Хэинса, Чангён-Пханджон – хранилище деревянных табличек «Трипитака Кореана»",
+    "ar": "معبد هينسا غانغ غيونغ بان جون ومخازن الألواح الخشبية تريباتاكا كوريانا",
+    "zh": "海印寺及八万大藏经藏经处"
   },
-  "imageURL": "https://whc.unesco.org/document/110910",
-  "officialURL": "https://whc.unesco.org/en/list/541",
+  "imageURL": "https://whc.unesco.org/document/129995",
+  "officialURL": "https://whc.unesco.org/en/list/737",
   "coordinates": {
-    "lat": 54.68667,
-    "lon": 25.29306
+    "lat": 35.801672,
+    "lon": 128.098711
   },
-  "country_code": "LT",
+  "country_code": "KR",
   "description": {
-    "en": "Political centre of the Grand Duchy of Lithuania from the 13th to the end of the 18th century, Vilnius has had a profound influence on the cultural and architectural development of much of eastern Europe. Despite invasions and partial destruction, it has preserved an impressive complex of Gothic, Renaissance, Baroque and classical buildings as well as its medieval layout and natural setting.",
-    "fr": "Centre politique du grand-duché de Lituanie du XIIIe siècle jusqu'à la fin du XVIIIe siècle, Vilnius a exercé une profonde influence sur le développement culturel et architectural d'une grande partie de l'Europe orientale. Malgré invasions et destructions, elle a conservé un ensemble imposant de bâtiments historiques de styles gothique, Renaissance, baroque et classique, ainsi que sa structure urbaine avec ses espaces historiques et son environnement de verdure.",
-    "es": "Capital del Gran Ducado de Lituania desde el siglo XIII hasta finales del XVIII, Vilna tuvo una gran influencia en el desarrollo cultural y arquitectónico de una gran parte de Europa Oriental. Pese a las invasiones y destrucciones de que fue víctima, la ciudad ha conservado un impresionante conjunto de edificios góticos, renacentistas, barrocos y neoclásicos, así como su trazado medieval y el paisaje natural circundante.",
-    "ru": "Будучи политическим центром Великого княжества Литовского в период с XIV до конца ХVIII вв., Вильнюс оказывал глубокое влияние на развитие культуры и архитектуры во многих странах Восточной Европы. Несмотря на вражеские вторжения и частичные разрушения, здесь уцелел впечатляющий комплекс зданий, построенных в стиле готики, Возрождения, барокко и классицизма. Сохранилась средневековая планировка, а также природная среда.",
-    "ar": "كانت فيلنيوس المركز السياسي لدوقيّة ليتوانيا الكبرى من القرن الثالث عشر حتى نهاية القرن الثامن عشر. فقد أثّرت تأثيرًا كبيرًا على التطوّر الثقافي والهندسي لجزءٍ كبيرٍ من أوروبا الشرقيّة. كما حافظت، بالرغم من كل ما تعرّضت له من اجتياحات وتدمير، على مجموعةٍ كبيرةٍ من المباني التاريخية التي تتميّز بأسلوبها القوطي والباروكي والتقليدي والأسلوب الذي يعود إلى عصر النهضة، بالإضافة إلى البنية الحضرية بمساحاتها التاريخيّة وبيئتها الخضراء.",
-    "zh": "维尔纽斯是从13世纪到18世纪末期立陶宛大公国的政治中心，在文化和建筑发展上对许多东欧国家有着深远的影响。尽管遭到入侵和部分的破坏，它仍然给人留下深刻的印象，保留了哥特式、 文艺复兴时期、巴洛克式和古典的建筑及其中世纪的布局和自然景致。"
+    "en": "The Temple of Haeinsa, on Mount Gaya, is home to the Tripitaka Koreana , the most complete collection of Buddhist texts, engraved on 80,000 woodblocks between 1237 and 1248. The buildings of Janggyeong Panjeon, which date from the 15th century, were constructed to house the woodblocks, which are also revered as exceptional works of art. As the oldest depository of the Tripitaka , they reveal an astonishing mastery of the invention and implementation of the conservation techniques used to preserve these woodblocks.",
+    "fr": "Le temple d'Haeinsa, sur le mont Gaya, abrite le Tripitaka Koreana , collection la plus complète de textes du canon bouddhiste, gravés sur 80 000 tablettes de bois entre 1237 et 1248. Destinés à recevoir ces tablettes – documents vénérés autant qu'œuvre d'art exceptionnelle –, les bâtiments du Janggyeong Panjeon datent du XVe siècle et sont les plus anciens dépôts du Tripitaka . Ils démontrent une maîtrise stupéfiante dans la conception et la mise en œuvre des techniques de conservation de ces tablettes de bois.",
+    "es": "Situado en el monte Kaya, el templo de Haeinsa conserva la Tripitaka Coreana, la versión más completa de textos del canon budista, que fueron grabados en 80.000 tabletas de madera entre los años 1237 y 1249. Los edificios de Janggyeong Panjeon fueron construidos en el siglo XV para servir de depósito de esas veneradas tabletas, que son también reverenciadas como obras de arte excepcionales. En estos depósitos ha quedado patente la sorprendente maestría con que se han concebido y aplicado técnicas encaminadas a la conservación de esas tabletas de madera.",
+    "ru": "Храм Хэинса на горе Каясан – это местонахождение «Трипитаки Кореана», наиболее полного собрания буддийских текстов, выгравированных на 80 тыс. деревянных дощечек в период 1237-1248 гг. Здания Чангён-Пханджон, относящиеся к XV в., были построены для размещения деревянных дощечек и также расцениваются как замечательные произведения искусства. Старейшие хранилища «Трипитаки» демонстрируют удивительное мастерство разработки и внедрения технологии, используемой для сохранения этих деревянных дощечек.",
+    "ar": "يحوي معبد هينسا القابع على قمة كايا التريباتاكا كوريانا التي تعتبر أكثر مجموعات الشرائع البوذية اكتمالاً والتي حفرت على 80000 لوحة خشبية ما بين عامي 1237 و1248. أما أبنية غانغ غيونغ بان جون المعدّة لاحتضان هذه الألواح - التي تعتبر وثائق مقدسة بقدر ما هي تحفة فنية استثنائية –، فيعود تاريخها الى القرن الخامس عشر وتشكل أقدم مخزن للتريباتاكا ودلالة على مهارة فائقة في بلورة تقنيات حفظ هذه الالواح الخشبية وتنفيذها.",
+    "zh": "海印寺位于伽耶山，寺中藏有高丽大藏经版。高丽大藏经版是现存最完整的佛教全书，全书用80 000块木版雕刻而成，完成于公元1237年至1248年。藏经阁建于公元15世纪，是专门为收藏高丽大藏经版而建造的，这一建筑也被认为是杰出的艺术作品。作为高丽大藏经版最古老的保存地，海印寺和藏经阁有着非常特别之处，其保存木版技术的发明和实施让世人惊叹不已。"
   }
 }

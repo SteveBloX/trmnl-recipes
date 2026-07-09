@@ -10,7 +10,7 @@ import { shakespeareRequest } from "./shakespeare-quotes/req";
 import {
   driverStandingsRequest,
   teamStandingsRequest,
-  planningRequest,
+  scheduleRequest,
 } from "./motogp/req";
 import cron from "node-cron";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
@@ -92,8 +92,8 @@ app.get("/api/motogp/standings/teams", async (req, res) => {
   return res.json(result);
 });
 
-app.get("/api/motogp/planning", async (req, res) => {
-  const result = await planningRequest(req.query, req.body);
+app.get("/api/motogp/schedule", async (req, res) => {
+  const result = await scheduleRequest(req.query, req.body);
   return res.json(result);
 });
 

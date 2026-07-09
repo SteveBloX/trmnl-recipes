@@ -8,16 +8,13 @@ async function scrapeDriverStandings() {
   const page = await context.newPage();
 
   try {
-    // Va sur la page
     const year = new Date().getFullYear();
     await page.goto(
       `https://www.motogp.com/en/world-standing/${year}/motogp/championship-standings`,
       { waitUntil: "networkidle" },
     );
 
-    // Playwright attend automatiquement que l'élément soit rendu dans le DOM
     const standings = await page.evaluate(() => {
-      // Ton code de scraping classique (ex: document.querySelectorAll)
       // table must not have class "u-hide" and must have class "standings-table" and is a div
       const table = document.querySelector("div.standings-table:not(.u-hide)");
       if (!table) return [];
@@ -84,7 +81,7 @@ async function scrapeDriverStandings() {
     );
     console.log(standings);
   } catch (error) {
-    console.error("Erreur de scraping:", error);
+    console.error("error:", error);
   } finally {
     await browser.close();
   }
