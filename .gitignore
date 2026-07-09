@@ -2,3 +2,4 @@ node_modules/
 package-lock.json
 .env
 chinese-proverbs/stats.json
+motogp-*.json
