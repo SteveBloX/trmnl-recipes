@@ -143,6 +143,22 @@ export async function teamStandingsRequest(
   return { error: "Team standings are not implemented yet" };
 }
 
+// Codes ISO 3166-1 alpha-3 -> alpha-2 des pays susceptibles d'accueillir un GP.
+// Le template utilise le code alpha-2 avec Intl.DisplayNames pour afficher le
+// nom du pays dans la langue de l'utilisateur, quelle qu'elle soit.
+const ISO3_TO_ISO2: Record<string, string> = {
+  arg: "AR", are: "AE", aus: "AU", aut: "AT", bra: "BR", che: "CH",
+  cze: "CZ", deu: "DE", esp: "ES", fin: "FI", fra: "FR", gbr: "GB",
+  hun: "HU", idn: "ID", ind: "IN", ita: "IT", jpn: "JP", kaz: "KZ",
+  mex: "MX", mys: "MY", nld: "NL", prt: "PT", qat: "QA", smr: "SM",
+  tha: "TH", tur: "TR", usa: "US", zaf: "ZA",
+};
+
+function countryCodeFromFlag(flagUrl: string | null | undefined) {
+  const iso3 = flagUrl?.match(/\/([a-z]{3})\.svg$/)?.[1];
+  return iso3 ? (ISO3_TO_ISO2[iso3] ?? null) : null;
+}
+
 function parseDateRange(dateRange: string) {
   const monthMatch = dateRange.match(/[A-Za-z]{3,}/);
   const yearMatch = dateRange.match(/\b(20\d{2})\b/);
@@ -309,20 +325,59 @@ async function scrapeSchedule() {
       return { ...timing, utc };
     });
 
-    return { ...schedule, timings };
+    return {
+      ...schedule,
+      country_code: countryCodeFromFlag(schedule.country_flag),
+      timings,
+    };
   } finally {
     await browser.close();
   }
 }
 
-export async function scheduleRequest(_query: unknown, _body: unknown = null) {
+// Le cache contient les données brutes (anglais) partagées entre tous les
+// utilisateurs ; la localisation est appliquée à chaque requête selon ?locale=.
+function localizeSchedule(schedule: any, locale: string) {
+  let location_localized = schedule.location ?? null;
+  if (schedule.country_code) {
+    try {
+      const name = new Intl.DisplayNames([locale], { type: "region" }).of(
+        schedule.country_code,
+      );
+      if (name) location_localized = name.toLocaleUpperCase(locale);
+    } catch {
+      // locale inconnue : on garde le nom anglais scrapé
+    }
+  }
+
+  let relative_start: string | null = null;
+  const firstUtc = schedule.timings?.[0]?.utc;
+  if (firstUtc) {
+    const diffMs = new Date(firstUtc).getTime() - Date.now();
+    const days = diffMs < 0 ? 0 : Math.floor(diffMs / 86_400_000);
+    try {
+      relative_start = new Intl.RelativeTimeFormat(locale, {
+        numeric: "auto",
+      }).format(days, "day");
+    } catch {
+      relative_start = days === 0 ? "today" : `in ${days} days`;
+    }
+  }
+
+  return { ...schedule, location_localized, relative_start };
+}
+
+export async function scheduleRequest(query: unknown, _body: unknown = null) {
+  const rawLocale = (query as Record<string, unknown> | null)?.locale;
+  const locale = typeof rawLocale === "string" && rawLocale ? rawLocale : "en";
+
   const cached = await readCache(SCHEDULE_CACHE_FILE);
-  if (cached) return cached;
+  if (cached) return localizeSchedule(cached, locale);
 
   try {
     const schedule = await scrapeSchedule();
     await writeCache(SCHEDULE_CACHE_FILE, schedule);
-    return schedule;
+    return localizeSchedule(schedule, locale);
   } catch (e: any) {
     return { error: String(e.message) };
   }
