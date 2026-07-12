@@ -8,6 +8,7 @@ type dataType = {
   lang?: string; // fr | en | es | de | pl
   random?: string; // "1" = mot aléatoire au lieu du mot du jour
   types?: string; // filtre optionnel: "noun,adj,verb,adv" (clés génériques)
+  translangs?: string; // langues de traduction prioritaires pour l'affichage, ex: "en,it"
 };
 
 export type wordType = {
@@ -81,8 +82,26 @@ export function wordRequest(data: dataType, _body: any = null) {
       ? Math.floor(Math.random() * words.length)
       : hash(`${lang}-${today}`) % words.length;
 
+  const entry = { ...words[index] };
+  // langues prioritaires en tête (l'objet garde l'ordre d'insertion,
+  // le template Liquid affiche donc les préférées d'abord)
+  if (entry.translations && data.translangs) {
+    const pref = data.translangs
+      .split(",")
+      .map((l) => l.trim().toLowerCase())
+      .filter(Boolean);
+    const ordered: Record<string, string> = {};
+    for (const l of pref) {
+      if (entry.translations[l] !== undefined) ordered[l] = entry.translations[l];
+    }
+    for (const [l, w] of Object.entries(entry.translations)) {
+      if (!(l in ordered)) ordered[l] = w;
+    }
+    entry.translations = ordered;
+  }
+
   return {
-    ...words[index],
+    ...entry,
     lang,
     langName: LANG_NAMES[lang],
     date: today,
