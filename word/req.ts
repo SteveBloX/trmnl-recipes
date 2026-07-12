@@ -3,6 +3,9 @@ import wordsEn from "./words-en.json" assert { type: "json" };
 import wordsEs from "./words-es.json" assert { type: "json" };
 import wordsDe from "./words-de.json" assert { type: "json" };
 import wordsPl from "./words-pl.json" assert { type: "json" };
+import wordsJa from "./words-ja.json" assert { type: "json" };
+import wordsZh from "./words-zh.json" assert { type: "json" };
+import wordsRu from "./words-ru.json" assert { type: "json" };
 
 type dataType = {
   lang?: string; // fr | en | es | de | pl
@@ -31,6 +34,9 @@ const WORDS: Record<string, wordType[]> = {
   es: wordsEs as wordType[],
   de: wordsDe as wordType[],
   pl: wordsPl as wordType[],
+  ja: wordsJa as wordType[],
+  zh: wordsZh as wordType[],
+  ru: wordsRu as wordType[],
 };
 
 // libellés de POS localisés dans chaque fichier → clés génériques pour le filtre
@@ -40,6 +46,9 @@ const POS_LABELS: Record<string, Record<string, string>> = {
   es: { noun: "sustantivo", adj: "adjetivo", verb: "verbo", adv: "adverbio" },
   de: { noun: "Substantiv", adj: "Adjektiv", verb: "Verb", adv: "Adverb" },
   pl: { noun: "rzeczownik", adj: "przymiotnik", verb: "czasownik", adv: "przysłówek" },
+  ja: { noun: "名詞", adj: "形容詞", verb: "動詞", adv: "副詞" },
+  zh: { noun: "名詞", adj: "形容詞", verb: "動詞", adv: "副詞" },
+  ru: { noun: "существительное", adj: "прилагательное", verb: "глагол", adv: "наречие" },
 };
 
 const LANG_NAMES: Record<string, string> = {
@@ -48,6 +57,9 @@ const LANG_NAMES: Record<string, string> = {
   es: "Español",
   de: "Deutsch",
   pl: "Polski",
+  ja: "日本語",
+  zh: "中文",
+  ru: "Русский",
 };
 
 // FNV-1a : hash stable de la date pour que le mot ne change qu'une fois par jour
