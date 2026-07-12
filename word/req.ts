@@ -23,8 +23,10 @@ export type wordType = {
   ipa?: string;
   definition2?: string;
   example?: { text: string; ref?: string };
+  example2?: { text: string; ref?: string };
   etymology?: string;
   synonyms?: string[];
+  related?: string[];
   translations?: Record<string, string>;
 };
 
@@ -62,6 +64,16 @@ const LANG_NAMES: Record<string, string> = {
   ru: "Русский",
 };
 
+// les références d'exemples Wiktionnaire sont souvent très longues ("2007 April 12,
+// “Another Path to…”, in New York Times:") — troncature au mot près pour l'affichage
+function shortenRef(ref: string, max = 70): string {
+  const clean = ref.replace(/[\s:;,]+$/, "");
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > 40 ? cut.slice(0, lastSpace) : cut) + "…";
+}
+
 // FNV-1a : hash stable de la date pour que le mot ne change qu'une fois par jour
 // et que deux langues n'affichent pas le même index
 function hash(str: string): number {
@@ -95,6 +107,13 @@ export function wordRequest(data: dataType, _body: any = null) {
       : hash(`${lang}-${today}`) % words.length;
 
   const entry = { ...words[index] };
+  if (entry.example?.ref) {
+    // copie : ne pas muter le dataset importé, partagé entre les requêtes
+    entry.example = { ...entry.example, ref: shortenRef(entry.example.ref) };
+  }
+  if (entry.example2?.ref) {
+    entry.example2 = { ...entry.example2, ref: shortenRef(entry.example2.ref) };
+  }
   // langues prioritaires en tête (l'objet garde l'ordre d'insertion,
   // le template Liquid affiche donc les préférées d'abord)
   if (entry.translations && data.translangs) {
