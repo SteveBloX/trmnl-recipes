@@ -7,6 +7,7 @@ import { monumentRequest } from "./daily-monument/req";
 import { astrobinRequest } from "./astrobin/req";
 import { worldCupRequest } from "./world-cup/req";
 import { shakespeareRequest } from "./shakespeare-quotes/req";
+import { wordRequest } from "./word/req";
 import {
   driverStandingsRequest,
   teamStandingsRequest,
@@ -15,6 +16,7 @@ import {
 import cron from "node-cron";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
+import { runHealthChecks, type HealthCheck } from "./health-check";
 
 const apps = [
   {
@@ -57,11 +59,67 @@ const apps = [
     route: "shakespeare-quotes",
     request: shakespeareRequest,
   },
+  {
+    name: "Multilingual Word of the Day",
+    description:
+      "A daily rare word with definition, pronunciation, etymology and translations. Languages: fr, en, es, de, pl.",
+    route: "word",
+    request: wordRequest,
+  },
+];
+
+const healthChecks: HealthCheck[] = [
+  {
+    name: "Chinese Proverbs",
+    run: () => proverbRequest({ lang: "french" } as any),
+    validate: (r) => (r.chinese && r.translation ? null : "Missing proverb fields"),
+  },
+  {
+    name: "Fortnite Stats",
+    run: () => statsRequest({ username: "Ninja", timeWindow: "lifetime" }),
+    validate: (r) => (r.wins !== undefined ? null : "Missing stats fields"),
+  },
+  {
+    name: "Monument of the Day",
+    run: () => monumentRequest({} as any),
+    validate: (r) => (Object.keys(r).length > 0 ? null : "Empty monument data"),
+  },
+  {
+    name: "AstroBin",
+    run: () => astrobinRequest({} as any),
+  },
+  {
+    name: "World Cup 2026",
+    run: () => worldCupRequest({} as any),
+  },
+  {
+    name: "Shakespeare Quotes",
+    run: () => shakespeareRequest({}),
+    validate: (r) => (r.quote && r.book ? null : "Missing quote fields"),
+  },
+  {
+    name: "Word of the Day",
+    run: () => wordRequest({ lang: "fr" }),
+    validate: (r) => (r.word && r.definition ? null : "Missing word fields"),
+  },
+  {
+    name: "MotoGP Driver Standings",
+    run: () => driverStandingsRequest({} as any, null),
+  },
+  // MotoGP Team Standings exclu : renvoie "not implemented yet" en permanence
+  {
+    name: "MotoGP Schedule",
+    run: () => scheduleRequest({} as any, null),
+  },
 ];
 
 const app = express();
 const port = 4200;
 app.use(bodyParser.json());
+
+cron.schedule("0 * * * *", async () => {
+  await runHealthChecks(healthChecks);
+});
 
 cron.schedule("*/10 * * * *", async () => {
   await writeMonumentJSON();
@@ -69,6 +127,15 @@ cron.schedule("*/10 * * * *", async () => {
 
 cron.schedule("0 0 * * *", async () => {
   await writeAstrobinJSON();
+});
+
+// déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Discord)
+// doit être déclarée avant /api/:appName qui capturerait la route sinon
+app.get("/api/health", async (req, res) => {
+  const results = await runHealthChecks(healthChecks, {
+    notify: req.query.notify === "1",
+  });
+  return res.status(results.every((r) => r.ok) ? 200 : 503).json(results);
 });
 
 app.get("/api/:appName", async (req, res) => {

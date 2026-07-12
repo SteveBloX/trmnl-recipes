@@ -354,13 +354,29 @@ function localizeSchedule(schedule: any, locale: string) {
   const firstUtc = schedule.timings?.[0]?.utc;
   if (firstUtc) {
     const diffMs = new Date(firstUtc).getTime() - Date.now();
-    const days = diffMs < 0 ? 0 : Math.floor(diffMs / 86_400_000);
+    // Granularité adaptée : minutes < 1h, heures < 24h, jours au-delà.
+    // Week-end déjà commencé -> "aujourd'hui".
+    let value: number;
+    let unit: Intl.RelativeTimeFormatUnit;
+    if (diffMs <= 0) {
+      value = 0;
+      unit = "day";
+    } else if (diffMs < 3_600_000) {
+      value = Math.max(1, Math.round(diffMs / 60_000));
+      unit = "minute";
+    } else if (diffMs < 86_400_000) {
+      value = Math.round(diffMs / 3_600_000);
+      unit = "hour";
+    } else {
+      value = Math.floor(diffMs / 86_400_000);
+      unit = "day";
+    }
     try {
       relative_start = new Intl.RelativeTimeFormat(locale, {
         numeric: "auto",
-      }).format(days, "day");
+      }).format(value, unit);
     } catch {
-      relative_start = days === 0 ? "today" : `in ${days} days`;
+      relative_start = value === 0 ? "today" : `in ${value} ${unit}s`;
     }
   }
 
