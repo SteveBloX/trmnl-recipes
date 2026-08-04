@@ -129,7 +129,7 @@ cron.schedule("0 0 * * *", async () => {
   await writeAstrobinJSON();
 });
 
-// déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Discord)
+// déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Telegram)
 // doit être déclarée avant /api/:appName qui capturerait la route sinon
 app.get("/api/health", async (req, res) => {
   const results = await runHealthChecks(healthChecks, {

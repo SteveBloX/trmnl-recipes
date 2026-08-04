@@ -1,6 +1,7 @@
 import "dotenv/config";
 
-const WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || "";
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "";
 const TIMEOUT_MS = 30000;
 
 export type HealthCheck = {
@@ -67,38 +68,54 @@ export async function runHealthChecks(
   );
 
   if (failures.length > 0 && notify) {
-    await sendDiscordAlert(failures, results.length);
+    await sendTelegramAlert(failures, results.length);
   }
   return results;
 }
 
-async function sendDiscordAlert(failures: CheckResult[], total: number) {
-  if (!WEBHOOK_URL) {
-    console.warn("DISCORD_WEBHOOK_URL is not set — skipping Discord alert");
+// Échappe les caractères spéciaux du mode HTML de Telegram pour éviter un
+// message tronqué ou une erreur 400 si un nom d'app ou un message d'erreur
+// contient <, > ou &.
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+async function sendTelegramAlert(failures: CheckResult[], total: number) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    console.warn(
+      "TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID non défini(s) — alerte Telegram ignorée"
+    );
     return;
   }
-  const embed = {
-    title: "🩺 TRMNL API Health Check",
-    description: `**${failures.length}/${total}** API${failures.length > 1 ? "s" : ""} en erreur`,
-    color: 0xed4245,
-    fields: failures.map((f) => ({
-      name: `🔴 ${f.name}`,
-      value: "```" + (f.error || "Unknown error").slice(0, 500) + "```",
-      inline: false,
-    })),
-    footer: { text: "TRMNL recipes monitor" },
-    timestamp: new Date().toISOString(),
-  };
+  const lines = [
+    `🩺 <b>TRMNL API Health Check</b>`,
+    `<b>${failures.length}/${total}</b> API${failures.length > 1 ? "s" : ""} en erreur`,
+    "",
+    ...failures.map(
+      (f) =>
+        `🔴 <b>${escapeHtml(f.name)}</b>\n<pre>${escapeHtml((f.error || "Unknown error").slice(0, 500))}</pre>`
+    ),
+  ];
+  const text = lines.join("\n");
+
   try {
-    const res = await fetch(WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ embeds: [embed] }),
-    });
+    const res = await fetch(
+      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text,
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
+        }),
+      }
+    );
     if (!res.ok) {
-      console.error(`Discord webhook failed: ${res.status} ${await res.text()}`);
+      console.error(`Telegram alert failed: ${res.status} ${await res.text()}`);
     }
   } catch (e) {
-    console.error("Discord webhook failed:", e);
+    console.error("Telegram alert failed:", e);
   }
 }
