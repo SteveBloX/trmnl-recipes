@@ -97,7 +97,10 @@ const healthChecks: HealthCheck[] = [
   {
     name: "Shakespeare Quotes",
     run: () => shakespeareRequest({}),
-    validate: (r) => (r.quote && r.book ? null : "Missing quote fields"),
+    // `book` only: 61 of the 242 scraped quotes carry no source, so requiring
+    // it failed a quarter of the random picks and alerted on data that was
+    // merely incomplete, not on an API that was down.
+    validate: (r) => (r.quote ? null : "Missing quote field"),
   },
   {
     name: "Word of the Day",
