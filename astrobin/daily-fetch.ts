@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import { fetchAstrobinData } from "./fetch-astrobin.ts";
+import { dataPath } from "../data-dir";
 
-const fileName = "astrobin.json";
+const fileName = dataPath("astrobin.json");
 
 export async function writeAstrobinJSON() {
   let data = null;

@@ -1,6 +1,6 @@
 import fs from "fs/promises";
-import path from "path";
 import { fetchAstrobinData } from "./fetch-astrobin";
+import { dataPath } from "../data-dir";
 
 type queryType = {
   username: string;
@@ -8,7 +8,7 @@ type queryType = {
 };
 
 export async function astrobinRequest(query: queryType, body: any = null) {
-  const filePath = path.join(process.cwd(), "astrobin.json");
+  const filePath = dataPath("astrobin.json");
 
   try {
     const data = await fs.readFile(filePath, "utf-8");

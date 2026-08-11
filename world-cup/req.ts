@@ -1,9 +1,9 @@
 import "dotenv/config";
 import fs from "fs/promises";
-import path from "path";
+import { dataPath } from "../data-dir";
 
 const API_KEY = process.env.FOOTBALL_DATA_API_KEY || "";
-const CACHE_FILE = path.join(process.cwd(), "world-cup.json");
+const CACHE_FILE = dataPath("world-cup.json");
 const CACHE_TTL = 10 * 60 * 1000;
 
 const TLA_TO_FLAG: Record<string, string> = {

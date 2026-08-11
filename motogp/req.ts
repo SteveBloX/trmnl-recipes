@@ -1,13 +1,13 @@
 import fs from "fs/promises";
-import path from "path";
 import { chromium } from "playwright";
 import { DateTime } from "luxon";
+import { dataPath } from "../data-dir";
 
 const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
-const DRIVERS_CACHE_FILE = path.join(process.cwd(), "motogp-drivers.json");
-const TEAMS_CACHE_FILE = path.join(process.cwd(), "motogp-teams.json");
-const SCHEDULE_CACHE_FILE = path.join(process.cwd(), "motogp-schedule.json");
+const DRIVERS_CACHE_FILE = dataPath("motogp-drivers.json");
+const TEAMS_CACHE_FILE = dataPath("motogp-teams.json");
+const SCHEDULE_CACHE_FILE = dataPath("motogp-schedule.json");
 
 const MONTHS: Record<string, number> = {
   Jan: 1,

@@ -17,6 +17,8 @@ import cron from "node-cron";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
+import fs from "fs";
+import { dataPath } from "./data-dir";
 
 const apps = [
   {
@@ -128,6 +130,16 @@ cron.schedule("*/10 * * * *", async () => {
 cron.schedule("0 0 * * *", async () => {
   await writeAstrobinJSON();
 });
+
+// The cron above only fires at midnight, so a start with an empty data volume
+// would leave /api/astrobin failing for up to a day. Fetch once when the file
+// is missing — and only then, so a restart never discards the day's pick.
+if (!fs.existsSync(dataPath("astrobin.json"))) {
+  console.log("astrobin.json missing, fetching it once at startup…");
+  writeAstrobinJSON().catch((err) =>
+    console.error("Initial AstroBin fetch failed:", err)
+  );
+}
 
 // déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Telegram)
 // doit être déclarée avant /api/:appName qui capturerait la route sinon

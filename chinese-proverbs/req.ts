@@ -1,6 +1,8 @@
 import proverbsFr from "./proverbs-fr.json" assert { type: "json" };
 import proverbsEn from "./proverbs-en.json" assert { type: "json" };
 import fs from "fs";
+import path from "path";
+import { dataPath } from "../data-dir";
 type dataType = {
   lang: string;
   favoriteWords: any;
@@ -60,17 +62,16 @@ export function proverbRequest(data: dataType, body: any = null) {
       translation: proverb.translation.replace(/\(.*?\)/g, "").trim(),
     };
   }
-  try {
-    fs.accessSync("./chinese-proverbs/stats.json", fs.constants.F_OK);
-  } catch (err) {
+  const statsPath = dataPath("chinese-proverbs", "stats.json");
+  // The volume starts empty on a fresh deploy, so the directory may not exist.
+  fs.mkdirSync(path.dirname(statsPath), { recursive: true });
+  if (!fs.existsSync(statsPath)) {
     fs.writeFileSync(
-      "./chinese-proverbs/stats.json",
+      statsPath,
       JSON.stringify({ french: 0, english: 0 }, null, 2),
       "utf-8"
     );
   }
-  fs.readFileSync("./chinese-proverbs/stats.json", "utf-8");
-  const statsPath = "./chinese-proverbs/stats.json";
   const statsData = fs.readFileSync(statsPath, "utf-8");
   const stats = JSON.parse(statsData);
   stats[lang] = (stats[lang] || 0) + 1;
