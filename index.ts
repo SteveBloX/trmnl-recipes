@@ -184,6 +184,14 @@ app.get("/api/health", async (req, res) => {
   return res.status(results.every((r) => r.ok) ? 200 : 503).json(results);
 });
 
+// Même règle que /api/health ci-dessus : un seul segment ("dokploy"), donc
+// doit être déclarée avant /api/:appName sous peine d'y être capturée avec
+// un 404 silencieux (déjà arrivé une fois — cf. historique du fichier).
+app.get("/api/dokploy", requireRecipesKey, async (req, res) => {
+  const result = await dokployRequest(req.query, req.body);
+  return res.json(result);
+});
+
 app.get("/api/:appName", async (req, res) => {
   const appName = req.params.appName;
   const appConfig = apps.find((a) => a.route === appName);
@@ -207,11 +215,6 @@ app.get("/api/motogp/standings/teams", async (req, res) => {
 
 app.get("/api/motogp/schedule", async (req, res) => {
   const result = await scheduleRequest(req.query, req.body);
-  return res.json(result);
-});
-
-app.get("/api/dokploy", requireRecipesKey, async (req, res) => {
-  const result = await dokployRequest(req.query, req.body);
   return res.json(result);
 });
 
