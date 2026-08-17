@@ -19,6 +19,8 @@ import crypto from "crypto";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
+import fs from "fs";
+import { dataPath } from "./data-dir";
 
 const apps = [
   {
@@ -97,7 +99,10 @@ const healthChecks: HealthCheck[] = [
   {
     name: "Shakespeare Quotes",
     run: () => shakespeareRequest({}),
-    validate: (r) => (r.quote && r.book ? null : "Missing quote fields"),
+    // `book` only: 61 of the 242 scraped quotes carry no source, so requiring
+    // it failed a quarter of the random picks and alerted on data that was
+    // merely incomplete, not on an API that was down.
+    validate: (r) => (r.quote ? null : "Missing quote field"),
   },
   {
     name: "Word of the Day",
@@ -159,6 +164,16 @@ cron.schedule("*/10 * * * *", async () => {
 cron.schedule("0 0 * * *", async () => {
   await writeAstrobinJSON();
 });
+
+// The cron above only fires at midnight, so a start with an empty data volume
+// would leave /api/astrobin failing for up to a day. Fetch once when the file
+// is missing — and only then, so a restart never discards the day's pick.
+if (!fs.existsSync(dataPath("astrobin.json"))) {
+  console.log("astrobin.json missing, fetching it once at startup…");
+  writeAstrobinJSON().catch((err) =>
+    console.error("Initial AstroBin fetch failed:", err)
+  );
+}
 
 // déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Telegram)
 // doit être déclarée avant /api/:appName qui capturerait la route sinon

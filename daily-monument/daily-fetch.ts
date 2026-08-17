@@ -1,7 +1,8 @@
 import { fetchRandomMonument } from "./fetch-monument.ts";
 import fs from "fs/promises";
+import { dataPath } from "../data-dir";
 
-const fileName = "monument.json";
+const fileName = dataPath("monument.json");
 
 export async function writeMonumentJSON() {
   let data = null;

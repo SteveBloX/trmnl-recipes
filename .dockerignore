@@ -1,0 +1,25 @@
+# Reinstalled inside the image; the host's copy would carry binaries built for
+# another platform, and Playwright's browser paths would point nowhere.
+node_modules
+
+# Secrets never belong in an image layer: anyone who can pull it can read them.
+# Dokploy injects the values as environment variables instead.
+.env
+.env.*
+
+# Runtime state. These live on the volume — baking a snapshot into the image
+# would silently overwrite fresher data every time the container restarts.
+monument.json
+astrobin.json
+world-cup.json
+motogp-*.json
+chinese-proverbs/stats.json
+mon-tmp.json
+
+.git
+.gitignore
+*.log
+.idea
+.vscode
+README.md
+CLAUDE.md
