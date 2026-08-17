@@ -13,7 +13,9 @@ import {
   teamStandingsRequest,
   scheduleRequest,
 } from "./motogp/req";
+import { dokployRequest } from "./dokploy/req";
 import cron from "node-cron";
+import crypto from "crypto";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
@@ -111,11 +113,40 @@ const healthChecks: HealthCheck[] = [
     name: "MotoGP Schedule",
     run: () => scheduleRequest({} as any, null),
   },
+  {
+    name: "Dokploy",
+    run: () => dokployRequest({} as any, null),
+    validate: (r) => (r.services ? null : "Missing services field"),
+  },
 ];
 
 const app = express();
 const port = 4200;
 app.use(bodyParser.json());
+
+// Contrairement aux autres routes /api/*, /api/dokploy expose des infos
+// privées (services, RAM/disque, déploiements) : elle exige un header
+// x-recipes-key qui doit matcher RECIPES_API_KEY, comparé en temps constant
+// pour éviter le timing attack. Ce header se règle dans le champ
+// polling_headers du plugin TRMNL via l'UI web (jamais commit dans settings.yml).
+function requireRecipesKey(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) {
+  const expected = process.env.RECIPES_API_KEY || "";
+  const provided = req.header("x-recipes-key") || "";
+  const expectedBuf = Buffer.from(expected);
+  const providedBuf = Buffer.from(provided);
+  const match =
+    expected.length > 0 &&
+    expectedBuf.length === providedBuf.length &&
+    crypto.timingSafeEqual(expectedBuf, providedBuf);
+  if (!match) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  next();
+}
 
 cron.schedule("0 * * * *", async () => {
   await runHealthChecks(healthChecks);
@@ -161,6 +192,11 @@ app.get("/api/motogp/standings/teams", async (req, res) => {
 
 app.get("/api/motogp/schedule", async (req, res) => {
   const result = await scheduleRequest(req.query, req.body);
+  return res.json(result);
+});
+
+app.get("/api/dokploy", requireRecipesKey, async (req, res) => {
+  const result = await dokployRequest(req.query, req.body);
   return res.json(result);
 });
 
