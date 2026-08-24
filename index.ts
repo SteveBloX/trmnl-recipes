@@ -14,10 +14,12 @@ import {
   scheduleRequest,
 } from "./motogp/req";
 import { dokployRequest } from "./dokploy/req";
+import { animalRequest } from "./daily-animal/req";
 import cron from "node-cron";
 import crypto from "crypto";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
+import { writeAnimalJSON } from "./daily-animal/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
 import fs from "fs";
 import { dataPath } from "./data-dir";
@@ -69,6 +71,13 @@ const apps = [
       "A daily rare word with definition, pronunciation, etymology and translations. Languages: fr, en, es, de, pl.",
     route: "word",
     request: wordRequest,
+  },
+  {
+    name: "Animal of the Day",
+    description:
+      "A random wild vertebrate (bird, mammal, reptile, amphibian or fish) from a real, research-grade iNaturalist observation, with name and conservation status in 6 languages.",
+    route: "daily-animal",
+    request: animalRequest,
   },
 ];
 
@@ -123,6 +132,12 @@ const healthChecks: HealthCheck[] = [
     run: () => dokployRequest({} as any, null),
     validate: (r) => (r.services ? null : "Missing services field"),
   },
+  {
+    name: "Animal of the Day",
+    run: () => animalRequest({} as any),
+    validate: (r) =>
+      r.imageURL && r.scientificName ? null : "Missing animal fields",
+  },
 ];
 
 const app = express();
@@ -172,6 +187,19 @@ if (!fs.existsSync(dataPath("astrobin.json"))) {
   console.log("astrobin.json missing, fetching it once at startup…");
   writeAstrobinJSON().catch((err) =>
     console.error("Initial AstroBin fetch failed:", err)
+  );
+}
+
+cron.schedule("0 0 * * *", async () => {
+  await writeAnimalJSON();
+});
+
+// Same reasoning as AstroBin above: without this, a fresh data volume leaves
+// /api/daily-animal failing until the next midnight cron.
+if (!fs.existsSync(dataPath("animal.json"))) {
+  console.log("animal.json missing, fetching it once at startup…");
+  writeAnimalJSON().catch((err) =>
+    console.error("Initial Animal of the Day fetch failed:", err)
   );
 }
 
