@@ -18,6 +18,17 @@ const PHOTO_LICENSES = "cc0,cc-by,cc-by-sa,cc-by-nc,cc-by-nc-sa";
 // deux plugins de "pioche du jour".
 const LOCALES = ["en", "fr", "es", "ru", "ar", "zh"];
 
+// iNaturalist attribution strings look like "(c) Jane Doe, some rights
+// reserved (CC BY-NC)" or, for public-domain photos, "(c) Jane Doe, no
+// rights reserved (Public Domain)". Extract just the name; fall back to the
+// raw string untouched if the format doesn't match (never seen in practice,
+// but a footnote that's merely verbose beats one that silently disappears).
+function formatPhotoCredit(attribution: string, licenseCode: string): string {
+  const match = /^\(c\)\s*([^,]+),/.exec(attribution ?? "");
+  if (!match) return attribution ?? "";
+  return `${match[1].trim()} · ${(licenseCode ?? "").toUpperCase()}`;
+}
+
 const MIN_OBSERVATION_ID = 38;
 
 // Largeur de la tranche d'ids dans laquelle on cherche la photo la plus
@@ -309,6 +320,12 @@ export async function fetchRandomAnimal() {
       // iNaturalist photo URLs end in a size suffix (square/small/medium/large/original)
       imageURL: (photo.url as string)?.replace(/square\.(\w+)$/, "medium.$1"),
       attribution: photo.attribution,
+      // Condensed for display: the raw attribution ("(c) NAME, some rights
+      // reserved (LICENSE)") is verbose for what should read as a discreet
+      // footnote. Computed here rather than with Liquid string filters in the
+      // template — no guarantee TRMNL's Liquid runtime supports the filters
+      // (remove_first/split) that would take to do this safely there.
+      photoCredit: formatPhotoCredit(photo.attribution, photo.license_code),
       licenseCode: photo.license_code,
       observationURL: `https://www.inaturalist.org/observations/${observation.id}`,
       wikipediaURL,
