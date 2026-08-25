@@ -32,7 +32,8 @@ import {
 } from "./daily-animal/archive";
 import { renderAnimalPage, renderNotFoundPage } from "./daily-animal/page";
 import { renderAnimalOfTheDayPluginPage } from "./daily-animal/plugin-page";
-import { findPlugin } from "./plugins-directory";
+import { findPlugin, PUBLIC_PLUGINS } from "./plugins-directory";
+import { SITE_ORIGIN } from "./web-shell";
 import {
   renderHomePage,
   renderPluginPage,
@@ -320,6 +321,27 @@ app.get("/animal/:slug", async (req, res) => {
   return res.send(renderAnimalPage(entry));
 });
 
+// Pas de pages /animal/:slug dedans : ça grandit d'une entrée par jour pour
+// toujours, aucun intérêt SEO à les faire indexer une par une — l'annuaire
+// de plugins suffit.
+app.get("/sitemap.xml", (req, res) => {
+  const urlsXml = [
+    `<url><loc>${SITE_ORIGIN}/</loc></url>`,
+    ...PUBLIC_PLUGINS.map(
+      (p) => `<url><loc>${SITE_ORIGIN}/plugins/${p.slug}</loc></url>`
+    ),
+  ].join("\n");
+  res.set("Content-Type", "application/xml; charset=utf-8");
+  return res.send(
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlsXml}\n</urlset>`
+  );
+});
+
+app.get("/robots.txt", (req, res) => {
+  res.set("Content-Type", "text/plain; charset=utf-8");
+  return res.send(`User-agent: *\nAllow: /\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`);
+});
+
 // Page d'accueil : annuaire de mes plugins TRMNL publics.
 app.get("/", (req, res) => {
   trackEvent("home_page_view", "/");
@@ -333,14 +355,20 @@ app.get("/", (req, res) => {
 // /api/dokploy vs /api/:appName plus haut dans ce fichier).
 app.get("/plugins/animal-of-the-day", async (req, res) => {
   const query = typeof req.query.q === "string" ? req.query.q : "";
+  const group = typeof req.query.group === "string" ? req.query.group : "";
+  const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
   trackEvent("plugin_page_view", "/plugins/animal-of-the-day", {
     slug: "animal-of-the-day",
     found: true,
     ...(query ? { query } : {}),
+    ...(group ? { group } : {}),
+    ...(page > 1 ? { page } : {}),
   });
   const history = await getDailyHistory();
   res.set("Content-Type", "text/html; charset=utf-8");
-  return res.send(renderAnimalOfTheDayPluginPage(history, query));
+  return res.send(
+    renderAnimalOfTheDayPluginPage({ history, query, group, page })
+  );
 });
 
 app.get("/plugins/:slug", (req, res) => {

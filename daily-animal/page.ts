@@ -53,7 +53,16 @@ ${sections}
 </p>
 <a class="btn" href="/">See my other TRMNL plugins</a>`;
 
-  return pageShell(`${commonName} — Animal of the Day`, body);
+  const description =
+    entry.description?.en ||
+    Object.values(entry.description ?? {}).find((t) => !!t) ||
+    `${commonName} — a random animal from Animal of the Day.`;
+
+  return pageShell(`${commonName} — Animal of the Day`, body, {
+    description: String(description).slice(0, 200),
+    image: entry.imageURL,
+    path: `/animal/${entry.slug}`,
+  });
 }
 
 export function renderNotFoundPage(): string {

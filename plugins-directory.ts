@@ -11,6 +11,10 @@ export type PluginInfo = {
   // Servi statiquement depuis public/screenshots/ (voir index.ts). À déposer
   // toi-même : le fichier attendu est <slug>.png pour chaque plugin.
   image: string;
+  // ID de la recipe sur trmnl.com/recipes/<id> — présent uniquement quand la
+  // valeur existe dans le settings.yml local du plugin. Absent = pas de
+  // bouton "Add to TRMNL" plutôt qu'un lien inventé.
+  recipeId?: number;
 };
 
 export const PUBLIC_PLUGINS: PluginInfo[] = [
@@ -27,6 +31,7 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     description:
       "Displays images from AstroBin, a social network for astrophotographers. Choose either Image of the Day or a Random Top Pick: an image selected by the community.",
     image: "/screenshots/astrobin.png",
+    recipeId: 283008,
   },
   {
     slug: "chinese-proverbs",
@@ -34,6 +39,7 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     description:
       "Shows a random Chinese proverb, with English and French translations available.",
     image: "/screenshots/chinese-proverbs.png",
+    recipeId: 171219,
   },
   {
     slug: "fortnite-stats",
@@ -41,6 +47,7 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     description:
       "Fortnite Battle Royale stats right on your TRMNL: wins, eliminations, and more.",
     image: "/screenshots/fortnite-stats.png",
+    recipeId: 186199,
   },
   {
     slug: "month-progress",
@@ -48,6 +55,7 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     description:
       "Shows the current month as a simple grid. A quick visual for how far through the month you are.",
     image: "/screenshots/month-progress.png",
+    recipeId: 209701,
   },
   {
     slug: "monument-of-the-day",
@@ -55,6 +63,7 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     description:
       "A random UNESCO World Heritage monument every day, described in English, French, Spanish, Russian, Arabic and Chinese.",
     image: "/screenshots/monument-of-the-day.png",
+    recipeId: 192148,
   },
   {
     slug: "motogp-drivers-standings",
@@ -80,7 +89,7 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     slug: "world-cup-2026-bracket",
     name: "World Cup 2026 Bracket",
     description:
-      "The FIFA World Cup 2026 knockout bracket with live scoresand country flags.",
+      "The FIFA World Cup 2026 knockout bracket with live scores and country flags.",
     image: "/screenshots/world-cup-2026-bracket.png",
   },
 ];

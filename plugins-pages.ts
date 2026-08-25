@@ -20,16 +20,31 @@ export function renderHomePage(): string {
 ${items}
 </ul>`;
 
-  return pageShell("My TRMNL plugins", body, { narrow: false });
+  return pageShell("My TRMNL plugins", body, {
+    narrow: false,
+    path: "/",
+  });
 }
 
 export function renderPluginPage(plugin: PluginInfo): string {
+  // Pas de bouton "Add to TRMNL" tant que l'ID de la recipe n'est pas connu
+  // (voir plugins-directory.ts) — mieux vaut l'absence du bouton qu'un lien
+  // inventé qui pointerait vers le mauvais plugin.
+  const addToTrmnl = plugin.recipeId
+    ? `<a class="btn" href="https://trmnl.com/recipes/${plugin.recipeId}" target="_blank" rel="noopener">Add to TRMNL</a>`
+    : "";
+
   const body = `<a class="back-link" href="/">&larr; All plugins</a>
 <img class="hero" src="${escapeHtml(plugin.image)}" alt="${escapeHtml(plugin.name)} preview">
 <h1>${escapeHtml(plugin.name)}</h1>
-<p>${escapeHtml(plugin.description)}</p>`;
+<p>${escapeHtml(plugin.description)}</p>
+<div class="actions">${addToTrmnl}</div>`;
 
-  return pageShell(`${plugin.name} — TRMNL plugins`, body);
+  return pageShell(`${plugin.name} — TRMNL plugins`, body, {
+    description: plugin.description,
+    image: plugin.image,
+    path: `/plugins/${plugin.slug}`,
+  });
 }
 
 export function renderPluginNotFoundPage(): string {
