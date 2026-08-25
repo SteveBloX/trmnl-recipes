@@ -23,6 +23,9 @@ import { writeAnimalJSON } from "./daily-animal/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
 import fs from "fs";
 import { dataPath } from "./data-dir";
+import { trackEvent } from "./analytics";
+import { getFromArchive } from "./daily-animal/archive";
+import { renderAnimalPage, renderNotFoundPage } from "./daily-animal/page";
 
 const apps = [
   {
@@ -206,6 +209,7 @@ if (!fs.existsSync(dataPath("animal.json"))) {
 // déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Telegram)
 // doit être déclarée avant /api/:appName qui capturerait la route sinon
 app.get("/api/health", async (req, res) => {
+  trackEvent("api_request", "/api/health", { endpoint: "health" });
   const results = await runHealthChecks(healthChecks, {
     notify: req.query.notify === "1",
   });
@@ -216,6 +220,7 @@ app.get("/api/health", async (req, res) => {
 // doit être déclarée avant /api/:appName sous peine d'y être capturée avec
 // un 404 silencieux (déjà arrivé une fois — cf. historique du fichier).
 app.get("/api/dokploy", requireRecipesKey, async (req, res) => {
+  trackEvent("api_request", "/api/dokploy", { endpoint: "dokploy" });
   const result = await dokployRequest(req.query, req.body);
   return res.json(result);
 });
@@ -226,24 +231,46 @@ app.get("/api/:appName", async (req, res) => {
   if (!appConfig) {
     return res.status(404).json({ error: "App not found" });
   }
+  // Non-bloquant : un event Umami qui échoue ou traîne ne doit jamais
+  // ralentir la réponse réelle de l'endpoint.
+  trackEvent("api_request", `/api/${appName}`, { endpoint: appName });
   const { request } = appConfig;
   const result = await request(req.query, req.body);
   return res.json(result);
 });
 
 app.get("/api/motogp/standings/drivers", async (req, res) => {
+  trackEvent("api_request", "/api/motogp/standings/drivers", { endpoint: "motogp-standings-drivers" });
   const result = await driverStandingsRequest(req.query, req.body);
   return res.json(result);
 });
 
 app.get("/api/motogp/standings/teams", async (req, res) => {
+  trackEvent("api_request", "/api/motogp/standings/teams", { endpoint: "motogp-standings-teams" });
   const result = await teamStandingsRequest(req.query, req.body);
   return res.json(result);
 });
 
 app.get("/api/motogp/schedule", async (req, res) => {
+  trackEvent("api_request", "/api/motogp/schedule", { endpoint: "motogp-schedule" });
   const result = await scheduleRequest(req.query, req.body);
   return res.json(result);
+});
+
+// Cible du QR code du layout "full" d'Animal of the Day — voir
+// daily-animal/archive.ts pour pourquoi ce n'est pas juste animal.json.
+app.get("/animal/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const entry = await getFromArchive(slug);
+  trackEvent("animal_page_view", `/animal/${slug}`, {
+    slug,
+    found: !!entry,
+  });
+  res.set("Content-Type", "text/html; charset=utf-8");
+  if (!entry) {
+    return res.status(404).send(renderNotFoundPage());
+  }
+  return res.send(renderAnimalPage(entry));
 });
 
 app.get("/links/:name", (req, res) => {

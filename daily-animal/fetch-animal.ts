@@ -1,6 +1,11 @@
 import axios from "axios";
+import { generateUniqueSlug, saveToArchive } from "./archive";
 
 const INATURALIST_API_URL = "https://api.inaturalist.org/v1";
+
+// Même domaine que celui déjà utilisé pour polling_url dans settings.yml —
+// voir analytics.ts pour la même convention côté hostname des events Umami.
+const PUBLIC_ANIMAL_PAGE_BASE = "https://trmnl.bloax.xyz/animal";
 
 // Vertébrés uniquement (oiseaux, mammifères, reptiles, amphibiens, poissons).
 // Un tirage 100% aléatoire sur l'ensemble du vivant donne ~60% de plantes et
@@ -311,6 +316,12 @@ export async function fetchRandomAnimal() {
       return null;
     }
 
+    // Un slug par tirage, archivé séparément du cache "aujourd'hui" (voir
+    // archive.ts) : le QR code du layout full pointe vers cette URL, qui doit
+    // rester valide indéfiniment — contrairement à animal.json, écrasé chaque
+    // jour par le prochain tirage.
+    const slug = await generateUniqueSlug(names.en || taxon.name);
+
     const animalData = {
       scientificName: taxon.name,
       rank: taxon.rank,
@@ -331,7 +342,11 @@ export async function fetchRandomAnimal() {
       wikipediaURL,
       placeGuess: observation.place_guess || null,
       conservationStatus,
+      slug,
+      animalPageURL: `${PUBLIC_ANIMAL_PAGE_BASE}/${slug}`,
     };
+
+    await saveToArchive(slug, animalData);
 
     return animalData;
   } catch (error: any) {
