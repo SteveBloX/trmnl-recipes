@@ -57,9 +57,9 @@ export function pageShell(
   .btn {
     display: inline-block; margin-top: 1.4em; padding: 8px 18px;
     border: 1px solid #1a1a1a; border-radius: 999px; text-decoration: none;
-    color: #1a1a1a; font-size: 0.9em; background: transparent;
+    color: #f7f5f0; font-size: 0.9em; background: #1a1a1a;
   }
-  .btn:hover { background: #1a1a1a; color: #f7f5f0; }
+  .btn:hover { background: transparent; color: #1a1a1a; }
 
   .back-link {
     display: inline-block; margin-bottom: 1em; color: #6b6b6b;
