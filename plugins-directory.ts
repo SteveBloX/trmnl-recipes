@@ -18,14 +18,14 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     slug: "animal-of-the-day",
     name: "Animal of the Day",
     description:
-      "A random wild vertebrate (bird, mammal, reptile, amphibian or fish) from a real, research-grade iNaturalist observation, with name and conservation status in 6 languages.",
+      "A random wild animal (bird, mammal, reptile, amphibian or fish) from a real iNaturalist observation, with name and description in 6 languages.",
     image: "/screenshots/animal-of-the-day.png",
   },
   {
     slug: "astrobin",
     name: "AstroBin Astronomy Image of the Day",
     description:
-      "Displays images from AstroBin, a social network for astrophotographers. Choose either Image of the Day or a Random Top Pick — an image selected by the community.",
+      "Displays images from AstroBin, a social network for astrophotographers. Choose either Image of the Day or a Random Top Pick: an image selected by the community.",
     image: "/screenshots/astrobin.png",
   },
   {
@@ -39,14 +39,14 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     slug: "fortnite-stats",
     name: "Fortnite Statistics",
     description:
-      "Fortnite Battle Royale stats right on your TRMNL — wins, eliminations, and more, for any in-game username.",
+      "Fortnite Battle Royale stats right on your TRMNL: wins, eliminations, and more.",
     image: "/screenshots/fortnite-stats.png",
   },
   {
     slug: "month-progress",
     name: "Month Progress",
     description:
-      "Shows the current month as a simple square-per-day grid — a quick visual for how far through the month you are.",
+      "Shows the current month as a simple grid. A quick visual for how far through the month you are.",
     image: "/screenshots/month-progress.png",
   },
   {
@@ -60,14 +60,13 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     slug: "motogp-drivers-standings",
     name: "MotoGP Drivers Standings",
     description:
-      "The current MotoGP rider standings — points, wins and recent results — plus a closer look at the championship leader.",
+      "The current MotoGP rider standings: points, wins and recent results. Plus a closer look at the championship leader.",
     image: "/screenshots/motogp-drivers-standings.png",
   },
   {
     slug: "shakespeare-quotes",
     name: "Shakespeare Quotes",
-    description:
-      "A random quote from the works of William Shakespeare, with its source when known.",
+    description: "A random quote from the works of William Shakespeare.",
     image: "/screenshots/shakespeare-quotes.png",
   },
   {
@@ -81,7 +80,7 @@ export const PUBLIC_PLUGINS: PluginInfo[] = [
     slug: "world-cup-2026-bracket",
     name: "World Cup 2026 Bracket",
     description:
-      "The FIFA World Cup 2026 knockout bracket with live scores, country flags, and real-time updates.",
+      "The FIFA World Cup 2026 knockout bracket with live scoresand country flags.",
     image: "/screenshots/world-cup-2026-bracket.png",
   },
 ];

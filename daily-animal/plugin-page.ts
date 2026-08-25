@@ -8,13 +8,15 @@ import type { DailyHistoryEntry } from "./archive";
 
 export function renderAnimalOfTheDayPluginPage(
   history: DailyHistoryEntry[],
-  query: string
+  query: string,
 ): string {
   const q = query.trim().toLowerCase();
 
   const filtered = q
     ? history.filter(({ entry }) => {
-        const names = Object.values(entry.name ?? {}).join(" ").toLowerCase();
+        const names = Object.values(entry.name ?? {})
+          .join(" ")
+          .toLowerCase();
         const sci = String(entry.scientificName ?? "").toLowerCase();
         return names.includes(q) || sci.includes(q);
       })
@@ -50,7 +52,7 @@ export function renderAnimalOfTheDayPluginPage(
   const body = `<a class="back-link" href="/">&larr; All plugins</a>
 ${image ? `<img class="hero" src="${escapeHtml(image)}" alt="Animal of the Day preview">` : ""}
 <h1>Animal of the Day</h1>
-<p>A random wild vertebrate — bird, mammal, reptile, amphibian or fish — picked from a real, research-grade iNaturalist observation. A new one is drawn every day, with its name, description and conservation status in six languages.</p>
+<p>A random wild animal (bird, mammal, reptile, amphibian or fish) from a real iNaturalist observation, with name and description in 6 languages.</p>
 
 <form class="search-form" method="get" action="/plugins/animal-of-the-day">
   <input type="search" name="q" placeholder="Search by name..." value="${escapeHtml(query)}" aria-label="Search animal history">

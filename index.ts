@@ -90,7 +90,7 @@ const apps = [
   {
     name: "Animal of the Day",
     description:
-      "A random wild vertebrate (bird, mammal, reptile, amphibian or fish) from a real, research-grade iNaturalist observation, with name and conservation status in 6 languages.",
+      "A random wild animal (bird, mammal, reptile, amphibian or fish) from a real iNaturalist observation, with name and description in 6 languages.",
     route: "daily-animal",
     request: animalRequest,
   },
@@ -100,7 +100,8 @@ const healthChecks: HealthCheck[] = [
   {
     name: "Chinese Proverbs",
     run: () => proverbRequest({ lang: "french" } as any),
-    validate: (r) => (r.chinese && r.translation ? null : "Missing proverb fields"),
+    validate: (r) =>
+      r.chinese && r.translation ? null : "Missing proverb fields",
   },
   {
     name: "Fortnite Stats",
@@ -162,7 +163,10 @@ app.use(bodyParser.json());
 // Captures d'écran des plugins pour les cartes de la page d'accueil — voir
 // plugins-directory.ts pour les noms de fichiers attendus. Ajoutées à la
 // main dans public/screenshots/, pas générées.
-app.use("/screenshots", express.static(path.join(__dirname, "public", "screenshots")));
+app.use(
+  "/screenshots",
+  express.static(path.join(__dirname, "public", "screenshots")),
+);
 
 // Contrairement aux autres routes /api/*, /api/dokploy expose des infos
 // privées (services, RAM/disque, déploiements) : elle exige un header
@@ -206,7 +210,7 @@ cron.schedule("0 0 * * *", async () => {
 if (!fs.existsSync(dataPath("astrobin.json"))) {
   console.log("astrobin.json missing, fetching it once at startup…");
   writeAstrobinJSON().catch((err) =>
-    console.error("Initial AstroBin fetch failed:", err)
+    console.error("Initial AstroBin fetch failed:", err),
   );
 }
 
@@ -228,18 +232,18 @@ if (!fs.existsSync(dataPath("animal.json"))) {
     .then((todaysEntry) => {
       if (todaysEntry) {
         console.log(
-          "animal.json missing but today's animal is already in the archive — restoring it instead of drawing a new one."
+          "animal.json missing but today's animal is already in the archive — restoring it instead of drawing a new one.",
         );
         return fs.promises.writeFile(
           dataPath("animal.json"),
-          JSON.stringify(todaysEntry, null, 2)
+          JSON.stringify(todaysEntry, null, 2),
         );
       }
       console.log("animal.json missing, fetching it once at startup…");
       return writeAnimalJSON();
     })
     .catch((err) =>
-      console.error("Initial Animal of the Day fetch failed:", err)
+      console.error("Initial Animal of the Day fetch failed:", err),
     );
 }
 
@@ -277,19 +281,25 @@ app.get("/api/:appName", async (req, res) => {
 });
 
 app.get("/api/motogp/standings/drivers", async (req, res) => {
-  trackEvent("api_request", "/api/motogp/standings/drivers", { endpoint: "motogp-standings-drivers" });
+  trackEvent("api_request", "/api/motogp/standings/drivers", {
+    endpoint: "motogp-standings-drivers",
+  });
   const result = await driverStandingsRequest(req.query, req.body);
   return res.json(result);
 });
 
 app.get("/api/motogp/standings/teams", async (req, res) => {
-  trackEvent("api_request", "/api/motogp/standings/teams", { endpoint: "motogp-standings-teams" });
+  trackEvent("api_request", "/api/motogp/standings/teams", {
+    endpoint: "motogp-standings-teams",
+  });
   const result = await teamStandingsRequest(req.query, req.body);
   return res.json(result);
 });
 
 app.get("/api/motogp/schedule", async (req, res) => {
-  trackEvent("api_request", "/api/motogp/schedule", { endpoint: "motogp-schedule" });
+  trackEvent("api_request", "/api/motogp/schedule", {
+    endpoint: "motogp-schedule",
+  });
   const result = await scheduleRequest(req.query, req.body);
   return res.json(result);
 });
