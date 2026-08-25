@@ -73,15 +73,16 @@ export function pageShell(
     gap: 20px;
   }
   .plugin-card {
-    display: block; border: 1px solid #ddd; border-radius: 12px;
+    display: flex; flex-direction: column; height: 100%;
+    border: 1px solid #ddd; border-radius: 12px;
     overflow: hidden; text-decoration: none; color: inherit;
     background: #fff;
   }
   .plugin-card-img {
     width: 100%; aspect-ratio: 5 / 3; object-fit: cover;
-    display: block; background: #eee;
+    display: block; background: #eee; flex-shrink: 0;
   }
-  .plugin-card-body { padding: 14px 16px; }
+  .plugin-card-body { padding: 14px 16px; flex: 1; }
   .plugin-card h2 { margin: 0 0 0.3em; font-size: 1.05em; }
   .plugin-card p { margin: 0; color: #6b6b6b; font-size: 0.9em; }
 
