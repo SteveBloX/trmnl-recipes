@@ -56,3 +56,45 @@ export async function getFromArchive(slug: string): Promise<any | null> {
   const archive = await readArchive();
   return archive[slug] ?? null;
 }
+
+export type DailyHistoryEntry = { date: string; entry: any };
+
+/**
+ * Un tirage par jour dans le cas normal (cron quotidien), mais un redémarrage
+ * avec un volume de données manquant (ou un test manuel) peut en produire
+ * plusieurs le même jour. Pour chacun, on calcule combien de temps il est
+ * resté "actif" — c'est-à-dire celui réellement servi par /api/daily-animal —
+ * en le mesurant jusqu'au tirage suivant (ou jusqu'à maintenant pour le tout
+ * dernier). Par jour, on ne garde que celui resté actif le plus longtemps.
+ */
+export async function getDailyHistory(): Promise<DailyHistoryEntry[]> {
+  const archive = await readArchive();
+  const entries = Object.values(archive) as any[];
+  if (entries.length === 0) return [];
+
+  entries.sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
+
+  const now = Date.now();
+  const bestPerDay = new Map<string, { entry: any; durationMs: number }>();
+
+  entries.forEach((entry, i) => {
+    const start = new Date(entry.createdAt).getTime();
+    const end =
+      i + 1 < entries.length
+        ? new Date(entries[i + 1].createdAt).getTime()
+        : now;
+    const durationMs = Math.max(0, end - start);
+    const day = String(entry.createdAt).slice(0, 10); // YYYY-MM-DD
+
+    const current = bestPerDay.get(day);
+    if (!current || durationMs > current.durationMs) {
+      bestPerDay.set(day, { entry, durationMs });
+    }
+  });
+
+  return [...bestPerDay.entries()]
+    .map(([date, { entry }]) => ({ date, entry }))
+    .sort((a, b) => (a.date < b.date ? 1 : -1)); // plus récent en premier
+}

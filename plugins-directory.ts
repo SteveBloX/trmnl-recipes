@@ -12,6 +12,12 @@ export type PluginInfo = {
 
 export const PUBLIC_PLUGINS: PluginInfo[] = [
   {
+    slug: "animal-of-the-day",
+    name: "Animal of the Day",
+    description:
+      "A random wild vertebrate (bird, mammal, reptile, amphibian or fish) from a real, research-grade iNaturalist observation, with name and conservation status in 6 languages.",
+  },
+  {
     slug: "astrobin",
     name: "AstroBin Astronomy Image of the Day",
     description:

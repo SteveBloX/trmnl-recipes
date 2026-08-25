@@ -70,6 +70,34 @@ export function pageShell(title: string, body: string): string {
   .plugin-list li:first-child .plugin-card { border-top: none; }
   .plugin-card h2 { margin: 0 0 0.3em; font-size: 1.15em; }
   .plugin-card p { margin: 0; color: #6b6b6b; font-size: 0.95em; }
+
+  .search-form {
+    display: flex; gap: 8px; margin: 1.6em 0;
+  }
+  .search-form input {
+    flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 8px;
+    font-size: 0.95em; font-family: inherit;
+  }
+  .search-form button {
+    padding: 8px 16px; border: 1px solid #1a1a1a; border-radius: 8px;
+    background: #1a1a1a; color: #f7f5f0; font-size: 0.95em; cursor: pointer;
+  }
+  .search-form button:hover { background: #333; }
+
+  .history-heading {
+    font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em;
+    color: #6b6b6b; margin: 1.6em 0 0.4em;
+  }
+  .history-list { list-style: none; margin: 0; padding: 0; }
+  .history-row {
+    display: flex; align-items: baseline; gap: 10px; padding: 10px 0;
+    border-top: 1px solid #ddd; text-decoration: none; color: inherit;
+  }
+  .history-list li:first-child .history-row { border-top: none; }
+  .history-date { color: #6b6b6b; font-size: 0.85em; flex-shrink: 0; }
+  .history-name { font-weight: 600; }
+  .history-sci { color: #6b6b6b; font-style: italic; font-size: 0.9em; }
+  .empty { color: #6b6b6b; padding: 1em 0; }
 </style>
 </head>
 <body>

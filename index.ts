@@ -24,8 +24,9 @@ import { runHealthChecks, type HealthCheck } from "./health-check";
 import fs from "fs";
 import { dataPath } from "./data-dir";
 import { trackEvent } from "./analytics";
-import { getFromArchive } from "./daily-animal/archive";
+import { getFromArchive, getDailyHistory } from "./daily-animal/archive";
 import { renderAnimalPage, renderNotFoundPage } from "./daily-animal/page";
+import { renderAnimalOfTheDayPluginPage } from "./daily-animal/plugin-page";
 import { findPlugin } from "./plugins-directory";
 import {
   renderHomePage,
@@ -284,6 +285,22 @@ app.get("/", (req, res) => {
   trackEvent("home_page_view", "/");
   res.set("Content-Type", "text/html; charset=utf-8");
   return res.send(renderHomePage());
+});
+
+// Fiche riche (historique + recherche) pour Animal of the Day — doit être
+// déclarée avant /plugins/:slug ci-dessous, sinon ce dernier la capturerait
+// et servirait le template générique à la place (même piège que
+// /api/dokploy vs /api/:appName plus haut dans ce fichier).
+app.get("/plugins/animal-of-the-day", async (req, res) => {
+  const query = typeof req.query.q === "string" ? req.query.q : "";
+  trackEvent("plugin_page_view", "/plugins/animal-of-the-day", {
+    slug: "animal-of-the-day",
+    found: true,
+    ...(query ? { query } : {}),
+  });
+  const history = await getDailyHistory();
+  res.set("Content-Type", "text/html; charset=utf-8");
+  return res.send(renderAnimalOfTheDayPluginPage(history, query));
 });
 
 app.get("/plugins/:slug", (req, res) => {
