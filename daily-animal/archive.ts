@@ -25,31 +25,25 @@ async function readArchive(): Promise<Archive> {
   }
 }
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "") // combining diacritics left by NFD decomposition
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
 /**
- * Génère un slug lisible ("red-tailed-hawk-a3f9") et l'assure unique dans
- * l'archive existante — collision quasi impossible (4 octets aléatoires),
- * mais on vérifie quand même plutôt que de le supposer.
+ * Génère un slug purement aléatoire et l'assure unique dans l'archive.
+ *
+ * Pas de nom d'espèce dedans (ex. pas "red-tailed-hawk-a3f9") : ça allongeait
+ * l'URL encodée dans le QR du layout full de 39 à 58 caractères, ce qui la
+ * faisait passer en version 4 (33x33 modules) au lieu de la version 3
+ * (29x29) — un cran de densité en plus, donc plus dur à scanner à la petite
+ * taille où `qr_code: 2` rend. Le nom reste affiché sur la page elle-même,
+ * juste pas dans l'URL.
  */
-export async function generateUniqueSlug(commonName: string): Promise<string> {
+export async function generateUniqueSlug(): Promise<string> {
   const archive = await readArchive();
-  const base = slugify(commonName) || "animal";
 
   for (let attempt = 0; attempt < 5; attempt++) {
-    const suffix = crypto.randomBytes(4).toString("hex");
-    const slug = `${base}-${suffix}`;
+    const slug = crypto.randomBytes(4).toString("hex");
     if (!(slug in archive)) return slug;
   }
   // Improbable, mais un slug qui existe déjà vaut mieux qu'un crash.
-  return `${base}-${crypto.randomBytes(6).toString("hex")}`;
+  return crypto.randomBytes(6).toString("hex");
 }
 
 export async function saveToArchive(slug: string, animalData: any): Promise<void> {

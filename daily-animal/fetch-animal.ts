@@ -320,7 +320,7 @@ export async function fetchRandomAnimal() {
     // archive.ts) : le QR code du layout full pointe vers cette URL, qui doit
     // rester valide indéfiniment — contrairement à animal.json, écrasé chaque
     // jour par le prochain tirage.
-    const slug = await generateUniqueSlug(names.en || taxon.name);
+    const slug = await generateUniqueSlug();
 
     const animalData = {
       scientificName: taxon.name,
