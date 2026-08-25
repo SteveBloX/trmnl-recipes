@@ -57,6 +57,27 @@ export async function getFromArchive(slug: string): Promise<any | null> {
   return archive[slug] ?? null;
 }
 
+/**
+ * Le tirage le plus récent déjà fait aujourd'hui, s'il y en a un — utilisé
+ * au démarrage pour éviter de re-tirer un animal (et donc de gaspiller une
+ * entrée d'archive) quand animal.json a disparu mais qu'un tirage du jour
+ * existe déjà (volume de données réinitialisé, redémarrage après un
+ * déploiement, etc.).
+ */
+export async function getLatestForToday(): Promise<any | null> {
+  const archive = await readArchive();
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
+  const todaysEntries = (Object.values(archive) as any[]).filter(
+    (entry) => String(entry.createdAt).slice(0, 10) === today
+  );
+  if (todaysEntries.length === 0) return null;
+
+  todaysEntries.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  return todaysEntries[0];
+}
+
 export type DailyHistoryEntry = { date: string; entry: any };
 
 /**

@@ -25,6 +25,7 @@ ${items}
 
 export function renderPluginPage(plugin: PluginInfo): string {
   const body = `<a class="back-link" href="/">&larr; All plugins</a>
+<img class="hero" src="${escapeHtml(plugin.image)}" alt="${escapeHtml(plugin.name)} preview">
 <h1>${escapeHtml(plugin.name)}</h1>
 <p>${escapeHtml(plugin.description)}</p>`;
 

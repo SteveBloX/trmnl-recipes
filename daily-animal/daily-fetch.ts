@@ -13,4 +13,11 @@ export async function writeAnimalJSON() {
   console.log(`Animal data written to ${fileName}`);
 }
 
-writeAnimalJSON();
+// Seulement quand ce fichier est exécuté directement (npx tsx
+// daily-animal/daily-fetch.ts) — pas quand index.ts l'importe juste pour
+// récupérer writeAnimalJSON. Sans ce garde-fou, un simple `import` déclenchait
+// un tirage à chaque démarrage, avant même que la garde de démarrage dans
+// index.ts (qui vérifie l'archive du jour) ait pu s'exécuter.
+if (require.main === module) {
+  writeAnimalJSON();
+}

@@ -3,6 +3,7 @@
 // l'historique des tirages avec une recherche, ce qu'aucun autre plugin de
 // l'annuaire n'a besoin de faire.
 import { escapeHtml, pageShell } from "../web-shell";
+import { findPlugin } from "../plugins-directory";
 import type { DailyHistoryEntry } from "./archive";
 
 export function renderAnimalOfTheDayPluginPage(
@@ -44,7 +45,10 @@ export function renderAnimalOfTheDayPluginPage(
     ? `History &middot; ${filtered.length} match${filtered.length === 1 ? "" : "es"}`
     : "History";
 
+  const image = findPlugin("animal-of-the-day")?.image;
+
   const body = `<a class="back-link" href="/">&larr; All plugins</a>
+${image ? `<img class="hero" src="${escapeHtml(image)}" alt="Animal of the Day preview">` : ""}
 <h1>Animal of the Day</h1>
 <p>A random wild vertebrate — bird, mammal, reptile, amphibian or fish — picked from a real, research-grade iNaturalist observation. A new one is drawn every day, with its name, description and conservation status in six languages.</p>
 

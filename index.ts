@@ -25,7 +25,11 @@ import fs from "fs";
 import path from "path";
 import { dataPath } from "./data-dir";
 import { trackEvent } from "./analytics";
-import { getFromArchive, getDailyHistory } from "./daily-animal/archive";
+import {
+  getFromArchive,
+  getDailyHistory,
+  getLatestForToday,
+} from "./daily-animal/archive";
 import { renderAnimalPage, renderNotFoundPage } from "./daily-animal/page";
 import { renderAnimalOfTheDayPluginPage } from "./daily-animal/plugin-page";
 import { findPlugin } from "./plugins-directory";
@@ -211,12 +215,32 @@ cron.schedule("0 0 * * *", async () => {
 });
 
 // Same reasoning as AstroBin above: without this, a fresh data volume leaves
-// /api/daily-animal failing until the next midnight cron.
+// /api/daily-animal failing until the next midnight cron. But unlike
+// AstroBin, a missing animal.json doesn't necessarily mean no draw happened
+// today — the volume can go missing (or the file get deleted) after a
+// perfectly good draw was already archived. Re-drawing in that case would
+// both waste an archive entry and show a different animal than the one
+// already served earlier today, purely because of a restart. So: check the
+// archive for today's most recent draw first, and only fetch a fresh one if
+// there truly isn't one yet.
 if (!fs.existsSync(dataPath("animal.json"))) {
-  console.log("animal.json missing, fetching it once at startup…");
-  writeAnimalJSON().catch((err) =>
-    console.error("Initial Animal of the Day fetch failed:", err)
-  );
+  getLatestForToday()
+    .then((todaysEntry) => {
+      if (todaysEntry) {
+        console.log(
+          "animal.json missing but today's animal is already in the archive — restoring it instead of drawing a new one."
+        );
+        return fs.promises.writeFile(
+          dataPath("animal.json"),
+          JSON.stringify(todaysEntry, null, 2)
+        );
+      }
+      console.log("animal.json missing, fetching it once at startup…");
+      return writeAnimalJSON();
+    })
+    .catch((err) =>
+      console.error("Initial Animal of the Day fetch failed:", err)
+    );
 }
 
 // déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Telegram)
