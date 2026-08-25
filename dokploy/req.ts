@@ -23,6 +23,7 @@ type DokployDisk = {
 };
 type DokployDeployment = {
   target: string;
+  project: string | null;
   status: string;
   created_at: string | null;
   finished_at: string | null;
@@ -116,6 +117,10 @@ function extractDisk(monitoring: any): DokployDisk | null {
 function extractDeployments(deployments: any[]): DokployDeployment[] {
   return (deployments ?? []).slice(0, 3).map((d) => ({
     target: d.application?.name || d.compose?.name || "—",
+    project:
+      d.application?.environment?.project?.name ||
+      d.compose?.environment?.project?.name ||
+      null,
     status: d.status,
     created_at: d.createdAt ?? null,
     finished_at: d.finishedAt ?? null,

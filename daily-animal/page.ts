@@ -25,6 +25,7 @@ function pageShell(title: string, body: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
+<script defer src="https://nx.bloax.xyz/lens.js" data-website-id="4dc22a43-9ced-49d2-9179-c5fb5c9c0e27"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)}</title>
@@ -74,8 +75,8 @@ export function renderAnimalPage(entry: any): string {
       const localizedName = entry.name?.[locale] || commonName;
       return `<section class="lang">
   <h2>${escapeHtml(LANGUAGE_NAMES[locale] || locale)}${
-        localizedName !== commonName ? ` &middot; ${escapeHtml(localizedName)}` : ""
-      }</h2>
+    localizedName !== commonName ? ` &middot; ${escapeHtml(localizedName)}` : ""
+  }</h2>
   <p>${escapeHtml(text)}</p>
 </section>`;
     })
@@ -84,7 +85,7 @@ export function renderAnimalPage(entry: any): string {
   const badge = entry.conservationStatus?.statusName
     ? `<span class="badge">${escapeHtml(
         entry.conservationStatus.statusName.charAt(0).toUpperCase() +
-          entry.conservationStatus.statusName.slice(1)
+          entry.conservationStatus.statusName.slice(1),
       )}</span><br>`
     : "";
 
@@ -105,6 +106,6 @@ ${sections}
 export function renderNotFoundPage(): string {
   return pageShell(
     "Not found — Animal of the Day",
-    `<div class="not-found"><h1>Page not found</h1><p>This animal link doesn't exist (or the archive was reset).</p></div>`
+    `<div class="not-found"><h1>Page not found</h1><p>This animal link doesn't exist (or the archive was reset).</p></div>`,
   );
 }
