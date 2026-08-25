@@ -26,6 +26,12 @@ import { dataPath } from "./data-dir";
 import { trackEvent } from "./analytics";
 import { getFromArchive } from "./daily-animal/archive";
 import { renderAnimalPage, renderNotFoundPage } from "./daily-animal/page";
+import { findPlugin } from "./plugins-directory";
+import {
+  renderHomePage,
+  renderPluginPage,
+  renderPluginNotFoundPage,
+} from "./plugins-pages";
 
 const apps = [
   {
@@ -271,6 +277,27 @@ app.get("/animal/:slug", async (req, res) => {
     return res.status(404).send(renderNotFoundPage());
   }
   return res.send(renderAnimalPage(entry));
+});
+
+// Page d'accueil : annuaire de mes plugins TRMNL publics.
+app.get("/", (req, res) => {
+  trackEvent("home_page_view", "/");
+  res.set("Content-Type", "text/html; charset=utf-8");
+  return res.send(renderHomePage());
+});
+
+app.get("/plugins/:slug", (req, res) => {
+  const { slug } = req.params;
+  const plugin = findPlugin(slug);
+  trackEvent("plugin_page_view", `/plugins/${slug}`, {
+    slug,
+    found: !!plugin,
+  });
+  res.set("Content-Type", "text/html; charset=utf-8");
+  if (!plugin) {
+    return res.status(404).send(renderPluginNotFoundPage());
+  }
+  return res.send(renderPluginPage(plugin));
 });
 
 app.get("/links/:name", (req, res) => {
