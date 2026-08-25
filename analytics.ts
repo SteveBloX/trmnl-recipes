@@ -13,8 +13,15 @@ const UMAMI_WEBSITE_ID = process.env.UMAMI_WEBSITE_ID || "";
 // as a constant rather than another env var to match that convention.
 const PUBLIC_HOSTNAME = "trmnl.bloax.xyz";
 
-// Umami rejects any request without a User-Agent outright.
-const USER_AGENT = "trmnl-recipes-server/1.0";
+// Umami rejects any request without a User-Agent outright — but it doesn't
+// stop there. Its bot detection also silently drops requests whose UA looks
+// non-browser (a custom string, or even the "Mozilla/5.0 (Server)" example
+// from Umami's own docs): it still answers 200, but with a decoy body
+// (`{"beep":"boop"}`) instead of the real `{cache, sessionId, visitId}`
+// payload, so a bot can't tell it was caught. Verified empirically against
+// this deployment — a real browser UA is the only one that isn't decoyed.
+const USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 /**
  * Records one event server-side. Silently does nothing if UMAMI_HOST_URL /
@@ -26,7 +33,7 @@ const USER_AGENT = "trmnl-recipes-server/1.0";
 export async function trackEvent(
   name: string,
   url: string,
-  data?: Record<string, unknown>
+  data?: Record<string, unknown>,
 ): Promise<void> {
   if (!UMAMI_HOST_URL || !UMAMI_WEBSITE_ID) return;
 
@@ -49,7 +56,19 @@ export async function trackEvent(
       }),
     });
     if (!res.ok) {
-      console.warn(`Umami event '${name}' rejected: ${res.status} ${await res.text()}`);
+      console.warn(
+        `Umami event '${name}' rejected: ${res.status} ${await res.text()}`,
+      );
+      return;
+    }
+    // A 200 doesn't guarantee the event was recorded: Umami's bot detection
+    // answers with this decoy body instead of rejecting outright, precisely
+    // so a bot can't distinguish success from being caught.
+    const body = await res.text();
+    if (body.includes('"beep"')) {
+      console.warn(
+        `Umami event '${name}' silently dropped (bot detection): ${body}`,
+      );
     }
   } catch (error: any) {
     console.warn(`Umami event '${name}' failed:`, error.message);
