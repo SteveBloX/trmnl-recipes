@@ -10,7 +10,11 @@ export function escapeHtml(text: string): string {
     .replace(/"/g, "&quot;");
 }
 
-export function pageShell(title: string, body: string): string {
+export function pageShell(
+  title: string,
+  body: string,
+  { narrow = true }: { narrow?: boolean } = {}
+): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +29,8 @@ export function pageShell(title: string, body: string): string {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     background: #f7f5f0; color: #1a1a1a; line-height: 1.5;
   }
-  main { max-width: 720px; margin: 0 auto; }
+  main { max-width: 960px; margin: 0 auto; }
+  main.narrow { max-width: 720px; }
   img.hero {
     width: 100%; height: auto; max-height: 60vh; object-fit: cover;
     border-radius: 12px; margin: 16px 0; display: block;
@@ -62,14 +67,23 @@ export function pageShell(title: string, body: string): string {
   }
   .back-link:hover { text-decoration: underline; }
 
-  .plugin-list { list-style: none; margin: 1.5em 0 0; padding: 0; }
-  .plugin-card {
-    display: block; padding: 18px 0; border-top: 1px solid #ddd;
-    text-decoration: none; color: inherit;
+  .plugin-grid {
+    list-style: none; margin: 1.5em 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
   }
-  .plugin-list li:first-child .plugin-card { border-top: none; }
-  .plugin-card h2 { margin: 0 0 0.3em; font-size: 1.15em; }
-  .plugin-card p { margin: 0; color: #6b6b6b; font-size: 0.95em; }
+  .plugin-card {
+    display: block; border: 1px solid #ddd; border-radius: 12px;
+    overflow: hidden; text-decoration: none; color: inherit;
+    background: #fff;
+  }
+  .plugin-card-img {
+    width: 100%; aspect-ratio: 5 / 3; object-fit: cover;
+    display: block; background: #eee;
+  }
+  .plugin-card-body { padding: 14px 16px; }
+  .plugin-card h2 { margin: 0 0 0.3em; font-size: 1.05em; }
+  .plugin-card p { margin: 0; color: #6b6b6b; font-size: 0.9em; }
 
   .search-form {
     display: flex; gap: 8px; margin: 1.6em 0;
@@ -90,10 +104,15 @@ export function pageShell(title: string, body: string): string {
   }
   .history-list { list-style: none; margin: 0; padding: 0; }
   .history-row {
-    display: flex; align-items: baseline; gap: 10px; padding: 10px 0;
+    display: flex; align-items: center; gap: 12px; padding: 10px 0;
     border-top: 1px solid #ddd; text-decoration: none; color: inherit;
   }
   .history-list li:first-child .history-row { border-top: none; }
+  .history-thumb {
+    width: 48px; height: 48px; border-radius: 8px; object-fit: cover;
+    flex-shrink: 0; background: #eee;
+  }
+  .history-text { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
   .history-date { color: #6b6b6b; font-size: 0.85em; flex-shrink: 0; }
   .history-name { font-weight: 600; }
   .history-sci { color: #6b6b6b; font-style: italic; font-size: 0.9em; }
@@ -101,7 +120,7 @@ export function pageShell(title: string, body: string): string {
 </style>
 </head>
 <body>
-<main>
+<main${narrow ? ' class="narrow"' : ""}>
 ${body}
 </main>
 </body>

@@ -4,8 +4,11 @@ import { PUBLIC_PLUGINS, type PluginInfo } from "./plugins-directory";
 export function renderHomePage(): string {
   const items = PUBLIC_PLUGINS.map(
     (p) => `<li><a class="plugin-card" href="/plugins/${escapeHtml(p.slug)}">
-  <h2>${escapeHtml(p.name)}</h2>
-  <p>${escapeHtml(p.description)}</p>
+  <img class="plugin-card-img" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)} preview" loading="lazy">
+  <div class="plugin-card-body">
+    <h2>${escapeHtml(p.name)}</h2>
+    <p>${escapeHtml(p.description)}</p>
+  </div>
 </a></li>`
   ).join("\n");
 
@@ -13,11 +16,11 @@ export function renderHomePage(): string {
   <h1>TRMNL plugins</h1>
   <p>A handful of small plugins I built for the TRMNL e-ink display.</p>
 </div>
-<ul class="plugin-list">
+<ul class="plugin-grid">
 ${items}
 </ul>`;
 
-  return pageShell("My TRMNL plugins", body);
+  return pageShell("My TRMNL plugins", body, { narrow: false });
 }
 
 export function renderPluginPage(plugin: PluginInfo): string {

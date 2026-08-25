@@ -23,9 +23,12 @@ export function renderAnimalOfTheDayPluginPage(
     .map(({ date, entry }) => {
       const commonName = entry.name?.en || entry.scientificName;
       return `<li><a class="history-row" href="/animal/${escapeHtml(entry.slug)}">
-  <span class="history-date">${escapeHtml(date)}</span>
-  <span class="history-name">${escapeHtml(commonName)}</span>
-  <span class="history-sci">${escapeHtml(entry.scientificName)}</span>
+  <img class="history-thumb" src="${escapeHtml(entry.imageURL)}" alt="" loading="lazy">
+  <span class="history-text">
+    <span class="history-date">${escapeHtml(date)}</span>
+    <span class="history-name">${escapeHtml(commonName)}</span>
+    <span class="history-sci">${escapeHtml(entry.scientificName)}</span>
+  </span>
 </a></li>`;
     })
     .join("\n");

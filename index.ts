@@ -22,6 +22,7 @@ import { writeAstrobinJSON } from "./astrobin/daily-fetch";
 import { writeAnimalJSON } from "./daily-animal/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
 import fs from "fs";
+import path from "path";
 import { dataPath } from "./data-dir";
 import { trackEvent } from "./analytics";
 import { getFromArchive, getDailyHistory } from "./daily-animal/archive";
@@ -153,6 +154,11 @@ const healthChecks: HealthCheck[] = [
 const app = express();
 const port = 4200;
 app.use(bodyParser.json());
+
+// Captures d'écran des plugins pour les cartes de la page d'accueil — voir
+// plugins-directory.ts pour les noms de fichiers attendus. Ajoutées à la
+// main dans public/screenshots/, pas générées.
+app.use("/screenshots", express.static(path.join(__dirname, "public", "screenshots")));
 
 // Contrairement aux autres routes /api/*, /api/dokploy expose des infos
 // privées (services, RAM/disque, déploiements) : elle exige un header
