@@ -15,11 +15,13 @@ import {
 } from "./motogp/req";
 import { dokployRequest } from "./dokploy/req";
 import { animalRequest } from "./daily-animal/req";
+import { naturalWonderRequest } from "./daily-natural-wonder/req";
 import cron from "node-cron";
 import crypto from "crypto";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
 import { writeAnimalJSON } from "./daily-animal/daily-fetch";
+import { writeNaturalWonderJSON } from "./daily-natural-wonder/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
 import fs from "fs";
 import path from "path";
@@ -32,6 +34,16 @@ import {
 } from "./daily-animal/archive";
 import { renderAnimalPage, renderNotFoundPage } from "./daily-animal/page";
 import { renderAnimalOfTheDayPluginPage } from "./daily-animal/plugin-page";
+import {
+  getFromArchive as getWonderFromArchive,
+  getDailyHistory as getWonderDailyHistory,
+  getLatestForToday as getLatestWonderForToday,
+} from "./daily-natural-wonder/archive";
+import {
+  renderNaturalWonderPage,
+  renderNotFoundPage as renderWonderNotFoundPage,
+} from "./daily-natural-wonder/page";
+import { renderNaturalWonderPluginPage } from "./daily-natural-wonder/plugin-page";
 import { findPlugin, PUBLIC_PLUGINS } from "./plugins-directory";
 import { SITE_ORIGIN } from "./web-shell";
 import {
@@ -95,6 +107,13 @@ const apps = [
     route: "daily-animal",
     request: animalRequest,
   },
+  {
+    name: "Natural Wonder of the Day",
+    description:
+      "A random Natural or Mixed UNESCO World Heritage Site, with name and description in 6 languages.",
+    route: "daily-natural-wonder",
+    request: naturalWonderRequest,
+  },
 ];
 
 const healthChecks: HealthCheck[] = [
@@ -154,6 +173,12 @@ const healthChecks: HealthCheck[] = [
     run: () => animalRequest({} as any),
     validate: (r) =>
       r.imageURL && r.scientificName ? null : "Missing animal fields",
+  },
+  {
+    name: "Natural Wonder of the Day",
+    run: () => naturalWonderRequest({} as any),
+    validate: (r) =>
+      r.imageURL && r.name?.en ? null : "Missing natural wonder fields",
   },
 ];
 
@@ -248,6 +273,34 @@ if (!fs.existsSync(dataPath("animal.json"))) {
     );
 }
 
+cron.schedule("0 0 * * *", async () => {
+  await writeNaturalWonderJSON();
+});
+
+// Même raisonnement que pour Animal of the Day juste au-dessus : re-vérifier
+// l'archive du jour avant de tirer, pour ne pas gaspiller une entrée ni
+// changer la merveille déjà servie plus tôt aujourd'hui, à cause d'un simple
+// redémarrage.
+if (!fs.existsSync(dataPath("natural-wonder.json"))) {
+  getLatestWonderForToday()
+    .then((todaysEntry) => {
+      if (todaysEntry) {
+        console.log(
+          "natural-wonder.json missing but today's wonder is already in the archive — restoring it instead of drawing a new one.",
+        );
+        return fs.promises.writeFile(
+          dataPath("natural-wonder.json"),
+          JSON.stringify(todaysEntry, null, 2),
+        );
+      }
+      console.log("natural-wonder.json missing, fetching it once at startup…");
+      return writeNaturalWonderJSON();
+    })
+    .catch((err) =>
+      console.error("Initial Natural Wonder of the Day fetch failed:", err),
+    );
+}
+
 // déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Telegram)
 // doit être déclarée avant /api/:appName qui capturerait la route sinon
 app.get("/api/health", async (req, res) => {
@@ -321,9 +374,25 @@ app.get("/animal/:slug", async (req, res) => {
   return res.send(renderAnimalPage(entry));
 });
 
-// Pas de pages /animal/:slug dedans : ça grandit d'une entrée par jour pour
-// toujours, aucun intérêt SEO à les faire indexer une par une — l'annuaire
-// de plugins suffit.
+// Cible du QR code du layout "full" de Natural Wonder of the Day — même
+// principe que /animal/:slug juste au-dessus.
+app.get("/natural-wonder/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const entry = await getWonderFromArchive(slug);
+  trackEvent("natural_wonder_page_view", `/natural-wonder/${slug}`, {
+    slug,
+    found: !!entry,
+  });
+  res.set("Content-Type", "text/html; charset=utf-8");
+  if (!entry) {
+    return res.status(404).send(renderWonderNotFoundPage());
+  }
+  return res.send(renderNaturalWonderPage(entry));
+});
+
+// Pas de pages /animal/:slug ni /natural-wonder/:slug dedans : ça grandit
+// d'une entrée par jour pour toujours, aucun intérêt SEO à les faire indexer
+// une par une — l'annuaire de plugins suffit.
 app.get("/sitemap.xml", (req, res) => {
   const urlsXml = [
     `<url><loc>${SITE_ORIGIN}/</loc></url>`,
@@ -368,6 +437,26 @@ app.get("/plugins/animal-of-the-day", async (req, res) => {
   res.set("Content-Type", "text/html; charset=utf-8");
   return res.send(
     renderAnimalOfTheDayPluginPage({ history, query, group, page })
+  );
+});
+
+// Même piège que ci-dessus : doit être déclarée avant /plugins/:slug.
+app.get("/plugins/natural-wonder-of-the-day", async (req, res) => {
+  const query = typeof req.query.q === "string" ? req.query.q : "";
+  const category =
+    typeof req.query.category === "string" ? req.query.category : "";
+  const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
+  trackEvent("plugin_page_view", "/plugins/natural-wonder-of-the-day", {
+    slug: "natural-wonder-of-the-day",
+    found: true,
+    ...(query ? { query } : {}),
+    ...(category ? { category } : {}),
+    ...(page > 1 ? { page } : {}),
+  });
+  const history = await getWonderDailyHistory();
+  res.set("Content-Type", "text/html; charset=utf-8");
+  return res.send(
+    renderNaturalWonderPluginPage({ history, query, category, page })
   );
 });
 

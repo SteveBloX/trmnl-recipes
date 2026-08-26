@@ -1,0 +1,28 @@
+{
+  "name": {
+    "en": "Kaziranga National Park",
+    "fr": "Parc national de Kaziranga",
+    "es": "Parque nacional de Kaziranga",
+    "ru": "Национальный парк Казиранга",
+    "ar": "روضة كازيرانغا الوطنية",
+    "zh": "卡齐兰加国家公园"
+  },
+  "imageURL": "https://whc.unesco.org/document/110489",
+  "category": "Natural",
+  "officialURL": "https://whc.unesco.org/en/list/337",
+  "coordinates": {
+    "lat": 26.66666667,
+    "lon": 93.41666667
+  },
+  "country_code": "IN",
+  "description": {
+    "en": "In the heart of Assam, this park is one of the last areas in eastern India undisturbed by a human presence. It is inhabited by the world's largest population of one-horned rhinoceroses, as well as many mammals, including tigers, elephants, panthers and bears, and thousands of birds.",
+    "fr": "En plein cœur de l'Assam, le parc de Kaziranga, l'une des dernières zones de l'Inde du Nord qui n'aient pas été modifiées par l'homme, abrite la plus importante population de rhinocéros unicornes du monde, ainsi que de nombreux autres mammifères – tigres, éléphants, panthères, ours – et des milliers d'oiseaux.",
+    "es": "Situado en el corazón del Estado de Assam, este parque abarca una de las pocas zonas de la India septentrional que no han sufrido alteraciones por la presencia del ser humano. Posee la población de rinocerontes de un solo cuerno más numerosa del mundo, así como muchos otros mamíferos –tigres, elefantes, panteras y osos, etc.– y miles de aves.",
+    "ru": "Этот парк, расположенный в центре штата Ассам, является одной из немногих в восточной Индии областей с нетронутой человеком природой. Здесь обитают однорогие носороги (самая крупная в мире популяция этого вида), тигры, слоны, пантеры и медведи, а также отмечены огромные скопления птиц.",
+    "ar": "يضمّ منتزه كازيرانغا الذي يقع في ولاية آسام وهو أحد آخر مناطق الهند الشمالية التي لم يغيرها الإنسان أهمّ سلالة وحيد القرن في العالم، بالإضافة إلى ثدييات عديدة أخرى كالنمور والفيلة والفهود والدببة وآلاف العصافير.",
+    "zh": "卡齐兰加国家公园位于印度阿萨姆邦中心地带，是印度东部最后一批没有人类活动骚扰的地区之一。这个公园里生活着世界上最大种群、最多数量的独角犀牛，还有许多其他哺乳动物，包括老虎、大象、豹、熊和数以千计的鸟类。"
+  },
+  "slug": "16f44b02",
+  "wonderPageURL": "https://trmnl.bloax.xyz/natural-wonder/16f44b02"
+}

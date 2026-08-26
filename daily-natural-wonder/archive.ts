@@ -1,5 +1,5 @@
-// Fine couche sur la logique générique — voir shared-archive.ts pour le détail
-// (partagé avec daily-natural-wonder et tout futur plugin "pioche du jour").
+// Fine couche sur la logique générique — voir ../shared-archive.ts pour le
+// détail (partagée avec daily-animal).
 import { createArchive } from "../shared-archive";
 
 export type { DailyHistoryEntry } from "../shared-archive";
@@ -10,4 +10,4 @@ export const {
   getFromArchive,
   getDailyHistory,
   getLatestForToday,
-} = createArchive("animal-archive.json");
+} = createArchive("natural-wonder-archive.json");

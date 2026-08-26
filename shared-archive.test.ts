@@ -1,29 +1,36 @@
-// Tests pour la logique d'historique — "actif le plus longtemps par jour"
-// est facile à se tromper (vérifié : je m'y suis moi-même trompé une fois en
-// calculant un scénario de test à la main dans la session qui a écrit
-// archive.ts). Utilise le test runner intégré de Node (node:test), aucune
-// dépendance supplémentaire.
+// Tests pour la logique d'historique (partagée par tous les plugins "pioche
+// du jour" — Animal, Natural Wonder, ...) — "actif le plus longtemps par
+// jour" est facile à se tromper (vérifié : je m'y suis moi-même trompé une
+// fois en calculant un scénario de test à la main). Utilise le test runner
+// intégré de Node (node:test), aucune dépendance supplémentaire.
 //
-// DATA_DIR est redirigé vers un dossier temporaire AVANT que archive.ts (et
-// data-dir.ts, qui fige DATA_DIR à son premier import) ne soit chargé — d'où
-// l'import dynamique dans `before`, plutôt qu'un `import` statique en haut
-// du fichier qui s'exécuterait trop tôt.
+// DATA_DIR est redirigé vers un dossier temporaire AVANT que shared-archive.ts
+// (et data-dir.ts, qui fige DATA_DIR à son premier import) ne soit chargé —
+// d'où l'import dynamique dans `before`, plutôt qu'un `import` statique en
+// haut du fichier qui s'exécuterait trop tôt.
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-let getDailyHistory: typeof import("./archive").getDailyHistory;
-let getLatestForToday: typeof import("./archive").getLatestForToday;
+let getDailyHistory: ReturnType<
+  typeof import("./shared-archive")["createArchive"]
+>["getDailyHistory"];
+let getLatestForToday: ReturnType<
+  typeof import("./shared-archive")["createArchive"]
+>["getLatestForToday"];
 let tmpDir: string;
 let archivePath: string;
 
 before(async () => {
-  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "animal-archive-test-"));
+  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "shared-archive-test-"));
   process.env.DATA_DIR = tmpDir;
-  archivePath = path.join(tmpDir, "animal-archive.json");
-  ({ getDailyHistory, getLatestForToday } = await import("./archive"));
+  archivePath = path.join(tmpDir, "test-archive.json");
+  const { createArchive } = await import("./shared-archive");
+  const archive = createArchive("test-archive.json");
+  getDailyHistory = archive.getDailyHistory;
+  getLatestForToday = archive.getLatestForToday;
 });
 
 after(async () => {
