@@ -117,11 +117,37 @@ export function createArchive(filename: string) {
     return todaysEntries[0];
   }
 
+  /**
+   * Supprime toutes les entrées d'aujourd'hui de l'archive — utilisé par le
+   * reroll manuel (voir index.ts, /api/admin/reroll-*) : contrairement à un
+   * simple nouveau tirage, qui ajouterait une entrée concurrente à celle du
+   * jour (et perdrait potentiellement face à elle dans getDailyHistory selon
+   * la durée "active" de chacune), ceci retire explicitement l'ancien choix
+   * de l'historique avant de tirer le remplaçant.
+   * @returns le nombre d'entrées supprimées.
+   */
+  async function deleteEntriesForToday(): Promise<number> {
+    const archive = await readArchive();
+    const today = new Date().toISOString().slice(0, 10);
+    let deleted = 0;
+    for (const [slug, entry] of Object.entries(archive)) {
+      if (String((entry as any).createdAt).slice(0, 10) === today) {
+        delete archive[slug];
+        deleted++;
+      }
+    }
+    if (deleted > 0) {
+      await fs.writeFile(ARCHIVE_PATH, JSON.stringify(archive, null, 2));
+    }
+    return deleted;
+  }
+
   return {
     generateUniqueSlug,
     saveToArchive,
     getFromArchive,
     getDailyHistory,
     getLatestForToday,
+    deleteEntriesForToday,
   };
 }

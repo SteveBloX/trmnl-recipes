@@ -26,7 +26,11 @@ import cron from "node-cron";
 import crypto from "crypto";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
-import { writeAnimalJSON, writeBabyAnimalJSON } from "./daily-animal/daily-fetch";
+import {
+  writeAnimalJSON,
+  writeBabyAnimalJSON,
+  rerollAnimalJSON,
+} from "./daily-animal/daily-fetch";
 import { writeNaturalWonderJSON } from "./daily-natural-wonder/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
 import fs from "fs";
@@ -230,18 +234,19 @@ app.use(
 // l'exécution plutôt que commit.
 app.use("/images", express.static(dataPath("images")));
 
-// Contrairement aux autres routes /api/*, /api/dokploy expose des infos
-// privées (services, RAM/disque, déploiements) : elle exige un header
-// x-recipes-key qui doit matcher RECIPES_API_KEY, comparé en temps constant
-// pour éviter le timing attack. Ce header se règle dans le champ
-// polling_headers du plugin TRMNL via l'UI web (jamais commit dans settings.yml).
+// Contrairement aux autres routes /api/*, /api/dokploy (et les routes admin
+// comme le reroll manuel plus bas) exposent des actions privées : elles
+// exigent la clé RECIPES_API_KEY, comparée en temps constant pour éviter le
+// timing attack. Accepte le header x-recipes-key (dokploy, réglé dans
+// polling_headers via l'UI TRMNL, jamais commit) ou ?key=... en query (pour
+// pouvoir déclencher un reroll depuis une simple URL dans le navigateur).
 function requireRecipesKey(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
 ) {
   const expected = process.env.RECIPES_API_KEY || "";
-  const provided = req.header("x-recipes-key") || "";
+  const provided = req.header("x-recipes-key") || String(req.query.key || "");
   const expectedBuf = Buffer.from(expected);
   const providedBuf = Buffer.from(provided);
   const match =
@@ -398,6 +403,22 @@ app.get("/api/dokploy", requireRecipesKey, async (req, res) => {
   trackEvent("api_request", "/api/dokploy", { endpoint: "dokploy" });
   const result = await dokployRequest(req.query, req.body);
   return res.json(result);
+});
+
+// Reroll manuel d'Animal of the Day : quand le tirage du jour rend mal à
+// l'écran, plutôt que d'attendre le lendemain. Retire le tirage du jour de
+// l'archive avant d'en générer un nouveau — voir rerollAnimalJSON. Même
+// clé que /api/dokploy, acceptée en query (?key=...) pour rester une simple
+// URL à ouvrir dans le navigateur plutôt qu'exiger curl/Postman.
+app.get("/api/admin/reroll-animal", requireRecipesKey, async (req, res) => {
+  const babiesOnly = req.query.babies === "yes";
+  try {
+    await rerollAnimalJSON(babiesOnly);
+    return res.json({ ok: true, babiesOnly });
+  } catch (err: any) {
+    log.error("Manual animal reroll failed:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
 });
 
 app.get("/api/:appName", async (req, res) => {

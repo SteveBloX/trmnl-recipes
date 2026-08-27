@@ -10,6 +10,7 @@ export const {
   getFromArchive,
   getDailyHistory,
   getLatestForToday,
+  deleteEntriesForToday,
 } = createArchive("animal-archive.json");
 
 // Archive séparée pour le mode "bébés uniquement" (voir fetch-animal.ts) —
@@ -23,4 +24,5 @@ export const {
   getFromArchive: getBabyFromArchive,
   getDailyHistory: getBabyDailyHistory,
   getLatestForToday: getLatestBabyForToday,
+  deleteEntriesForToday: deleteBabyEntriesForToday,
 } = createArchive("animal-babies-archive.json");

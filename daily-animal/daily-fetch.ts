@@ -2,6 +2,7 @@ import { fetchRandomAnimal } from "./fetch-animal.ts";
 import fs from "fs/promises";
 import { dataPath } from "../data-dir";
 import { getLogger } from "../logger";
+import { deleteEntriesForToday, deleteBabyEntriesForToday } from "./archive";
 
 const log = getLogger("daily-animal");
 
@@ -21,6 +22,23 @@ export async function writeAnimalJSON() {
 
 export async function writeBabyAnimalJSON() {
   await write(true);
+}
+
+/**
+ * Reroll manuel : quand l'animal tiré ne rend pas bien à l'écran, plutôt que
+ * d'attendre le lendemain. Contrairement à un simple nouveau tirage, retire
+ * d'abord le tirage du jour de l'archive — sinon les deux coexisteraient et
+ * la logique "actif le plus longtemps" de shared-archive.ts pourrait garder
+ * l'ancien dans l'historique plutôt que le remplaçant.
+ */
+export async function rerollAnimalJSON(babiesOnly: boolean) {
+  const deleted = babiesOnly
+    ? await deleteBabyEntriesForToday()
+    : await deleteEntriesForToday();
+  log.info(
+    `Reroll: removed ${deleted} ${babiesOnly ? "baby " : ""}entr${deleted === 1 ? "y" : "ies"} from today's archive.`
+  );
+  await write(babiesOnly);
 }
 
 // Seulement quand ce fichier est exécuté directement (npx tsx
