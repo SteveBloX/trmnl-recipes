@@ -2,6 +2,9 @@ import { JSDOM } from "jsdom";
 import { writeFileSync } from "fs";
 import iconv from "iconv-lite";
 import { proverbType } from "./req";
+import { getLogger } from "../logger";
+
+const log = getLogger("chinese-proverbs:scrape-fr");
 
 const pages = 22;
 const firstPage = 0;
@@ -41,13 +44,13 @@ async function getProverbs() {
         });
       }
     });
-    console.log(`Page ${page + 1}/${pages} processed.`);
+    log.info(`Page ${page + 1}/${pages} processed.`);
   }
 
   return proverbs;
 }
 
 getProverbs().then((proverbs) => {
-  console.log(`Total proverbs collected: ${proverbs.length}`);
+  log.success(`Total proverbs collected: ${proverbs.length}`);
   writeFileSync("proverbs-fr.json", JSON.stringify(proverbs, null, 2), "utf8");
 });

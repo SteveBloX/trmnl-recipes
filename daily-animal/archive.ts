@@ -11,3 +11,16 @@ export const {
   getDailyHistory,
   getLatestForToday,
 } = createArchive("animal-archive.json");
+
+// Archive séparée pour le mode "bébés uniquement" (voir fetch-animal.ts) —
+// pas un simple filtre sur la même archive : les deux modes tirent une fois
+// par jour chacun, et la logique "un par jour" de shared-archive.ts suppose
+// un seul tirage par jour par archive. Les mélanger ferait qu'un des deux
+// tirages du jour écraserait l'autre dans l'historique.
+export const {
+  generateUniqueSlug: generateUniqueBabySlug,
+  saveToArchive: saveBabyToArchive,
+  getFromArchive: getBabyFromArchive,
+  getDailyHistory: getBabyDailyHistory,
+  getLatestForToday: getLatestBabyForToday,
+} = createArchive("animal-babies-archive.json");

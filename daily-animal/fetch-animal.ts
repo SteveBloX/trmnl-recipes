@@ -1,6 +1,13 @@
 import axios from "axios";
-import { generateUniqueSlug, saveToArchive } from "./archive";
+import {
+  generateUniqueSlug,
+  saveToArchive,
+  generateUniqueBabySlug,
+  saveBabyToArchive,
+} from "./archive";
+import { getLogger } from "../logger";
 
+const log = getLogger("daily-animal");
 const INATURALIST_API_URL = "https://api.inaturalist.org/v1";
 
 // Même domaine que celui déjà utilisé pour polling_url dans settings.yml —
@@ -13,6 +20,20 @@ const PUBLIC_ANIMAL_PAGE_BASE = "https://trmnl.bloax.xyz/animal";
 // écran glanceable. Ce filtre garde 44k+ espèces reconnaissables, largement
 // assez pour ne jamais se répéter.
 const ICONIC_TAXA = "Aves,Mammalia,Reptilia,Amphibia,Actinopterygii";
+
+// Mode "bébés uniquement" : mêmes groupes sauf les poissons — vérifié à la
+// main sur quelques tirages, une photo de bébé poisson ne se lit pas comme
+// "un bébé" à l'oeil (pas de trait juvénile visuellement évident comme un
+// duvet, une taille disproportionnée, etc.), contrairement aux autres groupes.
+const ICONIC_TAXA_BABIES = "Aves,Mammalia,Reptilia,Amphibia";
+
+// Annotation communautaire iNaturalist "Life Stage" = "Juvenile" (vérifié via
+// GET /v1/controlled_terms : term_id 1, value id 8, s'applique à Animalia
+// dans son ensemble). Couverture mesurée ~1.36% toutes espèces confondues
+// (1-2.6% par groupe, aucun groupe quasi-absent) — assez dense pour que la
+// technique de fenêtre d'ID + tri par votes reste fiable (10/10 tirages
+// réussis en test, faves 4-21 contre 8-122 sans le filtre).
+const BABY_LIFE_STAGE_PARAMS = { term_id: 1, term_value_id: 8 };
 
 // N'accepte que les photos réutilisables : beaucoup d'observations iNaturalist
 // sont "all rights reserved" (license_code null), ce qui interdit tout affichage
@@ -64,14 +85,19 @@ const WIKIMEDIA_USER_AGENT =
   "trmnl-recipes-animal-of-the-day/1.0 (contact@bloax.xyz)";
 const WIKI_REQUEST_DELAY_MS = 500;
 
-const observationParams = {
-  photos: true,
-  quality_grade: "research",
-  photo_license: PHOTO_LICENSES,
-  iconic_taxa: ICONIC_TAXA,
-};
+function buildObservationParams(babiesOnly: boolean) {
+  return {
+    photos: true,
+    quality_grade: "research",
+    photo_license: PHOTO_LICENSES,
+    iconic_taxa: babiesOnly ? ICONIC_TAXA_BABIES : ICONIC_TAXA,
+    ...(babiesOnly ? BABY_LIFE_STAGE_PARAMS : {}),
+  };
+}
 
-async function getMaxObservationId(): Promise<number> {
+async function getMaxObservationId(
+  observationParams: ReturnType<typeof buildObservationParams>
+): Promise<number> {
   const { data } = await axios.get(`${INATURALIST_API_URL}/observations`, {
     params: { ...observationParams, order_by: "id", order: "desc", per_page: 1 },
   });
@@ -92,7 +118,10 @@ async function getMaxObservationId(): Promise<number> {
 // Trier par votes sans borne haute ferait au contraire remonter en boucle les
 // quelques observations les plus likées du site (4 fois le même raton laveur
 // sur 10 essais) — la borne haute est ce qui préserve la variété.
-async function fetchBestObservation(windowStart: number) {
+async function fetchBestObservation(
+  windowStart: number,
+  observationParams: ReturnType<typeof buildObservationParams>
+) {
   const { data } = await axios.get(`${INATURALIST_API_URL}/observations`, {
     params: {
       ...observationParams,
@@ -153,7 +182,7 @@ async function fetchTaxonDetails(taxonId: number) {
         }
       }
     } catch (error: any) {
-      console.warn(`Failed to fetch '${locale}' taxon details for #${taxonId}:`, error.message);
+      log.warn(`Failed to fetch '${locale}' taxon details for #${taxonId}:`, error.message);
       names[locale] = "";
     }
   }
@@ -202,7 +231,7 @@ async function fetchWikipediaExtract(
       qid: page.pageprops?.wikibase_item ?? null,
     };
   } catch (error: any) {
-    console.warn(`Failed to fetch Wikipedia extract for '${title}':`, error.message);
+    log.warn(`Failed to fetch Wikipedia extract for '${title}':`, error.message);
     return null;
   }
 }
@@ -222,7 +251,7 @@ async function fetchWikidataSitelinks(qid: string): Promise<Record<string, strin
     }
     return titles;
   } catch (error: any) {
-    console.warn(`Failed to fetch Wikidata sitelinks for ${qid}:`, error.message);
+    log.warn(`Failed to fetch Wikidata sitelinks for ${qid}:`, error.message);
     return {};
   }
 }
@@ -235,7 +264,7 @@ async function fetchLocalizedSummary(locale: string, title: string): Promise<str
     );
     return data.extract || null;
   } catch (error: any) {
-    console.warn(`Failed to fetch '${locale}' summary for '${title}':`, error.message);
+    log.warn(`Failed to fetch '${locale}' summary for '${title}':`, error.message);
     return null;
   }
 }
@@ -265,35 +294,44 @@ async function fetchDescriptions(scientificName: string): Promise<Record<string,
 }
 
 /**
- * Retrieves one random wild vertebrate (bird, mammal, reptile, amphibian or
- * fish) from a research-grade, appropriately-licensed iNaturalist observation.
+ * Retrieves one random wild vertebrate (bird, mammal, reptile, amphibian or,
+ * outside "babies only" mode, fish) from a research-grade, appropriately-
+ * licensed iNaturalist observation.
+ * @param babiesOnly when true, restricts to observations annotated "Juvenile"
+ * (iNaturalist Life Stage), excluding fish (see ICONIC_TAXA_BABIES).
  * @returns {Promise<Object|null>} Animal data, or null if this draw missed
  * (caller is expected to retry, same convention as fetchRandomMonument).
  */
-export async function fetchRandomAnimal() {
-  console.log("-> Querying iNaturalist API for a random animal...");
+export async function fetchRandomAnimal(babiesOnly = false) {
+  log.info(
+    `Querying iNaturalist API for a random${babiesOnly ? " baby" : ""} animal...`
+  );
 
   try {
-    const maxId = await getMaxObservationId();
+    const observationParams = buildObservationParams(babiesOnly);
+    const maxId = await getMaxObservationId(observationParams);
     await sleep(REQUEST_DELAY_MS);
 
-    const observation = await fetchBestObservation(randomWindowStart(maxId));
+    const observation = await fetchBestObservation(
+      randomWindowStart(maxId),
+      observationParams
+    );
 
     if (!observation || !observation.taxon) {
-      console.warn("No observation found in the random id window — will retry.");
+      log.warn("No observation found in the random id window — will retry.");
       return null;
     }
 
     const photo = observation.photos?.[0];
     if (!photo) {
-      console.warn("Observation had no usable photo — will retry.");
+      log.warn("Observation had no usable photo — will retry.");
       return null;
     }
 
     // Les observations les plus likées sont parfois des GIF animés, qui n'ont
     // aucun sens sur e-ink (le rendu ne capture qu'une image figée).
     if (/\.gif(\?|$)/i.test(photo.url ?? "")) {
-      console.warn("Top-voted photo is an animated GIF — will retry.");
+      log.warn("Top-voted photo is an animated GIF — will retry.");
       return null;
     }
 
@@ -310,7 +348,7 @@ export async function fetchRandomAnimal() {
     // over 15 real draws) — so a draw with no English text at all is
     // treated as a miss and retried, same as a missing photo above.
     if (!description.en) {
-      console.warn(
+      log.warn(
         `No English description found for '${taxon.name}' — will retry.`
       );
       return null;
@@ -319,8 +357,10 @@ export async function fetchRandomAnimal() {
     // Un slug par tirage, archivé séparément du cache "aujourd'hui" (voir
     // archive.ts) : le QR code du layout full pointe vers cette URL, qui doit
     // rester valide indéfiniment — contrairement à animal.json, écrasé chaque
-    // jour par le prochain tirage.
-    const slug = await generateUniqueSlug();
+    // jour par le prochain tirage. Archive distincte en mode bébés (voir
+    // archive.ts) mais même schéma d'URL /animal/<slug> — la route côté
+    // serveur cherche dans les deux archives.
+    const slug = babiesOnly ? await generateUniqueBabySlug() : await generateUniqueSlug();
 
     const animalData = {
       scientificName: taxon.name,
@@ -346,14 +386,18 @@ export async function fetchRandomAnimal() {
       animalPageURL: `${PUBLIC_ANIMAL_PAGE_BASE}/${slug}`,
     };
 
-    await saveToArchive(slug, animalData);
+    if (babiesOnly) {
+      await saveBabyToArchive(slug, animalData);
+    } else {
+      await saveToArchive(slug, animalData);
+    }
 
     return animalData;
   } catch (error: any) {
     if (error.response) {
-      console.error("API Error Data:", error.response.data);
+      log.error("API Error Data:", error.response.data);
     }
-    console.error("Error retrieving random animal:", error.message);
+    log.error("Error retrieving random animal:", error.message);
     return null;
   }
 }

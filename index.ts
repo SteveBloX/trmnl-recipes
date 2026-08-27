@@ -26,17 +26,21 @@ import cron from "node-cron";
 import crypto from "crypto";
 import { writeMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
-import { writeAnimalJSON } from "./daily-animal/daily-fetch";
+import { writeAnimalJSON, writeBabyAnimalJSON } from "./daily-animal/daily-fetch";
 import { writeNaturalWonderJSON } from "./daily-natural-wonder/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
 import fs from "fs";
 import path from "path";
 import { dataPath } from "./data-dir";
 import { trackEvent } from "./analytics";
+import { getLogger } from "./logger";
 import {
   getFromArchive,
   getDailyHistory,
   getLatestForToday,
+  getBabyFromArchive,
+  getBabyDailyHistory,
+  getLatestBabyForToday,
 } from "./daily-animal/archive";
 import { renderAnimalPage, renderNotFoundPage } from "./daily-animal/page";
 import { renderAnimalOfTheDayPluginPage } from "./daily-animal/plugin-page";
@@ -181,6 +185,12 @@ const healthChecks: HealthCheck[] = [
       r.imageURL && r.scientificName ? null : "Missing animal fields",
   },
   {
+    name: "Animal of the Day (Babies)",
+    run: () => animalRequest({ babies: "yes" } as any),
+    validate: (r) =>
+      r.imageURL && r.scientificName ? null : "Missing animal fields",
+  },
+  {
     name: "Natural Wonder of the Day",
     run: () => naturalWonderRequest({} as any),
     validate: (r) =>
@@ -188,9 +198,24 @@ const healthChecks: HealthCheck[] = [
   },
 ];
 
+const log = getLogger("server");
+const httpLog = getLogger("http");
+
 const app = express();
 const port = 4200;
 app.use(bodyParser.json());
+
+// Une ligne par requête (méthode, chemin, statut, durée) — avant ça, la seule
+// façon de savoir ce qui se passait sur le serveur en prod était de recouper
+// les logs épars des différents plugins. Volontairement minimal (pas de body,
+// pas d'IP) : un aperçu du trafic, pas un système d'audit.
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    httpLog.info(`${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now() - start}ms`);
+  });
+  next();
+});
 
 // Captures d'écran des plugins pour les cartes de la page d'accueil — voir
 // plugins-directory.ts pour les noms de fichiers attendus. Ajoutées à la
@@ -249,7 +274,7 @@ if (!fs.existsSync(dataPath("monument.json"))) {
   getLatestMonumentForToday()
     .then((todaysEntry) => {
       if (todaysEntry) {
-        console.log(
+        log.info(
           "monument.json missing but today's monument is already in the archive — restoring it instead of drawing a new one.",
         );
         return fs.promises.writeFile(
@@ -257,12 +282,10 @@ if (!fs.existsSync(dataPath("monument.json"))) {
           JSON.stringify(todaysEntry, null, 2),
         );
       }
-      console.log("monument.json missing, fetching it once at startup…");
+      log.info("monument.json missing, fetching it once at startup…");
       return writeMonumentJSON();
     })
-    .catch((err) =>
-      console.error("Initial Monument of the Day fetch failed:", err),
-    );
+    .catch((err) => log.error("Initial Monument of the Day fetch failed:", err));
 }
 
 cron.schedule("0 0 * * *", async () => {
@@ -273,10 +296,8 @@ cron.schedule("0 0 * * *", async () => {
 // would leave /api/astrobin failing for up to a day. Fetch once when the file
 // is missing — and only then, so a restart never discards the day's pick.
 if (!fs.existsSync(dataPath("astrobin.json"))) {
-  console.log("astrobin.json missing, fetching it once at startup…");
-  writeAstrobinJSON().catch((err) =>
-    console.error("Initial AstroBin fetch failed:", err),
-  );
+  log.info("astrobin.json missing, fetching it once at startup…");
+  writeAstrobinJSON().catch((err) => log.error("Initial AstroBin fetch failed:", err));
 }
 
 cron.schedule("0 0 * * *", async () => {
@@ -296,7 +317,7 @@ if (!fs.existsSync(dataPath("animal.json"))) {
   getLatestForToday()
     .then((todaysEntry) => {
       if (todaysEntry) {
-        console.log(
+        log.info(
           "animal.json missing but today's animal is already in the archive — restoring it instead of drawing a new one.",
         );
         return fs.promises.writeFile(
@@ -304,12 +325,34 @@ if (!fs.existsSync(dataPath("animal.json"))) {
           JSON.stringify(todaysEntry, null, 2),
         );
       }
-      console.log("animal.json missing, fetching it once at startup…");
+      log.info("animal.json missing, fetching it once at startup…");
       return writeAnimalJSON();
     })
-    .catch((err) =>
-      console.error("Initial Animal of the Day fetch failed:", err),
-    );
+    .catch((err) => log.error("Initial Animal of the Day fetch failed:", err));
+}
+
+cron.schedule("0 0 * * *", async () => {
+  await writeBabyAnimalJSON();
+});
+
+// Même garde-fou que pour animal.json juste au-dessus, appliqué à l'archive
+// séparée du mode bébés (voir daily-animal/archive.ts).
+if (!fs.existsSync(dataPath("animal-babies.json"))) {
+  getLatestBabyForToday()
+    .then((todaysEntry) => {
+      if (todaysEntry) {
+        log.info(
+          "animal-babies.json missing but today's baby animal is already in the archive — restoring it instead of drawing a new one.",
+        );
+        return fs.promises.writeFile(
+          dataPath("animal-babies.json"),
+          JSON.stringify(todaysEntry, null, 2),
+        );
+      }
+      log.info("animal-babies.json missing, fetching it once at startup…");
+      return writeBabyAnimalJSON();
+    })
+    .catch((err) => log.error("Initial baby Animal of the Day fetch failed:", err));
 }
 
 cron.schedule("0 0 * * *", async () => {
@@ -324,7 +367,7 @@ if (!fs.existsSync(dataPath("natural-wonder.json"))) {
   getLatestWonderForToday()
     .then((todaysEntry) => {
       if (todaysEntry) {
-        console.log(
+        log.info(
           "natural-wonder.json missing but today's wonder is already in the archive — restoring it instead of drawing a new one.",
         );
         return fs.promises.writeFile(
@@ -332,12 +375,10 @@ if (!fs.existsSync(dataPath("natural-wonder.json"))) {
           JSON.stringify(todaysEntry, null, 2),
         );
       }
-      console.log("natural-wonder.json missing, fetching it once at startup…");
+      log.info("natural-wonder.json missing, fetching it once at startup…");
       return writeNaturalWonderJSON();
     })
-    .catch((err) =>
-      console.error("Initial Natural Wonder of the Day fetch failed:", err),
-    );
+    .catch((err) => log.error("Initial Natural Wonder of the Day fetch failed:", err));
 }
 
 // déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Telegram)
@@ -408,7 +449,9 @@ app.get("/animal/:slug", async (req, res) => {
   // Bien plus léger qu'un "?src=qr" en franchise de caractères pour le QR.
   const fromQr = /q$/.test(rawSlug);
   const slug = fromQr ? rawSlug.slice(0, -1) : rawSlug;
-  const entry = await getFromArchive(slug);
+  // Archives séparées (normal / bébés, voir daily-animal/archive.ts) mais un
+  // seul schéma d'URL /animal/<slug> — on cherche dans l'une puis l'autre.
+  const entry = (await getFromArchive(slug)) ?? (await getBabyFromArchive(slug));
   trackEvent("animal_page_view", `/animal/${slug}`, {
     slug,
     found: !!entry,
@@ -504,18 +547,21 @@ app.get("/", (req, res) => {
 app.get("/plugins/animal-of-the-day", async (req, res) => {
   const query = typeof req.query.q === "string" ? req.query.q : "";
   const group = typeof req.query.group === "string" ? req.query.group : "";
+  const mode = req.query.mode === "babies" ? "babies" : "normal";
   const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
   trackEvent("plugin_page_view", "/plugins/animal-of-the-day", {
     slug: "animal-of-the-day",
     found: true,
     ...(query ? { query } : {}),
     ...(group ? { group } : {}),
+    ...(mode === "babies" ? { mode } : {}),
     ...(page > 1 ? { page } : {}),
   });
-  const history = await getDailyHistory();
+  const history =
+    mode === "babies" ? await getBabyDailyHistory() : await getDailyHistory();
   res.set("Content-Type", "text/html; charset=utf-8");
   return res.send(
-    renderAnimalOfTheDayPluginPage({ history, query, group, page })
+    renderAnimalOfTheDayPluginPage({ history, query, group, page, mode })
   );
 });
 
@@ -579,5 +625,5 @@ app.get("/links/:name", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  log.success(`Server is running on http://localhost:${port}`);
 });

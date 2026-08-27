@@ -1,6 +1,9 @@
 import { chromium } from "playwright";
 import fs from "fs";
 import { DateTime } from "luxon";
+import { getLogger } from "../logger";
+
+const log = getLogger("motogp:scrape-schedule");
 
 const MONTHS: Record<string, number> = {
   Jan: 1,
@@ -195,9 +198,9 @@ async function scrapeDriverStandings() {
       JSON.stringify(scheduleWithUtc, null, 2),
       "utf-8",
     );
-    console.log(scheduleWithUtc);
+    log.success(`Scraped ${timingsWithUtc.length} schedule entries.`);
   } catch (error) {
-    console.error("error:", error);
+    log.error("Failed to scrape schedule:", error);
   } finally {
     await browser.close();
   }

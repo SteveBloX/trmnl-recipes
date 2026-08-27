@@ -2,6 +2,9 @@ import { JSDOM } from "jsdom";
 import { writeFileSync } from "fs";
 // @ts-ignore
 import { franc } from "franc-min";
+import { getLogger } from "../logger";
+
+const log = getLogger("shakespeare-quotes:scrape");
 
 type Quote = {
   quote: string;
@@ -25,7 +28,7 @@ async function scrapePage(page: number): Promise<Quote[]> {
   });
 
   if (!res.ok) {
-    console.warn(`Page ${page}: HTTP ${res.status}, skipping.`);
+    log.warn(`Page ${page}: HTTP ${res.status}, skipping.`);
     return [];
   }
 
@@ -99,7 +102,7 @@ async function main() {
     return true;
   });
 
-  console.log(`\nDone. ${unique.length} unique quotes saved.`);
+  log.success(`Done. ${unique.length} unique quotes saved.`);
   writeFileSync(
     "./shakespeare-quotes/quotes.json",
     JSON.stringify(unique, null, 2),

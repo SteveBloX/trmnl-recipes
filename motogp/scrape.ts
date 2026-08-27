@@ -1,5 +1,8 @@
 import { chromium } from "playwright";
 import fs from "fs";
+import { getLogger } from "../logger";
+
+const log = getLogger("motogp:scrape");
 
 async function scrapeDriverStandings() {
   // Lance le navigateur en mode headless
@@ -79,9 +82,9 @@ async function scrapeDriverStandings() {
       JSON.stringify(standings, null, 2),
       "utf-8",
     );
-    console.log(standings);
+    log.success(`Scraped ${standings.length} driver standings.`);
   } catch (error) {
-    console.error("error:", error);
+    log.error("Failed to scrape driver standings:", error);
   } finally {
     await browser.close();
   }

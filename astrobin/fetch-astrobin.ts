@@ -1,5 +1,7 @@
 import { JSDOM } from "jsdom";
+import { getLogger } from "../logger";
 
+const log = getLogger("astrobin");
 const IOTD_FEED_URL = "https://www.astrobin.com/iotd/rss/iotd";
 const TOP_PICKS_FEED_URL = "https://www.astrobin.com/iotd/rss/top-picks";
 
@@ -71,7 +73,7 @@ export async function fetchAstrobinData(): Promise<AstrobinFeedData | null> {
     ]);
 
     if (iotd.length === 0 || topPicks.length === 0) {
-      console.warn("AstroBin RSS feed returned no items.");
+      log.warn("AstroBin RSS feed returned no items.");
       return null;
     }
 
@@ -85,7 +87,7 @@ export async function fetchAstrobinData(): Promise<AstrobinFeedData | null> {
       randomTopPick,
     };
   } catch (error: any) {
-    console.error("Error retrieving AstroBin feeds:", error.message);
+    log.error("Error retrieving AstroBin feeds:", error.message);
     return null;
   }
 }

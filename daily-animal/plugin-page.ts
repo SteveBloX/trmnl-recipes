@@ -2,6 +2,10 @@
 // riche que le template générique (plugins-pages.ts) car elle affiche
 // l'historique des tirages avec recherche, filtre par groupe et pagination,
 // ce qu'aucun autre plugin de l'annuaire n'a besoin de faire.
+//
+// Deux onglets (tous animaux / bébés) car ce sont deux tirages quotidiens
+// distincts avec leur propre archive (voir daily-animal/archive.ts et
+// fetch-animal.ts) — pas un simple filtre sur une même liste.
 import { escapeHtml, pageShell } from "../web-shell";
 import { findPlugin } from "../plugins-directory";
 import type { DailyHistoryEntry } from "./archive";
@@ -20,11 +24,14 @@ const GROUP_LABELS: Record<string, string> = {
 // cette page finirait par afficher des centaines de lignes sur un seul chargement.
 const PAGE_SIZE = 30;
 
+export type AnimalMode = "normal" | "babies";
+
 export type AnimalOfTheDayPageParams = {
   history: DailyHistoryEntry[];
   query: string;
   group: string; // "" = tous les groupes
   page: number; // 1-indexé
+  mode: AnimalMode;
 };
 
 export function renderAnimalOfTheDayPluginPage({
@@ -32,6 +39,7 @@ export function renderAnimalOfTheDayPluginPage({
   query,
   group,
   page,
+  mode,
 }: AnimalOfTheDayPageParams): string {
   const q = query.trim().toLowerCase();
 
@@ -69,12 +77,13 @@ export function renderAnimalOfTheDayPluginPage({
     .join("\n");
 
   const isFiltered = !!(q || group);
+  const emptyLabel = mode === "babies" ? "baby animal" : "animal";
   const empty =
     filtered.length === 0
       ? `<p class="empty">${
           isFiltered
-            ? "No animal matches your search."
-            : "No animal has been drawn yet."
+            ? `No ${emptyLabel} matches your search.`
+            : `No ${emptyLabel} has been drawn yet.`
         }</p>`
       : "";
 
@@ -82,7 +91,12 @@ export function renderAnimalOfTheDayPluginPage({
     ? `History &middot; ${filtered.length} match${filtered.length === 1 ? "" : "es"}`
     : `History &middot; ${filtered.length} total`;
 
-  const groupOptions = Object.entries(GROUP_LABELS)
+  // Pas de poissons en mode bébés (voir fetch-animal.ts, ICONIC_TAXA_BABIES)
+  // — inutile de proposer un filtre qui ne donnerait jamais de résultat.
+  const availableGroups = Object.entries(GROUP_LABELS).filter(
+    ([value]) => mode === "normal" || value !== "Actinopterygii"
+  );
+  const groupOptions = availableGroups
     .map(
       ([value, label]) =>
         `<option value="${escapeHtml(value)}"${group === value ? " selected" : ""}>${escapeHtml(label)}</option>`
@@ -91,6 +105,7 @@ export function renderAnimalOfTheDayPluginPage({
 
   const pageQuery = (p: number) => {
     const params = new URLSearchParams();
+    if (mode === "babies") params.set("mode", "babies");
     if (query) params.set("q", query);
     if (group) params.set("group", group);
     if (p > 1) params.set("page", String(p));
@@ -107,14 +122,33 @@ export function renderAnimalOfTheDayPluginPage({
 </div>`
       : "";
 
+  // Changer d'onglet repart d'une recherche/filtre/page vierges : les deux
+  // modes ont des espèces et des groupes différents, un filtre actif dans
+  // l'un n'a pas forcément de sens dans l'autre.
+  const tabs = `<div class="tabs">
+  <a class="tab${mode === "normal" ? " tab--active" : ""}" href="/plugins/animal-of-the-day">All animals</a>
+  <a class="tab${mode === "babies" ? " tab--active" : ""}" href="/plugins/animal-of-the-day?mode=babies">Baby animals</a>
+</div>`;
+
+  const modeHiddenInput =
+    mode === "babies" ? `<input type="hidden" name="mode" value="babies">` : "";
+
   const image = findPlugin("animal-of-the-day")?.image;
+
+  const intro =
+    mode === "babies"
+      ? "A random baby animal (bird, mammal, reptile or amphibian — no fish) picked from iNaturalist observations annotated as juveniles."
+      : "A random wild animal (bird, mammal, reptile, amphibian or fish) from a real iNaturalist observation, with name and description in 6 languages.";
 
   const body = `<a class="back-link" href="/">&larr; All plugins</a>
 ${image ? `<img class="hero" src="${escapeHtml(image)}" alt="Animal of the Day preview">` : ""}
 <h1>Animal of the Day</h1>
-<p>A random wild animal (bird, mammal, reptile, amphibian or fish) from a real iNaturalist observation, with name and description in 6 languages.</p>
+<p>${intro}</p>
+
+${tabs}
 
 <form class="search-form" method="get" action="/plugins/animal-of-the-day">
+  ${modeHiddenInput}
   <input type="search" name="q" placeholder="Search by name..." value="${escapeHtml(query)}" aria-label="Search animal history">
   <select name="group" aria-label="Filter by animal group" onchange="this.form.submit()">
     <option value="">All groups</option>

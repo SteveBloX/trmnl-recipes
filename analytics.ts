@@ -4,6 +4,9 @@
 // fail an actual API response. Every call site does `trackEvent(...)` without
 // awaiting it, and errors here are swallowed (logged, not thrown).
 import "dotenv/config";
+import { getLogger } from "./logger";
+
+const log = getLogger("analytics");
 
 const UMAMI_HOST_URL = (process.env.UMAMI_HOST_URL || "").replace(/\/+$/, "");
 const UMAMI_WEBSITE_ID = process.env.UMAMI_WEBSITE_ID || "";
@@ -56,7 +59,7 @@ export async function trackEvent(
       }),
     });
     if (!res.ok) {
-      console.warn(
+      log.warn(
         `Umami event '${name}' rejected: ${res.status} ${await res.text()}`,
       );
       return;
@@ -66,11 +69,11 @@ export async function trackEvent(
     // so a bot can't distinguish success from being caught.
     const body = await res.text();
     if (body.includes('"beep"')) {
-      console.warn(
+      log.warn(
         `Umami event '${name}' silently dropped (bot detection): ${body}`,
       );
     }
   } catch (error: any) {
-    console.warn(`Umami event '${name}' failed:`, error.message);
+    log.warn(`Umami event '${name}' failed:`, error.message);
   }
 }

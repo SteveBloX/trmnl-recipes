@@ -1,4 +1,7 @@
 import "dotenv/config";
+import { getLogger } from "./logger";
+
+const log = getLogger("health-check");
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "";
@@ -62,10 +65,11 @@ export async function runHealthChecks(
 
   const failures = results.filter((r) => !r.ok);
   const okCount = results.length - failures.length;
-  console.log(
-    `[${new Date().toISOString()}] Health check: ${okCount}/${results.length} OK` +
-      (failures.length ? ` — KO: ${failures.map((f) => f.name).join(", ")}` : "")
-  );
+  const summary =
+    `Health check: ${okCount}/${results.length} OK` +
+    (failures.length ? ` — KO: ${failures.map((f) => f.name).join(", ")}` : "");
+  if (failures.length > 0) log.warn(summary);
+  else log.success(summary);
 
   if (failures.length > 0 && notify) {
     await sendTelegramAlert(failures, results.length);
@@ -82,7 +86,7 @@ function escapeHtml(text: string): string {
 
 async function sendTelegramAlert(failures: CheckResult[], total: number) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-    console.warn(
+    log.warn(
       "TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID non défini(s) — alerte Telegram ignorée"
     );
     return;
@@ -113,9 +117,9 @@ async function sendTelegramAlert(failures: CheckResult[], total: number) {
       }
     );
     if (!res.ok) {
-      console.error(`Telegram alert failed: ${res.status} ${await res.text()}`);
+      log.error(`Telegram alert failed: ${res.status} ${await res.text()}`);
     }
   } catch (e) {
-    console.error("Telegram alert failed:", e);
+    log.error("Telegram alert failed:", e);
   }
 }

@@ -14,6 +14,7 @@
     "@yaelouuu/fortnite-api": "^4.0.0",
     "axios": "^1.13.2",
     "body-parser": "^2.2.0",
+    "consola": "^3.4.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "franc-min": "^6.2.0",

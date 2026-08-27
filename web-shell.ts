@@ -146,6 +146,14 @@ ${ogImage ? `<meta property="og:image" content="${escapeHtml(ogImage)}">\n<meta 
   .plugin-card h2 { margin: 0 0 0.3em; font-size: 1.05em; }
   .plugin-card p { margin: 0; color: var(--muted); font-size: 0.9em; }
 
+  .tabs { display: flex; gap: 8px; margin: 1.2em 0 0; }
+  .tab {
+    padding: 6px 16px; border: 1px solid var(--border); border-radius: 999px;
+    text-decoration: none; color: var(--fg); font-size: 0.9em; background: transparent;
+  }
+  .tab:hover { border-color: var(--fg); }
+  .tab--active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
   .search-form, .filter-form {
     display: flex; flex-wrap: wrap; gap: 8px; margin: 1.6em 0 0;
   }

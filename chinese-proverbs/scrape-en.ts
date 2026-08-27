@@ -1,7 +1,9 @@
 import { JSDOM } from "jsdom";
 import { writeFileSync } from "fs";
 import { proverbType } from "./req";
+import { getLogger } from "../logger";
 
+const log = getLogger("chinese-proverbs:scrape-en");
 const url =
   "https://www.chinahighlights.com/travelguide/learning-chinese/chinese-sayings.htm";
 async function getProverbs() {
@@ -75,12 +77,12 @@ async function getProverbs() {
     }
   }
 
-  console.log(`Page processed. Found ${proverbs.length} candidate proverbs.`);
+  log.info(`Page processed. Found ${proverbs.length} candidate proverbs.`);
 
   return proverbs;
 }
 
 getProverbs().then((proverbs) => {
-  console.log(`Total proverbs collected: ${proverbs.length}`);
+  log.success(`Total proverbs collected: ${proverbs.length}`);
   writeFileSync("proverbs-en.json", JSON.stringify(proverbs, null, 2), "utf8");
 });

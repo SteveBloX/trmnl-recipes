@@ -1,6 +1,9 @@
 import axios from "axios";
 import { cacheRemoteImage } from "../image-cache";
 import { generateUniqueSlug, saveToArchive } from "./archive";
+import { getLogger } from "../logger";
+
+const log = getLogger("daily-monument");
 
 // UNESCO OpenDataSoft API URL
 const UNESCO_API_URL =
@@ -22,7 +25,7 @@ export async function fetchRandomMonument() {
     lang: "en",
   };
 
-  console.log("-> Querying UNESCO API for a random monument...");
+  log.info("Querying UNESCO API for a random monument...");
 
   try {
     // 1. Get total count of matching records
@@ -32,7 +35,7 @@ export async function fetchRandomMonument() {
     const totalCount = countResponse.data.total_count;
 
     if (!totalCount) {
-      console.warn("No records found.");
+      log.warn("No records found.");
       return null;
     }
 
@@ -114,14 +117,14 @@ export async function fetchRandomMonument() {
 
       return monumentData;
     } else {
-      console.warn("API returned a valid response, but no record was found.");
+      log.warn("API returned a valid response, but no record was found.");
       return null;
     }
   } catch (error: any) {
     if (error.response) {
-      console.error("API Error Data:", error.response.data);
+      log.error("API Error Data:", error.response.data);
     }
-    console.error("Error retrieving UNESCO monument:", error.message);
+    log.error("Error retrieving UNESCO monument:", error.message);
     return null;
   }
 }

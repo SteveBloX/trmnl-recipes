@@ -1,5 +1,7 @@
 import "dotenv/config";
+import { getLogger } from "../logger";
 
+const log = getLogger("fortnite-stats");
 const FORTNITE_API_KEY = process.env.FORTNITE_API_KEY || "";
 const testUserData = {
   username: "playerzz",
@@ -35,7 +37,7 @@ export async function statsRequest(query: queryType, body: any = null) {
   }
   let ret = {};
   const url = `${endpoint}?name=${encodeURIComponent(
-    username
+    username,
   )}&timeWindow=${timeWindow}`;
   const response = await fetch(url, {
     headers: {
@@ -44,7 +46,7 @@ export async function statsRequest(query: queryType, body: any = null) {
   });
   const prettyTimeWindow = timeWindow === "lifetime" ? "Lifetime" : "Season";
   if (!response.ok) {
-    console.log("Error response:", response);
+    log.warn(`Fortnite API error response: ${response.status} ${response.statusText}`);
     const statusCode = response.status;
     try {
       const errorData = await response.json();
@@ -92,6 +94,5 @@ export async function statsRequest(query: queryType, body: any = null) {
   };
   // convert timePlayed to hours
   d.timePlayed = (d.timePlayed / 60).toFixed(1);
-  console.log("Fetched fortnite stats for", username);
   return d;
 }

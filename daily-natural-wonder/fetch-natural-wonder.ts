@@ -1,6 +1,9 @@
 import axios from "axios";
 import { generateUniqueSlug, saveToArchive } from "./archive";
 import { cacheRemoteImage } from "../image-cache";
+import { getLogger } from "../logger";
+
+const log = getLogger("daily-natural-wonder");
 
 // UNESCO OpenDataSoft API URL — même dataset que Monument of the Day, filtré
 // différemment (Natural + Mixed au lieu de Cultural).
@@ -27,7 +30,7 @@ export async function fetchRandomNaturalWonder() {
     lang: "en",
   };
 
-  console.log("-> Querying UNESCO API for a random natural wonder...");
+  log.info("Querying UNESCO API for a random natural wonder...");
 
   try {
     // 1. Get total count of matching records
@@ -37,7 +40,7 @@ export async function fetchRandomNaturalWonder() {
     const totalCount = countResponse.data.total_count;
 
     if (!totalCount) {
-      console.warn("No records found.");
+      log.warn("No records found.");
       return null;
     }
 
@@ -56,7 +59,7 @@ export async function fetchRandomNaturalWonder() {
     const results = response.data.results;
 
     if (!results || results.length === 0) {
-      console.warn("API returned a valid response, but no record was found.");
+      log.warn("API returned a valid response, but no record was found.");
       return null;
     }
 
@@ -119,9 +122,9 @@ export async function fetchRandomNaturalWonder() {
     return wonderData;
   } catch (error: any) {
     if (error.response) {
-      console.error("API Error Data:", error.response.data);
+      log.error("API Error Data:", error.response.data);
     }
-    console.error("Error retrieving UNESCO natural wonder:", error.message);
+    log.error("Error retrieving UNESCO natural wonder:", error.message);
     return null;
   }
 }

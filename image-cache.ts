@@ -11,6 +11,9 @@ import fs from "fs/promises";
 import path from "path";
 import { dataPath } from "./data-dir";
 import { SITE_ORIGIN } from "./web-shell";
+import { getLogger } from "./logger";
+
+const log = getLogger("image-cache");
 
 const KNOWN_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "gif"];
 
@@ -118,7 +121,7 @@ export async function cacheRemoteImage(
   try {
     const downloaded = await downloadViaBrowser(sourceUrl);
     if (!downloaded) {
-      console.warn(`Image cache: '${sourceUrl}' didn't resolve to an image — using it directly.`);
+      log.warn(`'${sourceUrl}' didn't resolve to an image — using it directly.`);
       return sourceUrl;
     }
 
@@ -129,7 +132,7 @@ export async function cacheRemoteImage(
 
     return publicUrl(subdir, id, ext);
   } catch (error: any) {
-    console.warn(`Image cache: failed to cache '${sourceUrl}':`, error.message);
+    log.warn(`Failed to cache '${sourceUrl}':`, error.message);
     return sourceUrl;
   }
 }

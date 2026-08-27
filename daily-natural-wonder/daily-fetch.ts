@@ -1,7 +1,9 @@
 import { fetchRandomNaturalWonder } from "./fetch-natural-wonder.ts";
 import fs from "fs/promises";
 import { dataPath } from "../data-dir";
+import { getLogger } from "../logger";
 
+const log = getLogger("daily-natural-wonder");
 const fileName = dataPath("natural-wonder.json");
 
 export async function writeNaturalWonderJSON() {
@@ -9,7 +11,7 @@ export async function writeNaturalWonderJSON() {
   while (data === null) data = await fetchRandomNaturalWonder();
 
   await fs.writeFile(fileName, JSON.stringify(data, null, 2));
-  console.log(`Natural wonder data written to ${fileName}`);
+  log.success(`Natural wonder data written to ${fileName}`);
 }
 
 // Garde-fou dès le départ (bug déjà rencontré et corrigé côté Animal et

@@ -1,5 +1,7 @@
 import { writeFileSync } from "node:fs";
+import { getLogger } from "../logger";
 
+const log = getLogger("get-recipes");
 const recipes: unknown[] = [];
 
 async function main() {
@@ -31,14 +33,14 @@ async function main() {
           recipe.stats.forks + recipe.stats.installs > 50,
       ),
     );
-    console.log(`Fetched page ${page}/${11}`);
+    log.info(`Fetched page ${page}/${11}`);
   }
 
   writeFileSync("recipes.json", JSON.stringify(recipes, null, 2), "utf8");
-  console.log(`Wrote ${recipes.length} recipes to recipes.json`);
+  log.success(`Wrote ${recipes.length} recipes to recipes.json`);
 }
 
 main().catch((error: unknown) => {
-  console.error(error);
+  log.error(error);
   process.exitCode = 1;
 });

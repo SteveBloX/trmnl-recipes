@@ -6,11 +6,13 @@
 import fs from "fs/promises";
 import crypto from "crypto";
 import { dataPath } from "./data-dir";
+import { getLogger } from "./logger";
 
 export type DailyHistoryEntry = { date: string; entry: any };
 
 export function createArchive(filename: string) {
   const ARCHIVE_PATH = dataPath(filename);
+  const log = getLogger(`archive:${filename}`);
 
   async function readArchive(): Promise<Record<string, any>> {
     try {
@@ -20,7 +22,7 @@ export function createArchive(filename: string) {
       if (error?.code === "ENOENT") return {};
       // Un fichier corrompu ne doit pas empêcher le tirage du jour de
       // fonctionner — mieux vaut perdre l'archive que le plugin.
-      console.error(`Failed to parse ${filename}, starting fresh:`, error.message);
+      log.error(`Failed to parse, starting fresh:`, error.message);
       return {};
     }
   }
