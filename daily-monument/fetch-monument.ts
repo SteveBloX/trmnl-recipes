@@ -6,6 +6,11 @@ import { generateUniqueSlug, saveToArchive } from "./archive";
 const UNESCO_API_URL =
   "https://data.unesco.org/api/explore/v2.1/catalog/datasets/whc001/records";
 
+// Le QR du markup pointe ici plutôt que directement vers officialURL, pour
+// qu'un scan passe par notre serveur (event Umami "qr_scan") avant d'être
+// redirigé vers la vraie page UNESCO — voir la route /monument/:slug.
+const PUBLIC_MONUMENT_REDIRECT_BASE = "https://trmnl.bloax.xyz/monument";
+
 /**
  * Retrieves a random World Heritage Site that has an image, with details in English.
  * @returns {Promise<Object|null>} An object containing the name and image URL, or null upon error.
@@ -70,6 +75,13 @@ export async function fetchRandomMonument() {
         rawImageURL
       );
 
+      // Le slug indexe l'entrée dans l'archive ET sert de cible au QR : pas
+      // de permalien affichant le contenu comme pour Animal/Natural Wonder
+      // (officialURL est déjà une vraie page UNESCO stable), juste une
+      // redirection qui laisse une trace dans Umami avant de renvoyer vers
+      // officialURL — voir /monument/:slug dans index.ts.
+      const slug = await generateUniqueSlug();
+
       const monumentData = {
         // Accessing the English name field
         name: {
@@ -82,6 +94,7 @@ export async function fetchRandomMonument() {
         },
         imageURL,
         officialURL: `https://whc.unesco.org/en/list/${record.id_no}`,
+        monumentPageURL: `${PUBLIC_MONUMENT_REDIRECT_BASE}/${slug}`,
         coordinates: {
           lat: record.coordinates?.lat,
           lon: record.coordinates?.lon,
@@ -97,11 +110,6 @@ export async function fetchRandomMonument() {
         },
       };
 
-      // Historique pour la page du site — pas de permalien dédié comme pour
-      // Animal/Natural Wonder (le QR du markup pointe déjà vers officialURL,
-      // une vraie page UNESCO stable ; inutile d'en inventer une deuxième).
-      // Le slug ne sert qu'à indexer cette entrée dans l'archive.
-      const slug = await generateUniqueSlug();
       await saveToArchive(slug, monumentData);
 
       return monumentData;

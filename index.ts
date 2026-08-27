@@ -5,6 +5,7 @@ import { proverbRequest } from "./chinese-proverbs/req";
 import { statsRequest } from "./fortnite-stats/req";
 import { monumentRequest } from "./daily-monument/req";
 import {
+  getFromArchive as getMonumentFromArchive,
   getDailyHistory as getMonumentDailyHistory,
   getLatestForToday as getLatestMonumentForToday,
 } from "./daily-monument/archive";
@@ -399,12 +400,23 @@ app.get("/api/motogp/schedule", async (req, res) => {
 // Cible du QR code du layout "full" d'Animal of the Day — voir
 // daily-animal/archive.ts pour pourquoi ce n'est pas juste animal.json.
 app.get("/animal/:slug", async (req, res) => {
-  const { slug } = req.params;
+  const { slug: rawSlug } = req.params;
+  // Les slugs sont exclusivement hexadécimaux (0-9a-f) — un "q" final ne
+  // peut donc jamais faire partie d'un vrai slug, ce qui en fait un marqueur
+  // sans ambiguïté. Le QR du markup "full" encode <slug>q ; un lien normal
+  // (historique du site, partage...) encode le slug nu, sans ce suffixe.
+  // Bien plus léger qu'un "?src=qr" en franchise de caractères pour le QR.
+  const fromQr = /q$/.test(rawSlug);
+  const slug = fromQr ? rawSlug.slice(0, -1) : rawSlug;
   const entry = await getFromArchive(slug);
   trackEvent("animal_page_view", `/animal/${slug}`, {
     slug,
     found: !!entry,
+    ...(fromQr ? { source: "qr" } : {}),
   });
+  if (fromQr) {
+    trackEvent("qr_scan", `/animal/${slug}`, { plugin: "animal-of-the-day", slug });
+  }
   res.set("Content-Type", "text/html; charset=utf-8");
   if (!entry) {
     return res.status(404).send(renderNotFoundPage());
@@ -415,17 +427,46 @@ app.get("/animal/:slug", async (req, res) => {
 // Cible du QR code du layout "full" de Natural Wonder of the Day — même
 // principe que /animal/:slug juste au-dessus.
 app.get("/natural-wonder/:slug", async (req, res) => {
-  const { slug } = req.params;
+  const { slug: rawSlug } = req.params;
+  // Même astuce que /animal/:slug ci-dessus : "q" final = marqueur QR, jamais
+  // un vrai caractère de slug (hexadécimal uniquement).
+  const fromQr = /q$/.test(rawSlug);
+  const slug = fromQr ? rawSlug.slice(0, -1) : rawSlug;
   const entry = await getWonderFromArchive(slug);
   trackEvent("natural_wonder_page_view", `/natural-wonder/${slug}`, {
     slug,
     found: !!entry,
+    ...(fromQr ? { source: "qr" } : {}),
   });
+  if (fromQr) {
+    trackEvent("qr_scan", `/natural-wonder/${slug}`, {
+      plugin: "natural-wonder-of-the-day",
+      slug,
+    });
+  }
   res.set("Content-Type", "text/html; charset=utf-8");
   if (!entry) {
     return res.status(404).send(renderWonderNotFoundPage());
   }
   return res.send(renderNaturalWonderPage(entry));
+});
+
+// Cible du QR code de Monument of the Day — contrairement à /animal/:slug et
+// /natural-wonder/:slug, ce n'est pas une page mais une redirection pure vers
+// la vraie fiche UNESCO (officialURL) : Monument n'a pas de contenu propre à
+// afficher (pas de description enrichie multilingue distincte de ce que le
+// markup montre déjà). Aucun autre lien du site ne pointe vers cette route
+// (l'historique de /plugins/monument-of-the-day lie directement officialURL)
+// donc, contrairement aux deux autres, chaque visite ici est sans ambiguïté
+// un scan de QR — pas besoin du même marqueur "q".
+app.get("/monument/:slug", async (req, res) => {
+  const { slug } = req.params;
+  const entry = await getMonumentFromArchive(slug);
+  trackEvent("qr_scan", `/monument/${slug}`, { plugin: "monument-of-the-day", slug });
+  // Archive réinitialisée, volume perdu... un lien mort ferait un mauvais
+  // atterrissage pour quelqu'un qui vient de scanner physiquement un QR —
+  // mieux vaut renvoyer vers la liste UNESCO que vers une page d'erreur.
+  return res.redirect(entry?.officialURL || "https://whc.unesco.org/en/list/");
 });
 
 // Pas de pages /animal/:slug ni /natural-wonder/:slug dedans : ça grandit
