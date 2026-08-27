@@ -1,4 +1,6 @@
 import axios from "axios";
+import { cacheRemoteImage } from "../image-cache";
+import { generateUniqueSlug, saveToArchive } from "./archive";
 
 // UNESCO OpenDataSoft API URL
 const UNESCO_API_URL =
@@ -50,10 +52,23 @@ export async function fetchRandomMonument() {
       const record = results[0];
 
       // 3. Extracting Data
-      const imageURL =
+      const rawImageURL =
         typeof record.main_image_url === "string"
           ? record.main_image_url
           : record.main_image_url?.url;
+
+      // whc.unesco.org bloque les clients non-navigateurs derrière un
+      // challenge Cloudflare (incident du 26/08/2026 sur Natural Wonder of
+      // the Day, un rendu qui avait pourtant marché la veille sur ce même
+      // pattern d'URL) — on met l'image en cache sur notre domaine plutôt
+      // que de laisser le moteur de rendu TRMNL parler directement à
+      // l'UNESCO. id_no (l'identifiant du site) sert de clé, pas le tirage,
+      // pour réutiliser le cache si le même monument est retiré plus tard.
+      const imageURL = await cacheRemoteImage(
+        "monument",
+        record.id_no,
+        rawImageURL
+      );
 
       const monumentData = {
         // Accessing the English name field
@@ -81,6 +96,13 @@ export async function fetchRandomMonument() {
           zh: record.short_description_zh,
         },
       };
+
+      // Historique pour la page du site — pas de permalien dédié comme pour
+      // Animal/Natural Wonder (le QR du markup pointe déjà vers officialURL,
+      // une vraie page UNESCO stable ; inutile d'en inventer une deuxième).
+      // Le slug ne sert qu'à indexer cette entrée dans l'archive.
+      const slug = await generateUniqueSlug();
+      await saveToArchive(slug, monumentData);
 
       return monumentData;
     } else {

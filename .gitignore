@@ -3,8 +3,12 @@ node_modules/
 chinese-proverbs/stats.json
 motogp-*.json
 monument.json
+monument-archive.json
 astrobin.json
 world-cup.json
 chinese-proverbs/stats.json
 animal.json
 animal-archive.json
+natural-wonder.json
+natural-wonder-archive.json
+images/

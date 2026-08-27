@@ -4,6 +4,11 @@ import bodyParser from "body-parser";
 import { proverbRequest } from "./chinese-proverbs/req";
 import { statsRequest } from "./fortnite-stats/req";
 import { monumentRequest } from "./daily-monument/req";
+import {
+  getDailyHistory as getMonumentDailyHistory,
+  getLatestForToday as getLatestMonumentForToday,
+} from "./daily-monument/archive";
+import { renderMonumentOfTheDayPluginPage } from "./daily-monument/plugin-page";
 import { astrobinRequest } from "./astrobin/req";
 import { worldCupRequest } from "./world-cup/req";
 import { shakespeareRequest } from "./shakespeare-quotes/req";
@@ -194,6 +199,11 @@ app.use(
   express.static(path.join(__dirname, "public", "screenshots")),
 );
 
+// Images UNESCO mises en cache par image-cache.ts (Monument + Natural
+// Wonder) — sur le volume de données, pas dans public/, car générées à
+// l'exécution plutôt que commit.
+app.use("/images", express.static(dataPath("images")));
+
 // Contrairement aux autres routes /api/*, /api/dokploy expose des infos
 // privées (services, RAM/disque, déploiements) : elle exige un header
 // x-recipes-key qui doit matcher RECIPES_API_KEY, comparé en temps constant
@@ -222,9 +232,37 @@ cron.schedule("0 * * * *", async () => {
   await runHealthChecks(healthChecks);
 });
 
-cron.schedule("*/10 * * * *", async () => {
+// Passé de */10 min à 1x/jour pour que l'historique par jour ait un sens
+// (voir daily-monument/archive.ts) — 144 tirages/jour ne laissaient de toute
+// façon place à aucune notion de "monument du jour" cohérente, et
+// refresh_interval côté settings.yml était déjà réglé sur 1440 (quotidien).
+cron.schedule("0 0 * * *", async () => {
   await writeMonumentJSON();
 });
+
+// Même raisonnement que pour Animal/Natural Wonder plus bas : re-vérifier
+// l'archive du jour avant de tirer, pour ne pas gaspiller une entrée ni
+// changer le monument déjà servi plus tôt aujourd'hui à cause d'un simple
+// redémarrage.
+if (!fs.existsSync(dataPath("monument.json"))) {
+  getLatestMonumentForToday()
+    .then((todaysEntry) => {
+      if (todaysEntry) {
+        console.log(
+          "monument.json missing but today's monument is already in the archive — restoring it instead of drawing a new one.",
+        );
+        return fs.promises.writeFile(
+          dataPath("monument.json"),
+          JSON.stringify(todaysEntry, null, 2),
+        );
+      }
+      console.log("monument.json missing, fetching it once at startup…");
+      return writeMonumentJSON();
+    })
+    .catch((err) =>
+      console.error("Initial Monument of the Day fetch failed:", err),
+    );
+}
 
 cron.schedule("0 0 * * *", async () => {
   await writeAstrobinJSON();
@@ -458,6 +496,21 @@ app.get("/plugins/natural-wonder-of-the-day", async (req, res) => {
   return res.send(
     renderNaturalWonderPluginPage({ history, query, category, page })
   );
+});
+
+// Même piège que ci-dessus : doit être déclarée avant /plugins/:slug.
+app.get("/plugins/monument-of-the-day", async (req, res) => {
+  const query = typeof req.query.q === "string" ? req.query.q : "";
+  const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
+  trackEvent("plugin_page_view", "/plugins/monument-of-the-day", {
+    slug: "monument-of-the-day",
+    found: true,
+    ...(query ? { query } : {}),
+    ...(page > 1 ? { page } : {}),
+  });
+  const history = await getMonumentDailyHistory();
+  res.set("Content-Type", "text/html; charset=utf-8");
+  return res.send(renderMonumentOfTheDayPluginPage({ history, query, page }));
 });
 
 app.get("/plugins/:slug", (req, res) => {

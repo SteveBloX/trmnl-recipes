@@ -1,5 +1,6 @@
 import axios from "axios";
 import { generateUniqueSlug, saveToArchive } from "./archive";
+import { cacheRemoteImage } from "../image-cache";
 
 // UNESCO OpenDataSoft API URL — même dataset que Monument of the Day, filtré
 // différemment (Natural + Mixed au lieu de Cultural).
@@ -61,10 +62,23 @@ export async function fetchRandomNaturalWonder() {
 
     const record = results[0];
 
-    const imageURL =
+    const rawImageURL =
       typeof record.main_image_url === "string"
         ? record.main_image_url
         : record.main_image_url?.url;
+
+    // whc.unesco.org bloque les clients non-navigateurs derrière un
+    // challenge Cloudflare (incident du 26/08/2026 : ce plugin a un jour
+    // cessé de charger l'image en rendu TRMNL après avoir marché la veille)
+    // — on met l'image en cache sur notre domaine plutôt que de laisser le
+    // moteur de rendu TRMNL parler directement à l'UNESCO. id_no (le site)
+    // sert de clé, pas le tirage, pour réutiliser le cache si le même site
+    // est retiré plus tard.
+    const imageURL = await cacheRemoteImage(
+      "natural-wonder",
+      record.id_no,
+      rawImageURL
+    );
 
     // Un slug par tirage, comme pour Animal of the Day — le lien du QR doit
     // rester valide indéfiniment, contrairement à natural-wonder.json qui est
