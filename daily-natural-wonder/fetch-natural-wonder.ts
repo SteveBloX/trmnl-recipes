@@ -14,6 +14,28 @@ const UNESCO_API_URL =
 // QR code du layout full pointe vers cette URL, stable indéfiniment.
 const PUBLIC_WONDER_PAGE_BASE = "https://trmnl.bloax.xyz/natural-wonder";
 
+// Même jeu de langues que name/description ci-dessous. Node fournit
+// Intl.DisplayNames nativement (vérifié : couvre les 6 langues du plugin,
+// gère les sites transfrontaliers en joignant plusieurs codes, et retombe
+// silencieusement sur le code brut pour un code inconnu plutôt que de
+// planter) — pas besoin de script côté client ni de dépendance externe.
+const LOCALES = ["en", "fr", "es", "ru", "ar", "zh"];
+
+function localizedCountryNames(isoCodes: unknown): Record<string, string> {
+  const codes = String(isoCodes ?? "")
+    .split(",")
+    .map((c) => c.trim())
+    .filter(Boolean);
+  if (codes.length === 0) return {};
+
+  const names: Record<string, string> = {};
+  for (const locale of LOCALES) {
+    const displayNames = new Intl.DisplayNames([locale], { type: "region" });
+    names[locale] = codes.map((c) => displayNames.of(c.toUpperCase()) ?? c).join(", ");
+  }
+  return names;
+}
+
 /**
  * Retrieves a random Natural or Mixed World Heritage Site that has an image,
  * with details in English (and 5 other languages, like Monument of the Day).
@@ -105,6 +127,7 @@ export async function fetchRandomNaturalWonder() {
         lon: record.coordinates?.lon,
       },
       country_code: record.iso_codes,
+      countryNames: localizedCountryNames(record.iso_codes),
       description: {
         en: record.short_description_en,
         fr: record.short_description_fr,
