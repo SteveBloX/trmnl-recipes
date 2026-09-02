@@ -1,10 +1,9 @@
 import "dotenv/config";
 import { getLogger } from "./logger";
+import { sendTelegramMessage, escapeTelegramHtml as escapeHtml } from "./telegram";
 
 const log = getLogger("health-check");
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "";
 const TIMEOUT_MS = 30000;
 
 export type HealthCheck = {
@@ -77,20 +76,7 @@ export async function runHealthChecks(
   return results;
 }
 
-// Échappe les caractères spéciaux du mode HTML de Telegram pour éviter un
-// message tronqué ou une erreur 400 si un nom d'app ou un message d'erreur
-// contient <, > ou &.
-function escapeHtml(text: string): string {
-  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
 async function sendTelegramAlert(failures: CheckResult[], total: number) {
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-    log.warn(
-      "TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID non défini(s) — alerte Telegram ignorée"
-    );
-    return;
-  }
   const lines = [
     `🩺 <b>TRMNL API Health Check</b>`,
     `<b>${failures.length}/${total}</b> API${failures.length > 1 ? "s" : ""} en erreur`,
@@ -100,26 +86,5 @@ async function sendTelegramAlert(failures: CheckResult[], total: number) {
         `🔴 <b>${escapeHtml(f.name)}</b>\n<pre>${escapeHtml((f.error || "Unknown error").slice(0, 500))}</pre>`
     ),
   ];
-  const text = lines.join("\n");
-
-  try {
-    const res = await fetch(
-      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text,
-          parse_mode: "HTML",
-          disable_web_page_preview: true,
-        }),
-      }
-    );
-    if (!res.ok) {
-      log.error(`Telegram alert failed: ${res.status} ${await res.text()}`);
-    }
-  } catch (e) {
-    log.error("Telegram alert failed:", e);
-  }
+  await sendTelegramMessage(lines.join("\n"));
 }

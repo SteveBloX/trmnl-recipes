@@ -1,4 +1,4 @@
-import axios from "axios";
+import { http } from "../http";
 import { generateUniqueSlug, saveToArchive } from "./archive";
 import { cacheRemoteImage } from "../image-cache";
 import { getLogger } from "../logger";
@@ -39,8 +39,9 @@ function localizedCountryNames(isoCodes: unknown): Record<string, string> {
 /**
  * Retrieves a random Natural or Mixed World Heritage Site that has an image,
  * with details in English (and 5 other languages, like Monument of the Day).
- * @returns {Promise<Object|null>} Natural wonder data, or null upon error —
- * caller is expected to retry, same convention as fetchRandomMonument.
+ * @returns {Promise<Object>} Natural wonder data.
+ * @throws on any failure (network, API, empty result) — see retry-with-alert.ts
+ * in daily-fetch.ts, which is what retries and eventually alerts on this.
  */
 export async function fetchRandomNaturalWonder() {
   // "Mixed" sites (culturally AND naturally significant, e.g. Machu Picchu)
@@ -56,14 +57,15 @@ export async function fetchRandomNaturalWonder() {
 
   try {
     // 1. Get total count of matching records
-    const countResponse = await axios.get(UNESCO_API_URL, {
+    const countResponse = await http.get(UNESCO_API_URL, {
       params: { ...baseParams, limit: 0 },
     });
     const totalCount = countResponse.data.total_count;
 
     if (!totalCount) {
-      log.warn("No records found.");
-      return null;
+      // Comme pour Monument : pas de "tirage à refaire" légitime, un total à
+      // zéro signale un vrai problème (API cassée, requête malformée...).
+      throw new Error("No records found.");
     }
 
     // 2. Fetch a random record using offset
@@ -77,12 +79,11 @@ export async function fetchRandomNaturalWonder() {
       offset: randomOffset,
     };
 
-    const response = await axios.get(UNESCO_API_URL, { params });
+    const response = await http.get(UNESCO_API_URL, { params });
     const results = response.data.results;
 
     if (!results || results.length === 0) {
-      log.warn("API returned a valid response, but no record was found.");
-      return null;
+      throw new Error("API returned a valid response, but no record was found.");
     }
 
     const record = results[0];
@@ -148,6 +149,6 @@ export async function fetchRandomNaturalWonder() {
       log.error("API Error Data:", error.response.data);
     }
     log.error("Error retrieving UNESCO natural wonder:", error.message);
-    return null;
+    throw error;
   }
 }

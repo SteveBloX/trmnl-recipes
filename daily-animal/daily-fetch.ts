@@ -3,15 +3,28 @@ import fs from "fs/promises";
 import { dataPath } from "../data-dir";
 import { getLogger } from "../logger";
 import { deleteEntriesForToday, deleteBabyEntriesForToday } from "./archive";
+import { retryWithAlert } from "../retry-with-alert";
 
 const log = getLogger("daily-animal");
 
-async function write(babiesOnly: boolean) {
-  const fileName = dataPath(babiesOnly ? "animal-babies.json" : "animal.json");
+// Boucle interne : ne fait QUE re-tirer sur un "raté" volontaire de qualité
+// (pas de photo, GIF, pas de description anglaise — fetchRandomAnimal renvoie
+// alors null). Une vraie erreur réseau/API est levée par fetchRandomAnimal,
+// pas renvoyée ici — elle remonte donc à retryWithAlert ci-dessous, qui est
+// seul responsable de compter les tentatives et d'alerter.
+async function attemptDraw(babiesOnly: boolean) {
   let data = null;
   while (data === null) data = await fetchRandomAnimal(babiesOnly);
+  return data;
+}
 
-  // file may not exist yet
+async function write(babiesOnly: boolean) {
+  const fileName = dataPath(babiesOnly ? "animal-babies.json" : "animal.json");
+  const label = babiesOnly ? "Animal of the Day (Babies)" : "Animal of the Day";
+
+  const data = await retryWithAlert(label, () => attemptDraw(babiesOnly));
+  if (data === null) return; // toutes les tentatives ont échoué, déjà alerté — on garde l'ancien fichier
+
   await fs.writeFile(fileName, JSON.stringify(data, null, 2));
   log.success(`Animal data (${babiesOnly ? "babies" : "normal"}) written to ${fileName}`);
 }

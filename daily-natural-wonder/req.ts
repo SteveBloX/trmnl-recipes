@@ -13,8 +13,10 @@ export async function naturalWonderRequest(query: queryType, body: any = null) {
   } catch (error: any) {
     if (error?.code !== "ENOENT") throw error;
 
-    let wonder = null;
-    while (wonder === null) wonder = await fetchRandomNaturalWonder();
+    // fetchRandomNaturalWonder lance une exception en cas d'échec réel —
+    // laissée remonter telle quelle (voir index.ts, la route générique
+    // /api/:appName la transforme automatiquement en 500 via Express 5).
+    const wonder = await fetchRandomNaturalWonder();
 
     await fs.writeFile(filePath, JSON.stringify(wonder, null, 2));
     return wonder;

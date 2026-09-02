@@ -16,12 +16,10 @@ export async function astrobinRequest(query: queryType, body: any = null) {
   } catch (error: any) {
     if (error?.code !== "ENOENT") throw error;
 
+    // fetchAstrobinData lance une exception en cas d'échec réel — laissée
+    // remonter telle quelle (voir index.ts, la route générique /api/:appName
+    // la transforme automatiquement en 500 via Express 5).
     const astrobin = await fetchAstrobinData();
-    if (!astrobin) {
-      return {
-        error: "AstroBin cache is missing and feed fetch failed.",
-      };
-    }
 
     await fs.writeFile(filePath, JSON.stringify(astrobin, null, 2));
     return astrobin;

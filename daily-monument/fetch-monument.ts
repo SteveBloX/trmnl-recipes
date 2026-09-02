@@ -1,4 +1,4 @@
-import axios from "axios";
+import { http } from "../http";
 import { cacheRemoteImage } from "../image-cache";
 import { generateUniqueSlug, saveToArchive } from "./archive";
 import { getLogger } from "../logger";
@@ -16,7 +16,9 @@ const PUBLIC_MONUMENT_REDIRECT_BASE = "https://trmnl.bloax.xyz/monument";
 
 /**
  * Retrieves a random World Heritage Site that has an image, with details in English.
- * @returns {Promise<Object|null>} An object containing the name and image URL, or null upon error.
+ * @returns {Promise<Object>} An object containing the name and image URL.
+ * @throws on any failure (network, API, empty result) — see retry-with-alert.ts
+ * in daily-fetch.ts, which is what retries and eventually alerts on this.
  */
 export async function fetchRandomMonument() {
   // Common filter: ensures the element has an image URL
@@ -29,14 +31,18 @@ export async function fetchRandomMonument() {
 
   try {
     // 1. Get total count of matching records
-    const countResponse = await axios.get(UNESCO_API_URL, {
+    const countResponse = await http.get(UNESCO_API_URL, {
       params: { ...baseParams, limit: 0 },
     });
     const totalCount = countResponse.data.total_count;
 
     if (!totalCount) {
-      log.warn("No records found.");
-      return null;
+      // Contrairement à Animal of the Day, il n'y a pas de "tirage à
+      // refaire" légitime ici : ce filtre matche toujours des centaines de
+      // sites en temps normal, donc un total à zéro signale un vrai problème
+      // (API cassée, requête malformée...) — à faire remonter à
+      // retryWithAlert (voir daily-fetch.ts), pas à re-essayer en boucle.
+      throw new Error("No records found.");
     }
 
     // 2. Fetch a random record using offset
@@ -50,7 +56,7 @@ export async function fetchRandomMonument() {
       offset: randomOffset,
     };
 
-    const response = await axios.get(UNESCO_API_URL, {
+    const response = await http.get(UNESCO_API_URL, {
       params: params,
     });
 
@@ -117,14 +123,13 @@ export async function fetchRandomMonument() {
 
       return monumentData;
     } else {
-      log.warn("API returned a valid response, but no record was found.");
-      return null;
+      throw new Error("API returned a valid response, but no record was found.");
     }
   } catch (error: any) {
     if (error.response) {
       log.error("API Error Data:", error.response.data);
     }
     log.error("Error retrieving UNESCO monument:", error.message);
-    return null;
+    throw error;
   }
 }

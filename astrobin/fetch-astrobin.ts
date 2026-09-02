@@ -65,7 +65,11 @@ async function fetchFeed(url: string) {
   return parseFeed(xml);
 }
 
-export async function fetchAstrobinData(): Promise<AstrobinFeedData | null> {
+/**
+ * @throws on any failure (network, empty feed) — see retry-with-alert.ts in
+ * daily-fetch.ts, which is what retries and eventually alerts on this.
+ */
+export async function fetchAstrobinData(): Promise<AstrobinFeedData> {
   try {
     const [iotd, topPicks] = await Promise.all([
       fetchFeed(IOTD_FEED_URL),
@@ -73,8 +77,7 @@ export async function fetchAstrobinData(): Promise<AstrobinFeedData | null> {
     ]);
 
     if (iotd.length === 0 || topPicks.length === 0) {
-      log.warn("AstroBin RSS feed returned no items.");
-      return null;
+      throw new Error("AstroBin RSS feed returned no items.");
     }
 
     const randomIndex = Math.floor(Math.random() * topPicks.length);
@@ -88,6 +91,6 @@ export async function fetchAstrobinData(): Promise<AstrobinFeedData | null> {
     };
   } catch (error: any) {
     log.error("Error retrieving AstroBin feeds:", error.message);
-    return null;
+    throw error;
   }
 }

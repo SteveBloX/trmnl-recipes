@@ -10,4 +10,5 @@ export const {
   getFromArchive,
   getDailyHistory,
   getLatestForToday,
+  deleteEntriesForToday,
 } = createArchive("monument-archive.json");

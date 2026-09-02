@@ -1,4 +1,4 @@
-import axios from "axios";
+import { http } from "../http";
 import {
   generateUniqueSlug,
   saveToArchive,
@@ -98,7 +98,7 @@ function buildObservationParams(babiesOnly: boolean) {
 async function getMaxObservationId(
   observationParams: ReturnType<typeof buildObservationParams>
 ): Promise<number> {
-  const { data } = await axios.get(`${INATURALIST_API_URL}/observations`, {
+  const { data } = await http.get(`${INATURALIST_API_URL}/observations`, {
     params: { ...observationParams, order_by: "id", order: "desc", per_page: 1 },
   });
   return data.results[0]?.id ?? MIN_OBSERVATION_ID + 1;
@@ -122,7 +122,7 @@ async function fetchBestObservation(
   windowStart: number,
   observationParams: ReturnType<typeof buildObservationParams>
 ) {
-  const { data } = await axios.get(`${INATURALIST_API_URL}/observations`, {
+  const { data } = await http.get(`${INATURALIST_API_URL}/observations`, {
     params: {
       ...observationParams,
       id_above: windowStart,
@@ -163,7 +163,7 @@ async function fetchTaxonDetails(taxonId: number) {
     if (i > 0) await sleep(REQUEST_DELAY_MS);
 
     try {
-      const { data } = await axios.get(`${INATURALIST_API_URL}/taxa/${taxonId}`, {
+      const { data } = await http.get(`${INATURALIST_API_URL}/taxa/${taxonId}`, {
         params: { locale },
       });
       const taxon = data.results?.[0];
@@ -200,7 +200,7 @@ async function fetchWikipediaExtract(
   allowFallback = true
 ): Promise<{ extract: string; qid: string | null } | null> {
   try {
-    const { data } = await axios.get("https://en.wikipedia.org/w/api.php", {
+    const { data } = await http.get("https://en.wikipedia.org/w/api.php", {
       params: {
         action: "query",
         titles: title,
@@ -238,7 +238,7 @@ async function fetchWikipediaExtract(
 
 async function fetchWikidataSitelinks(qid: string): Promise<Record<string, string>> {
   try {
-    const { data } = await axios.get(
+    const { data } = await http.get(
       `https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`,
       { headers: { "User-Agent": WIKIMEDIA_USER_AGENT } }
     );
@@ -258,7 +258,7 @@ async function fetchWikidataSitelinks(qid: string): Promise<Record<string, strin
 
 async function fetchLocalizedSummary(locale: string, title: string): Promise<string | null> {
   try {
-    const { data } = await axios.get(
+    const { data } = await http.get(
       `https://${locale}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
       { headers: { "User-Agent": WIKIMEDIA_USER_AGENT } }
     );
@@ -300,7 +300,10 @@ async function fetchDescriptions(scientificName: string): Promise<Record<string,
  * @param babiesOnly when true, restricts to observations annotated "Juvenile"
  * (iNaturalist Life Stage), excluding fish (see ICONIC_TAXA_BABIES).
  * @returns {Promise<Object|null>} Animal data, or null if this draw missed
- * (caller is expected to retry, same convention as fetchRandomMonument).
+ * on quality grounds (no photo, GIF, no English description — caller is
+ * expected to keep retrying, same convention as fetchRandomMonument). A real
+ * failure (network, API) is thrown instead, not returned as null — see
+ * retry-with-alert.ts, which is what actually catches and counts those.
  */
 export async function fetchRandomAnimal(babiesOnly = false) {
   log.info(
@@ -398,6 +401,11 @@ export async function fetchRandomAnimal(babiesOnly = false) {
       log.error("API Error Data:", error.response.data);
     }
     log.error("Error retrieving random animal:", error.message);
-    return null;
+    // Un vrai échec (réseau, API) doit remonter pour être compté par le
+    // retry borné de retry-with-alert.ts — contrairement aux "tirages à
+    // refaire" volontaires ci-dessus (pas de photo, GIF, pas de description
+    // anglaise...), qui restent des `return null` gérés par la boucle
+    // interne de daily-fetch.ts.
+    throw error;
   }
 }

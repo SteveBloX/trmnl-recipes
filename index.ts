@@ -24,15 +24,19 @@ import { animalRequest } from "./daily-animal/req";
 import { naturalWonderRequest } from "./daily-natural-wonder/req";
 import cron from "node-cron";
 import crypto from "crypto";
-import { writeMonumentJSON } from "./daily-monument/daily-fetch";
+import { writeMonumentJSON, rerollMonumentJSON } from "./daily-monument/daily-fetch";
 import { writeAstrobinJSON } from "./astrobin/daily-fetch";
 import {
   writeAnimalJSON,
   writeBabyAnimalJSON,
   rerollAnimalJSON,
 } from "./daily-animal/daily-fetch";
-import { writeNaturalWonderJSON } from "./daily-natural-wonder/daily-fetch";
+import {
+  writeNaturalWonderJSON,
+  rerollNaturalWonderJSON,
+} from "./daily-natural-wonder/daily-fetch";
 import { runHealthChecks, type HealthCheck } from "./health-check";
+import { ensureDailyDraw } from "./ensure-daily-draw";
 import fs from "fs";
 import path from "path";
 import { dataPath } from "./data-dir";
@@ -276,120 +280,70 @@ cron.schedule("0 0 * * *", async () => {
   await writeMonumentJSON().catch((err) => log.error("Daily Monument fetch failed:", err));
 });
 
-// Même raisonnement que pour Animal/Natural Wonder plus bas : re-vérifier
-// l'archive du jour avant de tirer, pour ne pas gaspiller une entrée ni
-// changer le monument déjà servi plus tôt aujourd'hui à cause d'un simple
-// redémarrage.
-if (!fs.existsSync(dataPath("monument.json"))) {
-  getLatestMonumentForToday()
-    .then((todaysEntry) => {
-      if (todaysEntry) {
-        log.info(
-          "monument.json missing but today's monument is already in the archive — restoring it instead of drawing a new one.",
-        );
-        return fs.promises.writeFile(
-          dataPath("monument.json"),
-          JSON.stringify(todaysEntry, null, 2),
-        );
-      }
-      log.info("monument.json missing, fetching it once at startup…");
-      return writeMonumentJSON();
-    })
-    .catch((err) => log.error("Initial Monument of the Day fetch failed:", err));
-}
+ensureDailyDraw({
+  label: "daily-monument",
+  fileName: dataPath("monument.json"),
+  getTodaysEntry: getLatestMonumentForToday,
+  draw: writeMonumentJSON,
+}).catch((err) => log.error("Startup check for Monument of the Day failed:", err));
 
 cron.schedule("0 0 * * *", async () => {
   await writeAstrobinJSON().catch((err) => log.error("Daily AstroBin fetch failed:", err));
 });
 
-// The cron above only fires at midnight, so a start with an empty data volume
-// would leave /api/astrobin failing for up to a day. Fetch once when the file
-// is missing — and only then, so a restart never discards the day's pick.
-if (!fs.existsSync(dataPath("astrobin.json"))) {
-  log.info("astrobin.json missing, fetching it once at startup…");
-  writeAstrobinJSON().catch((err) => log.error("Initial AstroBin fetch failed:", err));
+// AstroBin n'a pas d'archive séparée (pas d'historique) — la fraîcheur se
+// vérifie directement sur son propre fichier de cache, via le champ
+// fetchedAt déjà présent dedans.
+async function getTodaysAstrobinEntry(): Promise<any | null> {
+  try {
+    const raw = await fs.promises.readFile(dataPath("astrobin.json"), "utf-8");
+    const data = JSON.parse(raw);
+    const today = new Date().toISOString().slice(0, 10);
+    return String(data?.fetchedAt ?? "").slice(0, 10) === today ? data : null;
+  } catch {
+    return null;
+  }
 }
+
+ensureDailyDraw({
+  label: "astrobin",
+  fileName: dataPath("astrobin.json"),
+  getTodaysEntry: getTodaysAstrobinEntry,
+  draw: writeAstrobinJSON,
+}).catch((err) => log.error("Startup check for AstroBin failed:", err));
 
 cron.schedule("0 0 * * *", async () => {
   await writeAnimalJSON().catch((err) => log.error("Daily Animal of the Day fetch failed:", err));
 });
 
-// Same reasoning as AstroBin above: without this, a fresh data volume leaves
-// /api/daily-animal failing until the next midnight cron. But unlike
-// AstroBin, a missing animal.json doesn't necessarily mean no draw happened
-// today — the volume can go missing (or the file get deleted) after a
-// perfectly good draw was already archived. Re-drawing in that case would
-// both waste an archive entry and show a different animal than the one
-// already served earlier today, purely because of a restart. So: check the
-// archive for today's most recent draw first, and only fetch a fresh one if
-// there truly isn't one yet.
-if (!fs.existsSync(dataPath("animal.json"))) {
-  getLatestForToday()
-    .then((todaysEntry) => {
-      if (todaysEntry) {
-        log.info(
-          "animal.json missing but today's animal is already in the archive — restoring it instead of drawing a new one.",
-        );
-        return fs.promises.writeFile(
-          dataPath("animal.json"),
-          JSON.stringify(todaysEntry, null, 2),
-        );
-      }
-      log.info("animal.json missing, fetching it once at startup…");
-      return writeAnimalJSON();
-    })
-    .catch((err) => log.error("Initial Animal of the Day fetch failed:", err));
-}
+ensureDailyDraw({
+  label: "daily-animal",
+  fileName: dataPath("animal.json"),
+  getTodaysEntry: getLatestForToday,
+  draw: writeAnimalJSON,
+}).catch((err) => log.error("Startup check for Animal of the Day failed:", err));
 
 cron.schedule("0 0 * * *", async () => {
   await writeBabyAnimalJSON().catch((err) => log.error("Daily baby Animal of the Day fetch failed:", err));
 });
 
-// Même garde-fou que pour animal.json juste au-dessus, appliqué à l'archive
-// séparée du mode bébés (voir daily-animal/archive.ts).
-if (!fs.existsSync(dataPath("animal-babies.json"))) {
-  getLatestBabyForToday()
-    .then((todaysEntry) => {
-      if (todaysEntry) {
-        log.info(
-          "animal-babies.json missing but today's baby animal is already in the archive — restoring it instead of drawing a new one.",
-        );
-        return fs.promises.writeFile(
-          dataPath("animal-babies.json"),
-          JSON.stringify(todaysEntry, null, 2),
-        );
-      }
-      log.info("animal-babies.json missing, fetching it once at startup…");
-      return writeBabyAnimalJSON();
-    })
-    .catch((err) => log.error("Initial baby Animal of the Day fetch failed:", err));
-}
+ensureDailyDraw({
+  label: "daily-animal (babies)",
+  fileName: dataPath("animal-babies.json"),
+  getTodaysEntry: getLatestBabyForToday,
+  draw: writeBabyAnimalJSON,
+}).catch((err) => log.error("Startup check for baby Animal of the Day failed:", err));
 
 cron.schedule("0 0 * * *", async () => {
   await writeNaturalWonderJSON().catch((err) => log.error("Daily Natural Wonder fetch failed:", err));
 });
 
-// Même raisonnement que pour Animal of the Day juste au-dessus : re-vérifier
-// l'archive du jour avant de tirer, pour ne pas gaspiller une entrée ni
-// changer la merveille déjà servie plus tôt aujourd'hui, à cause d'un simple
-// redémarrage.
-if (!fs.existsSync(dataPath("natural-wonder.json"))) {
-  getLatestWonderForToday()
-    .then((todaysEntry) => {
-      if (todaysEntry) {
-        log.info(
-          "natural-wonder.json missing but today's wonder is already in the archive — restoring it instead of drawing a new one.",
-        );
-        return fs.promises.writeFile(
-          dataPath("natural-wonder.json"),
-          JSON.stringify(todaysEntry, null, 2),
-        );
-      }
-      log.info("natural-wonder.json missing, fetching it once at startup…");
-      return writeNaturalWonderJSON();
-    })
-    .catch((err) => log.error("Initial Natural Wonder of the Day fetch failed:", err));
-}
+ensureDailyDraw({
+  label: "daily-natural-wonder",
+  fileName: dataPath("natural-wonder.json"),
+  getTodaysEntry: getLatestWonderForToday,
+  draw: writeNaturalWonderJSON,
+}).catch((err) => log.error("Startup check for Natural Wonder of the Day failed:", err));
 
 // déclenchement manuel : /api/health (JSON seul) ou /api/health?notify=1 (+ alerte Telegram)
 // doit être déclarée avant /api/:appName qui capturerait la route sinon
@@ -422,6 +376,28 @@ app.get("/api/admin/reroll-animal", requireRecipesKey, async (req, res) => {
     return res.json({ ok: true, babiesOnly });
   } catch (err: any) {
     log.error("Manual animal reroll failed:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Même principe que /api/admin/reroll-animal ci-dessus, pour Monument et
+// Natural Wonder of the Day.
+app.get("/api/admin/reroll-monument", requireRecipesKey, async (req, res) => {
+  try {
+    await rerollMonumentJSON();
+    return res.json({ ok: true });
+  } catch (err: any) {
+    log.error("Manual monument reroll failed:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get("/api/admin/reroll-natural-wonder", requireRecipesKey, async (req, res) => {
+  try {
+    await rerollNaturalWonderJSON();
+    return res.json({ ok: true });
+  } catch (err: any) {
+    log.error("Manual natural wonder reroll failed:", err);
     return res.status(500).json({ ok: false, error: err.message });
   }
 });
