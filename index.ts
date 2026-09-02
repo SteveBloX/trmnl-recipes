@@ -267,8 +267,13 @@ cron.schedule("0 * * * *", async () => {
 // (voir daily-monument/archive.ts) — 144 tirages/jour ne laissaient de toute
 // façon place à aucune notion de "monument du jour" cohérente, et
 // refresh_interval côté settings.yml était déjà réglé sur 1440 (quotidien).
+// Même try/catch appliqué aux 5 tirages quotidiens ci-dessous : sans lui, une
+// erreur transitoire (réseau, API en rate-limit...) passait inaperçue —
+// aucun log, aucune retentative, le fichier de la veille restait servi
+// indéfiniment jusqu'au prochain tirage réussi. Bug vécu en prod le
+// 02/09/2026 sur Animal of the Day (aucun animal du jour, rien dans les logs).
 cron.schedule("0 0 * * *", async () => {
-  await writeMonumentJSON();
+  await writeMonumentJSON().catch((err) => log.error("Daily Monument fetch failed:", err));
 });
 
 // Même raisonnement que pour Animal/Natural Wonder plus bas : re-vérifier
@@ -294,7 +299,7 @@ if (!fs.existsSync(dataPath("monument.json"))) {
 }
 
 cron.schedule("0 0 * * *", async () => {
-  await writeAstrobinJSON();
+  await writeAstrobinJSON().catch((err) => log.error("Daily AstroBin fetch failed:", err));
 });
 
 // The cron above only fires at midnight, so a start with an empty data volume
@@ -306,7 +311,7 @@ if (!fs.existsSync(dataPath("astrobin.json"))) {
 }
 
 cron.schedule("0 0 * * *", async () => {
-  await writeAnimalJSON();
+  await writeAnimalJSON().catch((err) => log.error("Daily Animal of the Day fetch failed:", err));
 });
 
 // Same reasoning as AstroBin above: without this, a fresh data volume leaves
@@ -337,7 +342,7 @@ if (!fs.existsSync(dataPath("animal.json"))) {
 }
 
 cron.schedule("0 0 * * *", async () => {
-  await writeBabyAnimalJSON();
+  await writeBabyAnimalJSON().catch((err) => log.error("Daily baby Animal of the Day fetch failed:", err));
 });
 
 // Même garde-fou que pour animal.json juste au-dessus, appliqué à l'archive
@@ -361,7 +366,7 @@ if (!fs.existsSync(dataPath("animal-babies.json"))) {
 }
 
 cron.schedule("0 0 * * *", async () => {
-  await writeNaturalWonderJSON();
+  await writeNaturalWonderJSON().catch((err) => log.error("Daily Natural Wonder fetch failed:", err));
 });
 
 // Même raisonnement que pour Animal of the Day juste au-dessus : re-vérifier
